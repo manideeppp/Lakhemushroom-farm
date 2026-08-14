@@ -34,6 +34,12 @@ import type { GalleryItem, Profile, Testimonial } from '../types/profile';
 
 import { SAMPLE_PRODUCTS } from '../data/products';
 import { SAMPLE_TRAINING } from '../data/training';
+import {
+  mergeSampleProducts,
+  mergeSampleTraining,
+  withProductImages,
+  withTrainingImage,
+} from './mediaResolve';
 import { SAMPLE_GALLERY, SAMPLE_TESTIMONIALS } from '../data/gallery';
 
 // ---------------------------------------------------------------------------
@@ -73,8 +79,18 @@ function localSet<T>(key: string, value: T): void {
 function seedIfEmpty(): void {
   if (!localStorage.getItem(K.products))
     localSet(K.products, SAMPLE_PRODUCTS);
+  else
+    localSet(
+      K.products,
+      mergeSampleProducts(localGet<Product[]>(K.products, []))
+    );
   if (!localStorage.getItem(K.training))
     localSet(K.training, SAMPLE_TRAINING);
+  else
+    localSet(
+      K.training,
+      mergeSampleTraining(localGet<TrainingCourse[]>(K.training, []))
+    );
   if (!localStorage.getItem(K.gallery)) localSet(K.gallery, SAMPLE_GALLERY);
   if (!localStorage.getItem(K.testimonials))
     localSet(K.testimonials, SAMPLE_TESTIMONIALS);
@@ -96,20 +112,21 @@ if (typeof window !== 'undefined' && !isSupabaseConfigured) {
 // ---------------------------------------------------------------------------
 
 export async function listProducts(): Promise<Product[]> {
-  if (!isSupabaseConfigured) return localGet<Product[]>(K.products, []);
+  if (!isSupabaseConfigured)
+    return mergeSampleProducts(localGet<Product[]>(K.products, []));
   const { data, error } = await supabase
     .from('products')
     .select('*')
     .order('created_at', { ascending: false });
   if (error) throw error;
-  return (data ?? []) as Product[];
+  return mergeSampleProducts((data ?? []) as Product[]);
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
   if (!isSupabaseConfigured) {
-    return (
-      localGet<Product[]>(K.products, []).find((p) => p.slug === slug) ?? null
-    );
+    const product =
+      localGet<Product[]>(K.products, []).find((p) => p.slug === slug) ?? null;
+    return product ? withProductImages(product) : null;
   }
   const { data, error } = await supabase
     .from('products')
@@ -117,7 +134,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
     .eq('slug', slug)
     .maybeSingle();
   if (error) throw error;
-  return (data as Product) ?? null;
+  return data ? withProductImages(data as Product) : null;
 }
 
 export async function upsertProduct(p: Product): Promise<Product> {
@@ -156,23 +173,23 @@ export async function deleteProduct(id: string): Promise<void> {
 
 export async function listTraining(): Promise<TrainingCourse[]> {
   if (!isSupabaseConfigured)
-    return localGet<TrainingCourse[]>(K.training, []);
+    return mergeSampleTraining(localGet<TrainingCourse[]>(K.training, []));
   const { data: courses, error } = await supabase
     .from('training_courses')
     .select('*')
     .order('created_at', { ascending: false });
   if (error) throw error;
-  return (courses ?? []) as TrainingCourse[];
+  return mergeSampleTraining((courses ?? []) as TrainingCourse[]);
 }
 
 export async function getTrainingBySlug(
   slug: string
 ): Promise<TrainingCourse | null> {
   if (!isSupabaseConfigured) {
-    return (
+    const course =
       localGet<TrainingCourse[]>(K.training, []).find((t) => t.slug === slug) ??
-      null
-    );
+      null;
+    return course ? withTrainingImage(course) : null;
   }
   const { data, error } = await supabase
     .from('training_courses')
@@ -183,7 +200,7 @@ export async function getTrainingBySlug(
   if (!data) return null;
   const modules = (data.modules ?? []) as TrainingModule[];
   modules.sort((a, b) => a.order - b.order);
-  return { ...(data as TrainingCourse), modules };
+  return withTrainingImage({ ...(data as TrainingCourse), modules });
 }
 
 export async function getTrainingModulesForCourse(

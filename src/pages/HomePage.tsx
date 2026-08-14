@@ -39,6 +39,7 @@ import {
   listTestimonials,
   listTraining,
 } from '../lib/data';
+import { mergeSampleProducts, mergeSampleTraining } from '../lib/mediaResolve';
 import { SAMPLE_PRODUCTS } from '../data/products';
 import { SAMPLE_TRAINING } from '../data/training';
 import {
@@ -87,9 +88,9 @@ export function HomePage() {
   }, []);
 
   const displayProducts =
-    products.length > 0 ? products : SAMPLE_PRODUCTS;
+    products.length > 0 ? mergeSampleProducts(products) : SAMPLE_PRODUCTS;
   const displayTraining =
-    training.length > 0 ? training : SAMPLE_TRAINING;
+    training.length > 0 ? mergeSampleTraining(training) : SAMPLE_TRAINING;
   const displayTestimonials =
     testimonials.length > 0 ? testimonials : SAMPLE_TESTIMONIALS;
   const showcaseGallery =
