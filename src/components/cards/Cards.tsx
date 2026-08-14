@@ -46,6 +46,8 @@ export function ProductCard({
             alt={imageAlt ?? name}
             aspect="aspect-square"
             rounded="none"
+            fit="contain"
+            containerClassName="bg-cream-50"
           />
         ) : (
           <div className="aspect-square w-full bg-forest-50 flex items-center justify-center text-forest-400">
@@ -133,6 +135,8 @@ export function TrainingCard({
           alt={imageAlt ?? title}
           aspect="aspect-[4/3]"
           rounded="none"
+          fit="contain"
+          containerClassName="bg-cream-50"
         />
       ) : (
         <div className="aspect-[4/3] w-full bg-forest-50" aria-hidden />

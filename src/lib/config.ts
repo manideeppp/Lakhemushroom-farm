@@ -14,9 +14,9 @@ export const config = {
   business: {
     upiId: env.VITE_UPI_ID?.trim() || 'lakhemushroomfarm@upi',
     upiPayee: env.VITE_UPI_PAYEE_NAME?.trim() || 'Lakhe Mushroom Farm',
-    whatsapp: env.VITE_WHATSAPP_NUMBER?.trim() || '919876543210',
+    whatsapp: env.VITE_WHATSAPP_NUMBER?.trim() || '919921480466',
     email: env.VITE_CONTACT_EMAIL?.trim() || 'hello@lakhemushroomfarm.com',
-    phone: env.VITE_CONTACT_PHONE?.trim() || '+91 98765 43210',
+    phone: env.VITE_CONTACT_PHONE?.trim() || '+91 99214 80466',
     address:
       env.VITE_CONTACT_ADDRESS?.trim() ||
       "Lakhe's Hi-Tech Mushroom Project, Mundhekarwadi, Maharashtra 413726",

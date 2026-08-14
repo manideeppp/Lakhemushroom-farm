@@ -32,12 +32,12 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           required={required}
           aria-invalid={!!error || undefined}
           className={cn(
-            'w-full min-h-[110px] rounded-md border bg-surface-raised px-3 py-2.5',
+            'w-full min-h-[120px] rounded-xl border bg-surface-raised px-3.5 py-3 shadow-sm',
             'text-body text-ink-900 placeholder:text-ink-400 outline-none resize-y',
             'transition-shadow duration-150 ease-gentle',
             error
               ? 'border-danger/60 focus:shadow-[0_0_0_3px_rgba(168,56,46,0.18)]'
-              : 'border-ink-200 focus:border-forest-400 focus:shadow-focus',
+              : 'border-ink-200/90 focus:border-forest-500 focus:shadow-focus',
             className
           )}
           {...rest}

@@ -1,4 +1,5 @@
 import type { Product } from '../types/product';
+import { productImages } from './media';
 
 export const SAMPLE_PRODUCTS: Product[] = [
   {
@@ -12,10 +13,7 @@ export const SAMPLE_PRODUCTS: Product[] = [
       'Our oyster spawn is produced in sterile conditions using high-quality mother cultures selected for yield and flavour. Each 500g bag is freshly prepared, packed in food-grade material and shipped with care instructions.',
     price: 150,
     unit: '500g bag',
-    images: [
-      'https://images.unsplash.com/photo-1568900122085-3c05f8bd57e5?auto=format&fit=crop&w=1200&q=70',
-      'https://images.unsplash.com/photo-1607301405390-d831c242f59b?auto=format&fit=crop&w=1200&q=70',
-    ],
+    images: [productImages.oysterSpawn],
     badges: ['fresh', 'best-seller'],
     stock: 120,
     rating: 4.8,
@@ -36,10 +34,7 @@ export const SAMPLE_PRODUCTS: Product[] = [
       'Grown on pasteurised straw substrate and hand-picked at the peak of freshness. Ideal for stir-fries, curries and grills. Available in 250g and 500g packs.',
     price: 180,
     unit: '500g pack',
-    images: [
-      'https://images.unsplash.com/photo-1611574474461-46f3f36fbb90?auto=format&fit=crop&w=1200&q=70',
-      'https://images.unsplash.com/photo-1611743331025-2bbf67c72934?auto=format&fit=crop&w=1200&q=70',
-    ],
+    images: [productImages.freshOyster],
     badges: ['fresh', 'natural'],
     stock: 40,
     rating: 4.9,
@@ -60,9 +55,7 @@ export const SAMPLE_PRODUCTS: Product[] = [
       'Slowly dried to preserve aroma and nutrition. Rehydrate in warm water for 20 minutes and use like fresh mushrooms. Perfect pantry staple.',
     price: 400,
     unit: '100g pouch',
-    images: [
-      'https://images.unsplash.com/photo-1611746872915-64559a1a7488?auto=format&fit=crop&w=1200&q=70',
-    ],
+    images: [productImages.dryOyster],
     badges: ['natural', 'premium'],
     stock: 80,
     rating: 4.7,
@@ -83,9 +76,7 @@ export const SAMPLE_PRODUCTS: Product[] = [
       'Cold-milled from our dried mushrooms. Add a teaspoon to soups, smoothies or tea for a daily boost of protein, B-vitamins and antioxidants.',
     price: 300,
     unit: '150g jar',
-    images: [
-      'https://images.unsplash.com/photo-1615485500704-8e990f9900f7?auto=format&fit=crop&w=1200&q=70',
-    ],
+    images: [productImages.mushroomPowder],
     badges: ['premium', 'natural'],
     stock: 60,
     rating: 4.8,
@@ -106,9 +97,7 @@ export const SAMPLE_PRODUCTS: Product[] = [
       'Cooked in small batches with cold-pressed oils and mild Indian spices. No preservatives. Refrigerate and consume within 5 days of opening.',
     price: 280,
     unit: '250g pack',
-    images: [
-      'https://images.unsplash.com/photo-1607301406259-dfb186e15de8?auto=format&fit=crop&w=1200&q=70',
-    ],
+    images: [productImages.readyToEat],
     badges: ['ready-to-eat', 'best-seller'],
     stock: 30,
     rating: 4.9,

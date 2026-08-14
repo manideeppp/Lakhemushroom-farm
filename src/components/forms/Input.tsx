@@ -48,13 +48,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
       )}
       <div
         className={cn(
-          'group flex items-center gap-2 rounded-md border bg-surface-raised px-3 h-11',
-          'transition-shadow duration-150 ease-gentle',
+          'group flex items-center gap-2 rounded-xl border bg-surface-raised px-3.5 h-12 shadow-sm',
+          'transition-[border-color,box-shadow] duration-150 ease-gentle',
           error
             ? 'border-danger/60 focus-within:shadow-[0_0_0_3px_rgba(168,56,46,0.18)]'
             : success
               ? 'border-forest-300 focus-within:shadow-focus'
-              : 'border-ink-200 focus-within:border-forest-400 focus-within:shadow-focus',
+              : 'border-ink-200/90 focus-within:border-forest-500 focus-within:shadow-focus',
           disabled && 'bg-ink-50 opacity-70 cursor-not-allowed'
         )}
       >

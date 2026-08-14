@@ -72,6 +72,8 @@ export function ProductDetailsPage() {
                 alt={product.name}
                 aspect="aspect-square"
                 rounded="lg"
+                fit="contain"
+                containerClassName="bg-cream-50"
               />
               {product.images.length > 1 && (
                 <div className="flex gap-2">

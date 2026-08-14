@@ -5,7 +5,6 @@ import {
   Copy,
   Loader2,
   ShieldCheck,
-  Smartphone,
 } from 'lucide-react';
 import { AppShell } from '../components/layout/AppShell';
 import { PageContainer } from '../components/layout/PageContainer';
@@ -90,10 +89,6 @@ export function PaymentPage() {
     }
   }
 
-  function openUpiApp() {
-    window.location.href = upiUrl;
-  }
-
   async function submitOrder() {
     if (!user) {
       navigate('/login', { state: { redirectTo: '/payment' } });
@@ -126,6 +121,7 @@ export function PaymentPage() {
         customer_name: customer.name,
         customer_email: user.email,
         customer_phone: customer.phone,
+        delivery_address: hasProducts ? customer.address : undefined,
         subtotal,
         shipping,
         total,
@@ -294,21 +290,17 @@ export function PaymentPage() {
                     </div>
                   </div>
 
-                  <Button
-                    fullWidth
-                    size="lg"
-                    onClick={openUpiApp}
-                    leftIcon={<Smartphone className="h-5 w-5" />}
-                    className="shadow-md"
-                  >
-                    Pay {formatINR(total)} with UPI app
-                  </Button>
-
-                  <p className="flex items-start gap-2 text-caption text-ink-600">
-                    <Smartphone className="h-4 w-4 shrink-0 mt-0.5 text-forest-600" />
-                    On mobile, tap the button above to open GPay, PhonePe, Paytm
-                    or any UPI app with the amount filled in.
-                  </p>
+                  <div className="rounded-xl border border-forest-100 bg-forest-50/80 px-4 py-4">
+                    <p className="text-body font-medium text-forest-900">
+                      After you pay, scroll down to Step 3
+                    </p>
+                    <p className="mt-1.5 text-small text-forest-800/90 leading-relaxed">
+                      Scan the QR code or copy the UPI ID above using GPay,
+                      PhonePe, Paytm or any UPI app. Then upload your payment
+                      screenshot in the section below along with your delivery
+                      details.
+                    </p>
+                  </div>
                 </div>
               </Card>
 
@@ -365,8 +357,8 @@ export function PaymentPage() {
                   Confirm payment
                 </h2>
                 <p className="mt-1 text-small text-ink-600">
-                  After paying, enter the transaction ID from your UPI app and
-                  upload a screenshot.
+                  Upload a clear screenshot of your successful UPI payment below.
+                  We verify every order manually within one working day.
                 </p>
                 <div className="mt-4 space-y-3">
                   <Input

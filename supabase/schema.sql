@@ -146,6 +146,7 @@ create table if not exists public.orders (
   customer_name text not null,
   customer_email text not null,
   customer_phone text,
+  delivery_address text,
   subtotal numeric(10,2) not null default 0,
   shipping numeric(10,2) not null default 0,
   total numeric(10,2) not null default 0,

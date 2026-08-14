@@ -272,6 +272,7 @@ export interface CreateOrderInput {
   customer_name: string;
   customer_email: string;
   customer_phone?: string;
+  delivery_address?: string;
   subtotal: number;
   shipping: number;
   total: number;
@@ -292,6 +293,7 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
       customer_name: input.customer_name,
       customer_email: input.customer_email,
       customer_phone: input.customer_phone,
+      delivery_address: input.delivery_address,
       subtotal: input.subtotal,
       shipping: input.shipping,
       total: input.total,
@@ -323,6 +325,7 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
       customer_name: input.customer_name,
       customer_email: input.customer_email,
       customer_phone: input.customer_phone,
+      delivery_address: input.delivery_address,
       subtotal: input.subtotal,
       shipping: input.shipping,
       total: input.total,

@@ -146,6 +146,8 @@ export function TrainingDetailsPage() {
                 alt={course.title}
                 aspect="aspect-[16/9]"
                 rounded="xl"
+                fit="contain"
+                containerClassName="bg-cream-50"
               />
 
               <div className="mt-6 flex flex-wrap items-center gap-2">

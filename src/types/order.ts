@@ -33,6 +33,7 @@ export interface Order {
   customer_name: string;
   customer_email: string;
   customer_phone?: string;
+  delivery_address?: string;
   subtotal: number;
   shipping: number;
   total: number;

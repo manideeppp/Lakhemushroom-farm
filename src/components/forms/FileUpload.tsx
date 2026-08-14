@@ -76,7 +76,7 @@ export function FileUpload({
         onDragLeave={() => setDragging(false)}
         onDrop={onDrop}
         className={cn(
-          'flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed min-h-[120px]',
+          'flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed min-h-[132px]',
           'bg-cream-50 py-6 px-4 text-center cursor-pointer transition',
           dragging
             ? 'border-forest-400 bg-forest-50'

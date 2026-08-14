@@ -29,11 +29,11 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
       )}
       <div
         className={cn(
-          'relative flex items-center rounded-md border bg-surface-raised h-11',
+          'relative flex items-center rounded-xl border bg-surface-raised h-12 shadow-sm',
           'transition-shadow duration-150 ease-gentle',
           error
             ? 'border-danger/60 focus-within:shadow-[0_0_0_3px_rgba(168,56,46,0.18)]'
-            : 'border-ink-200 focus-within:border-forest-400 focus-within:shadow-focus'
+            : 'border-ink-200/90 focus-within:border-forest-500 focus-within:shadow-focus'
         )}
       >
         <select

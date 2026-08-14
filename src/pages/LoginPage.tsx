@@ -109,17 +109,26 @@ export function LoginPage() {
 
   return (
     <AppShell hideBottomNav hideFooter>
-      <PageContainer>
-        <Section size="sm">
-          <div className="mx-auto max-w-md">
-            <Link
-              to="/"
-              className="mb-4 inline-flex items-center gap-1 text-small text-ink-600 hover:text-forest-800"
-            >
-              <ArrowLeft className="h-4 w-4" /> Back to home
-            </Link>
+      <div className="relative min-h-[70vh] bg-gradient-to-b from-cream-100 via-surface to-surface">
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-[radial-gradient(ellipse_at_top,_rgba(45,90,61,0.12),_transparent_70%)]"
+          aria-hidden
+        />
+        <PageContainer>
+          <Section size="sm">
+            <div className="mx-auto max-w-md">
+              <Link
+                to="/"
+                className="mb-4 inline-flex items-center gap-1 text-small text-ink-600 hover:text-forest-800"
+              >
+                <ArrowLeft className="h-4 w-4" /> Back to home
+              </Link>
 
-            <Card padding="lg" elevated className="space-y-5">
+              <Card
+                padding="lg"
+                elevated
+                className="space-y-5 border-ink-100/80 shadow-card ring-1 ring-ink-100/60"
+              >
               <div className="flex flex-col items-center text-center gap-2">
                 <LakheLogo size="lg" />
                 <Badge variant="natural" className="w-fit">
@@ -241,6 +250,7 @@ export function LoginPage() {
           </div>
         </Section>
       </PageContainer>
+      </div>
     </AppShell>
   );
 }

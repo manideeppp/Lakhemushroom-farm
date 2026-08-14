@@ -136,6 +136,14 @@ export function AdminOrderDetailPage() {
                 {order.customer_phone && (
                   <p className="text-ink-700">{order.customer_phone}</p>
                 )}
+                {order.delivery_address && (
+                  <div className="mt-3">
+                    <p className="text-caption text-ink-500">Delivery address</p>
+                    <p className="text-ink-900 leading-relaxed">
+                      {order.delivery_address}
+                    </p>
+                  </div>
+                )}
               </div>
               <div>
                 <p className="text-caption text-ink-500">UPI reference</p>

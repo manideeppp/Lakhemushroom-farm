@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { Header } from './Header';
 import { MobileBottomNav } from '../navigation/MobileBottomNav';
 import { Footer } from './Footer';
+import { WhatsAppFloat } from '../navigation/WhatsAppFloat';
 import { cn } from '../../utils/cn';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
@@ -57,6 +58,7 @@ export function AppShell({
       </main>
       {!hideFooter && <Footer />}
       {!hideBottomNav && <MobileBottomNav cartCount={cartCount} />}
+      <WhatsAppFloat withBottomNav={!hideBottomNav} />
     </div>
   );
 }
