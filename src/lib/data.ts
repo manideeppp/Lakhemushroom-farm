@@ -108,7 +108,7 @@ if (typeof window !== 'undefined' && !isSupabaseConfigured()) {
   seedIfEmpty();
 }
 
-function useAdminRpc(): boolean {
+function adminRpcActive(): boolean {
   return isSupabaseConfigured() && isAdminPortalActive();
 }
 
@@ -612,7 +612,7 @@ export async function listAllBookings(): Promise<OfflineBooking[]> {
   if (!isSupabaseConfigured()) {
     return localGet<OfflineBooking[]>(K.bookings, []);
   }
-  if (useAdminRpc()) {
+  if (adminRpcActive()) {
     const data = await adminRpc<unknown>('admin_list_bookings');
     return parseRpcArray<OfflineBooking>(data);
   }
@@ -639,7 +639,7 @@ export async function updateBookingStatus(
     }
     return;
   }
-  if (useAdminRpc()) {
+  if (adminRpcActive()) {
     await adminRpc('admin_update_booking_status', {
       booking_id: id,
       new_status: status,
@@ -693,7 +693,7 @@ export async function createQuery(
 
 export async function listQueries(): Promise<CustomerQuery[]> {
   if (!isSupabaseConfigured()) return localGet<CustomerQuery[]>(K.queries, []);
-  if (useAdminRpc()) {
+  if (adminRpcActive()) {
     const data = await adminRpc<unknown>('admin_list_queries');
     return parseRpcArray<CustomerQuery>(data);
   }
@@ -720,7 +720,7 @@ export async function updateQueryStatus(
     }
     return;
   }
-  if (useAdminRpc()) {
+  if (adminRpcActive()) {
     await adminRpc('admin_update_query_status', {
       query_id: id,
       new_status: status,
@@ -829,7 +829,7 @@ export async function upsertProfile(profile: Profile): Promise<Profile> {
 
 export async function listCustomers(): Promise<Profile[]> {
   if (!isSupabaseConfigured()) return localGet<Profile[]>(K.profiles, []);
-  if (useAdminRpc()) {
+  if (adminRpcActive()) {
     const data = await adminRpc<unknown>('admin_list_profiles');
     return parseRpcArray<Profile>(data);
   }

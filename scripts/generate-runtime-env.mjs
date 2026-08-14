@@ -77,8 +77,28 @@ const fileEnv = {
   ...parseEnvFile(path.join(ROOT, '.env.production')),
 };
 
+function pickAnonKey(files, env, existing) {
+  const candidates = [
+    env.VITE_SUPABASE_ANON_KEY,
+    env.SUPABASE_ANON_KEY,
+    env.SUPABASE_KEY,
+    files.VITE_SUPABASE_ANON_KEY,
+    files.SUPABASE_ANON_KEY,
+    files.SUPABASE_KEY,
+    existing.VITE_SUPABASE_ANON_KEY,
+  ].filter((v) => typeof v === 'string' && v.trim());
+
+  const jwt = candidates.find((v) => v.trim().startsWith('eyJ'));
+  if (jwt) return jwt.trim();
+  return candidates[0]?.trim() ?? '';
+}
+
 const runtime = {};
 for (const key of KEYS) {
+  if (key === 'VITE_SUPABASE_ANON_KEY') {
+    runtime[key] = pickAnonKey(fileEnv, process.env, existing);
+    continue;
+  }
   const picked = pick(key, [fileEnv], process.env);
   runtime[key] = picked || existing[key] || '';
 }
