@@ -26,6 +26,7 @@ import { OrderDetailsPage } from '../pages/OrderDetailsPage';
 import { ReceiptPage } from '../pages/ReceiptPage';
 
 import { AdminLayout } from '../pages/admin/AdminLayout';
+import { AdminLoginPage } from '../pages/admin/AdminLoginPage';
 import { AdminDashboardPage } from '../pages/admin/AdminDashboardPage';
 import { AdminOrdersPage } from '../pages/admin/AdminOrdersPage';
 import { AdminOrderDetailPage } from '../pages/admin/AdminOrderDetailPage';
@@ -123,6 +124,7 @@ export function AppRoutes() {
       />
 
       {/* Admin */}
+      <Route path="/admin/login" element={<AdminLoginPage />} />
       <Route
         path="/admin"
         element={

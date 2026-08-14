@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { LakheLogo } from '../../components/navigation/LakheLogo';
 import { Badge } from '../../components/ui/Badge';
-import { useAuth } from '../../context/AuthContext';
+import { useAdminAuth } from '../../context/AdminAuthContext';
 import { cn } from '../../utils/cn';
 
 interface NavItem {
@@ -37,13 +37,12 @@ const NAV: NavItem[] = [
 ];
 
 export function AdminLayout() {
-  const { user, profile, signOut } = useAuth();
+  const { signOut } = useAdminAuth();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
-  const initials = (profile?.full_name ?? user?.email ?? 'A')
-    .slice(0, 2)
-    .toUpperCase();
+  const initials = 'LM';
+  const email = 'Lakhe Admin';
 
   return (
     <div className="min-h-dvh flex bg-cream-50 text-ink-800">
@@ -56,10 +55,10 @@ export function AdminLayout() {
         <SidebarBody />
         <SidebarFooter
           initials={initials}
-          email={user?.email ?? ''}
-          onSignOut={async () => {
-            await signOut();
-            navigate('/');
+          email={email}
+          onSignOut={() => {
+            signOut();
+            navigate('/admin/login', { replace: true });
           }}
         />
       </aside>
@@ -92,10 +91,10 @@ export function AdminLayout() {
             <SidebarBody onClick={() => setOpen(false)} />
             <SidebarFooter
               initials={initials}
-              email={user?.email ?? ''}
-              onSignOut={async () => {
-                await signOut();
-                navigate('/');
+              email={email}
+              onSignOut={() => {
+                signOut();
+                navigate('/admin/login', { replace: true });
               }}
             />
           </aside>
@@ -169,7 +168,7 @@ function SidebarFooter({
 }: {
   initials: string;
   email: string;
-  onSignOut: () => Promise<void>;
+  onSignOut: () => void;
 }) {
   return (
     <div className="border-t border-ink-100 p-3">

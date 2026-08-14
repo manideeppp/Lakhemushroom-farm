@@ -24,6 +24,9 @@ export const config = {
       .split(',')
       .map((s) => s.trim().toLowerCase())
       .filter(Boolean),
+    // Password used to sign into the /admin portal.
+    // Set VITE_ADMIN_PASSWORD in .env.local for production.
+    password: env.VITE_ADMIN_PASSWORD?.trim() || 'lakhe-admin-2026',
   },
 } as const;
 
