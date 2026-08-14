@@ -38,7 +38,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 
 const DEMO_SESSION_KEY = 'lakhe.demo.session';
 const DEMO_PENDING_KEY = 'lakhe.demo.pending';
-const DEMO_OTP = '123456'; // Demo mode: any 6–10 digit code works.
+const DEMO_OTP = '12345678'; // Demo mode: any 6–10 digit code works.
 
 /* eslint-disable react-refresh/only-export-components */
 export function useAuth(): AuthContextValue {

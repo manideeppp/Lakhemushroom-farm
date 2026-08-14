@@ -1,5 +1,5 @@
-/** Default Supabase email OTP length (Auth → Sign In → Email). */
-export const OTP_LENGTH = 6;
+/** Must match Supabase Auth → Sign In → Email → Email OTP length (yours: 8). */
+export const OTP_LENGTH = 8;
 
 export function normalizeOtpCode(input: string): string {
   return input.replace(/\D/g, '');
