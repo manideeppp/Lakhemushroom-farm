@@ -431,7 +431,7 @@ export function HomePage() {
         </Section>
 
         {/* QUERY + MAP */}
-        <Section size="md">
+        <Section size="md" className="!pb-5 sm:!pb-6">
           <ResponsiveGrid cols={{ base: 1, lg: 2 }} gap="lg">
             <Card padding="lg" elevated className="space-y-4">
               <div>
@@ -487,8 +487,8 @@ export function HomePage() {
           </ResponsiveGrid>
         </Section>
 
-        {/* INTERNATIONAL + CONTACT — single block, no double gap */}
-        <Section size="md">
+        {/* INTERNATIONAL + CONTACT */}
+        <Section size="sm" className="!pt-4 sm:!pt-5 !pb-6 sm:!pb-8">
           <div className="space-y-4">
             <Card padding="lg" className="bg-forest-50 border-forest-200 text-forest-900">
               <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">

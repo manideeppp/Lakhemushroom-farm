@@ -6,7 +6,7 @@ import { config } from '../../lib/config';
 
 export function Footer() {
   return (
-    <footer className="mt-16 bg-forest-900 text-cream-100 print:hidden">
+    <footer className="mt-6 sm:mt-8 bg-forest-900 text-cream-100 print:hidden">
       <PageContainer as="div" className="py-10 sm:py-14">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
