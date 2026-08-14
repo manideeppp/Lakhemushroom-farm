@@ -1,22 +1,24 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  ArrowLeft,
   CheckCircle2,
   Copy,
-  Info,
   Loader2,
   ShieldCheck,
+  Smartphone,
 } from 'lucide-react';
 import { AppShell } from '../components/layout/AppShell';
 import { PageContainer } from '../components/layout/PageContainer';
 import { Section } from '../components/layout/Section';
 import { Card } from '../components/ui/Card';
-import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/forms/Input';
 import { FileUpload } from '../components/forms/FileUpload';
 import { EmptyState } from '../components/feedback/States';
+import { BackLink } from '../components/navigation/BackLink';
+import { CheckoutStepper } from '../components/payment/CheckoutStepper';
+import { OrderSummaryCard } from '../components/payment/OrderSummaryCard';
+import { UpiAppBadges } from '../components/payment/UpiAppBadges';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../components/feedback/ToastProvider';
@@ -51,6 +53,13 @@ export function PaymentPage() {
     : 0;
   const total = subtotal + shipping;
 
+  const canSubmit =
+    customer.name.trim() &&
+    customer.phone.trim() &&
+    (!hasProducts || customer.address.trim()) &&
+    file &&
+    txnId.trim();
+
   useEffect(() => {
     setCustomer((c) => ({
       name: c.name || profile?.full_name || '',
@@ -65,12 +74,12 @@ export function PaymentPage() {
       pn: config.business.upiPayee,
       am: total.toFixed(2),
       cu: 'INR',
-      tn: `Lakhe Order`,
+      tn: 'Lakhe Order',
     });
     return `upi://pay?${params.toString()}`;
   }, [total]);
 
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&margin=8&data=${encodeURIComponent(upiUrl)}`;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=10&data=${encodeURIComponent(upiUrl)}`;
 
   async function copyUpi() {
     try {
@@ -81,6 +90,10 @@ export function PaymentPage() {
     }
   }
 
+  function openUpiApp() {
+    window.location.href = upiUrl;
+  }
+
   async function submitOrder() {
     if (!user) {
       navigate('/login', { state: { redirectTo: '/payment' } });
@@ -88,31 +101,19 @@ export function PaymentPage() {
     }
     if (items.length === 0) return;
     if (!customer.name || !customer.phone) {
-      toast({
-        tone: 'warning',
-        message: 'Please enter your name and phone.',
-      });
+      toast({ tone: 'warning', message: 'Please enter your name and phone.' });
       return;
     }
     if (hasProducts && !customer.address) {
-      toast({
-        tone: 'warning',
-        message: 'Please enter a delivery address.',
-      });
+      toast({ tone: 'warning', message: 'Please enter a delivery address.' });
       return;
     }
     if (!file) {
-      toast({
-        tone: 'warning',
-        message: 'Please upload your UPI payment screenshot.',
-      });
+      toast({ tone: 'warning', message: 'Please upload your UPI payment screenshot.' });
       return;
     }
     if (!txnId) {
-      toast({
-        tone: 'warning',
-        message: 'Please enter the UPI transaction reference.',
-      });
+      toast({ tone: 'warning', message: 'Please enter the UPI transaction reference.' });
       return;
     }
     try {
@@ -164,7 +165,7 @@ export function PaymentPage() {
               message="Your cart is empty. Add products or training to continue."
               action={
                 <Link to="/products">
-                  <Button>Browse products</Button>
+                  <Button size="lg">Browse products</Button>
                 </Link>
               }
             />
@@ -176,82 +177,149 @@ export function PaymentPage() {
 
   return (
     <AppShell hideBottomNav>
-      <PageContainer>
+      <PageContainer className="pb-checkout-bar">
         <Section size="sm">
-          <button
-            type="button"
-            onClick={() => navigate(-1)}
-            className="mb-4 inline-flex items-center gap-1 text-small text-ink-600 hover:text-forest-800"
-          >
-            <ArrowLeft className="h-4 w-4" /> Back to cart
-          </button>
+          <BackLink onClick={() => navigate('/cart')}>Back to cart</BackLink>
 
-          <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
-            {/* LEFT */}
-            <div className="space-y-4">
-              <Card padding="lg">
-                <h2 className="font-serif text-h2 text-ink-900">
-                  1. Pay via UPI
-                </h2>
-                <p className="mt-1 text-small text-ink-600">
-                  Scan the QR with any UPI app (GPay, PhonePe, Paytm…) and pay{' '}
-                  <span className="font-semibold text-ink-900">
-                    {formatINR(total)}
-                  </span>
-                  .
-                </p>
-                <div className="mt-4 grid gap-4 sm:grid-cols-[220px_1fr] items-start">
-                  <div className="rounded-lg border border-ink-100 bg-cream-50 p-3">
-                    <img
-                      src={qrUrl}
-                      alt="UPI QR code"
-                      className="h-full w-full object-contain"
-                    />
-                  </div>
-                  <div className="space-y-3">
+          <div className="mb-6 space-y-2">
+            <h1 className="font-serif text-h1 text-ink-900 leading-tight">
+              Checkout
+            </h1>
+            <p className="text-small text-ink-600">
+              Secure UPI payment · Manual verification within 1 working day
+            </p>
+            <CheckoutStepper
+              steps={['Pay via UPI', 'Your details', 'Confirm']}
+              current={txnId || file ? 2 : customer.name && customer.phone ? 1 : 0}
+            />
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+            {/* Order summary first on mobile */}
+            <div className="lg:order-2">
+              <OrderSummaryCard
+                items={items}
+                subtotal={subtotal}
+                shipping={shipping}
+                total={total}
+                className="lg:sticky lg:top-24"
+                footer={
+                  uploading ? (
+                    <p className="mt-3 flex items-center gap-2 text-caption text-forest-800">
+                      <Loader2 className="h-4 w-4 animate-spin" /> Uploading
+                      screenshot…
+                    </p>
+                  ) : null
+                }
+              />
+              <div className="mt-3 hidden lg:block">
+                <Button
+                  fullWidth
+                  size="lg"
+                  loading={submitting || uploading}
+                  disabled={!canSubmit}
+                  onClick={submitOrder}
+                  leftIcon={<CheckCircle2 className="h-4 w-4" />}
+                >
+                  Submit order
+                </Button>
+              </div>
+            </div>
+
+            <div className="lg:order-1 space-y-4">
+              {/* UPI payment card */}
+              <Card padding="none" className="overflow-hidden border-forest-200">
+                <div className="bg-forest-900 px-5 py-4 text-cream-50">
+                  <div className="flex items-center justify-between gap-2">
                     <div>
-                      <p className="text-caption text-ink-500">Pay to (UPI)</p>
-                      <div className="mt-1 flex items-center gap-2 rounded-md border border-ink-200 bg-surface-raised px-3 py-2">
-                        <span className="font-mono text-body text-ink-900 flex-1 truncate">
-                          {config.business.upiId}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={copyUpi}
-                          className="rounded-md p-1.5 text-ink-500 hover:bg-forest-50 hover:text-forest-800"
-                          aria-label="Copy UPI ID"
-                        >
-                          <Copy className="h-4 w-4" />
-                        </button>
+                      <p className="text-caption uppercase tracking-widest text-cream-200/90">
+                        Step 1
+                      </p>
+                      <h2 className="font-serif text-h2 text-cream-50">
+                        Pay with UPI
+                      </h2>
+                    </div>
+                    <span className="rounded-lg bg-white/15 px-2.5 py-1 text-caption font-semibold">
+                      UPI
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-5 space-y-5">
+                  <UpiAppBadges />
+
+                  <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
+                    <div className="rounded-xl border-2 border-forest-100 bg-white p-3 shadow-sm shrink-0">
+                      <img
+                        src={qrUrl}
+                        alt="Scan to pay with UPI"
+                        width={200}
+                        height={200}
+                        className="h-[200px] w-[200px] object-contain"
+                      />
+                      <p className="mt-2 text-center text-caption text-ink-500">
+                        Scan with any UPI app
+                      </p>
+                    </div>
+
+                    <div className="flex-1 w-full space-y-3">
+                      <div>
+                        <p className="text-caption text-ink-500">Payee</p>
+                        <p className="text-body font-semibold text-ink-900">
+                          {config.business.upiPayee}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-caption text-ink-500">UPI ID</p>
+                        <div className="mt-1 flex items-center gap-2 rounded-lg border border-ink-200 bg-cream-50 px-3 py-2.5">
+                          <span className="font-mono text-body text-ink-900 flex-1 truncate">
+                            {config.business.upiId}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={copyUpi}
+                            className="touch-icon text-forest-800 hover:bg-forest-50"
+                            aria-label="Copy UPI ID"
+                          >
+                            <Copy className="h-5 w-5" />
+                          </button>
+                        </div>
+                      </div>
+                      <div className="rounded-lg bg-forest-50 border border-forest-100 px-4 py-3">
+                        <p className="text-caption text-forest-700">Amount to pay</p>
+                        <p className="text-display font-serif text-forest-900 leading-none mt-0.5">
+                          {formatINR(total)}
+                        </p>
                       </div>
                     </div>
-                    <div>
-                      <p className="text-caption text-ink-500">Amount</p>
-                      <p className="text-h2 font-serif text-ink-900 leading-tight">
-                        {formatINR(total)}
-                      </p>
-                    </div>
-                    <div className="flex items-start gap-2 rounded-md bg-cream-100 border border-cream-200 p-3">
-                      <Info className="h-4 w-4 mt-0.5 text-clay-500 shrink-0" />
-                      <p className="text-caption text-ink-700">
-                        On mobile? Tap “Pay via UPI app” — we open your default
-                        UPI app with the amount pre-filled.
-                      </p>
-                    </div>
-                    <a href={upiUrl}>
-                      <Button variant="outline" fullWidth>
-                        Pay via UPI app
-                      </Button>
-                    </a>
                   </div>
+
+                  <Button
+                    fullWidth
+                    size="lg"
+                    onClick={openUpiApp}
+                    leftIcon={<Smartphone className="h-5 w-5" />}
+                    className="shadow-md"
+                  >
+                    Pay {formatINR(total)} with UPI app
+                  </Button>
+
+                  <p className="flex items-start gap-2 text-caption text-ink-600">
+                    <Smartphone className="h-4 w-4 shrink-0 mt-0.5 text-forest-600" />
+                    On mobile, tap the button above to open GPay, PhonePe, Paytm
+                    or any UPI app with the amount filled in.
+                  </p>
                 </div>
               </Card>
 
               <Card padding="lg">
-                <h2 className="font-serif text-h2 text-ink-900">
-                  2. Delivery details
+                <p className="text-caption uppercase tracking-widest text-forest-600 font-medium">
+                  Step 2
+                </p>
+                <h2 className="font-serif text-h2 text-ink-900 mt-1">
+                  Delivery details
                 </h2>
-                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
                   <Input
                     label="Full name"
                     required
@@ -290,15 +358,17 @@ export function PaymentPage() {
               </Card>
 
               <Card padding="lg">
-                <h2 className="font-serif text-h2 text-ink-900">
-                  3. Confirm payment
+                <p className="text-caption uppercase tracking-widest text-forest-600 font-medium">
+                  Step 3
+                </p>
+                <h2 className="font-serif text-h2 text-ink-900 mt-1">
+                  Confirm payment
                 </h2>
                 <p className="mt-1 text-small text-ink-600">
-                  Enter the UPI transaction reference (from your payment app)
-                  and upload a screenshot. Our team verifies within 1 working
-                  day.
+                  After paying, enter the transaction ID from your UPI app and
+                  upload a screenshot.
                 </p>
-                <div className="mt-3 space-y-3">
+                <div className="mt-4 space-y-3">
                   <Input
                     label="UPI transaction reference"
                     required
@@ -309,104 +379,43 @@ export function PaymentPage() {
                   <FileUpload
                     label="Payment screenshot"
                     accept="image/*"
-                    hint="PNG or JPG. Clear enough to read the amount and reference."
+                    hint="PNG or JPG from GPay / PhonePe / Paytm payment screen."
                     onFileSelected={setFile}
                   />
                 </div>
-                <Button
-                  fullWidth
-                  size="lg"
-                  className="mt-4"
-                  loading={submitting || uploading}
-                  onClick={submitOrder}
-                  leftIcon={
-                    submitting ? undefined : (
-                      <CheckCircle2 className="h-4 w-4" />
-                    )
-                  }
-                >
-                  {uploading
-                    ? 'Uploading…'
-                    : submitting
-                      ? 'Submitting…'
-                      : 'I have paid — submit order'}
-                </Button>
-                <p className="mt-2 flex items-center justify-center gap-1 text-caption text-ink-500">
-                  <ShieldCheck className="h-3.5 w-3.5 text-forest-600" /> We
-                  never store your UPI credentials.
+                <p className="mt-3 flex items-center justify-center gap-1.5 text-caption text-ink-500">
+                  <ShieldCheck className="h-4 w-4 text-forest-600 shrink-0" />
+                  We never store your UPI PIN or bank login.
                 </p>
-              </Card>
-            </div>
-
-            {/* RIGHT: order recap */}
-            <div>
-              <Card padding="lg" elevated className="lg:sticky lg:top-24 space-y-3">
-                <h3 className="font-serif text-h3 text-ink-900">Your order</h3>
-                <ul className="space-y-2">
-                  {items.map((it) => (
-                    <li
-                      key={`${it.type}-${it.id}`}
-                      className="flex gap-2 text-small"
-                    >
-                      <span className="h-10 w-10 shrink-0 overflow-hidden rounded-md bg-forest-50">
-                        {it.image && (
-                          <img
-                            src={it.image}
-                            alt=""
-                            className="h-full w-full object-cover"
-                          />
-                        )}
-                      </span>
-                      <div className="flex-1 min-w-0">
-                        <p className="truncate text-ink-900 font-medium">
-                          {it.name}
-                        </p>
-                        <p className="text-caption text-ink-500">
-                          <Badge variant={it.type === 'training' ? 'online' : 'fresh'}>
-                            {it.type === 'training' ? 'Training' : 'Product'}
-                          </Badge>{' '}
-                          × {it.qty}
-                        </p>
-                      </div>
-                      <span className="text-ink-900 font-medium">
-                        {formatINR(it.price * it.qty)}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-                <dl className="space-y-1.5 border-t border-ink-100 pt-3 text-small text-ink-700">
-                  <div className="flex justify-between">
-                    <dt>Subtotal</dt>
-                    <dd className="font-medium text-ink-900">
-                      {formatINR(subtotal)}
-                    </dd>
-                  </div>
-                  <div className="flex justify-between">
-                    <dt>Shipping</dt>
-                    <dd className="font-medium text-ink-900">
-                      {shipping === 0 ? 'Free' : formatINR(shipping)}
-                    </dd>
-                  </div>
-                  <div className="flex justify-between border-t border-ink-100 pt-2 mt-2">
-                    <dt className="text-body font-semibold text-ink-900">
-                      Total
-                    </dt>
-                    <dd className="text-price font-semibold text-ink-900">
-                      {formatINR(total)}
-                    </dd>
-                  </div>
-                </dl>
-                {uploading && (
-                  <p className="flex items-center gap-2 text-caption text-forest-800">
-                    <Loader2 className="h-4 w-4 animate-spin" /> Uploading
-                    screenshot…
-                  </p>
-                )}
               </Card>
             </div>
           </div>
         </Section>
       </PageContainer>
+
+      {/* Mobile sticky submit bar */}
+      <div
+        className="fixed inset-x-0 bottom-0 z-50 border-t border-ink-100 bg-surface-raised/95 backdrop-blur-md px-4 py-3 pb-safe shadow-raised lg:hidden"
+      >
+        <div className="mx-auto flex max-w-content items-center gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="text-caption text-ink-500">Total</p>
+            <p className="text-price font-semibold text-ink-900 leading-tight">
+              {formatINR(total)}
+            </p>
+          </div>
+          <Button
+            size="lg"
+            className="shrink-0 min-w-[140px]"
+            loading={submitting || uploading}
+            disabled={!canSubmit}
+            onClick={submitOrder}
+            leftIcon={<CheckCircle2 className="h-4 w-4" />}
+          >
+            Submit order
+          </Button>
+        </div>
+      </div>
     </AppShell>
   );
 }

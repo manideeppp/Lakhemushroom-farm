@@ -29,7 +29,6 @@ const mobileMenuLinks = [
   { to: '/gallery', label: 'Gallery' },
   { to: '/about', label: 'Our Story' },
   { to: '/founder', label: 'The Founder' },
-  { to: '/gallery', label: 'Gallery' },
   { to: '/contact', label: 'Contact' },
 ];
 
@@ -62,7 +61,7 @@ export function Header({
           {/* Mobile: menu button */}
           <button
             type="button"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-md text-forest-800 hover:bg-forest-50 lg:hidden"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-md text-forest-800 hover:bg-forest-50 lg:hidden"
             aria-label="Open menu"
             onClick={() => setDrawerOpen(true)}
           >
@@ -101,7 +100,7 @@ export function Header({
             <button
               type="button"
               onClick={() => setSearchOpen((v) => !v)}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-md text-forest-800 hover:bg-forest-50"
+              className="touch-icon text-forest-800 hover:bg-forest-50"
               aria-label={searchOpen ? 'Close search' : 'Open search'}
               aria-expanded={searchOpen}
             >
@@ -110,7 +109,7 @@ export function Header({
 
             <Link
               to="/cart"
-              className="relative inline-flex h-10 w-10 items-center justify-center rounded-md text-forest-800 hover:bg-forest-50"
+              className="relative touch-icon text-forest-800 hover:bg-forest-50"
               aria-label={`Cart${cartCount ? `, ${cartCount} items` : ''}`}
             >
               <ShoppingCart className="h-5 w-5" />
@@ -147,7 +146,7 @@ export function Header({
             {/* Mobile-only account icon */}
             <Link
               to={isLoggedIn ? '/account' : '/login'}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-md text-forest-800 hover:bg-forest-50 sm:hidden"
+              className="touch-icon text-forest-800 hover:bg-forest-50 sm:hidden"
               aria-label={isLoggedIn ? 'Account' : 'Login'}
             >
               <User className="h-5 w-5" />
@@ -189,7 +188,7 @@ export function Header({
                   onClick={() => setDrawerOpen(false)}
                   className={({ isActive }) =>
                     cn(
-                      'flex items-center justify-between py-3 border-b border-ink-100 text-body',
+                      'flex items-center justify-between min-h-12 py-3 border-b border-ink-100 text-body',
                       isActive
                         ? 'text-brand font-semibold'
                         : 'text-ink-800'

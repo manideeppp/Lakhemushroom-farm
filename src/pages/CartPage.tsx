@@ -1,6 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  ArrowLeft,
   ArrowRight,
   Minus,
   Plus,
@@ -14,6 +13,8 @@ import { Card } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 import { EmptyState } from '../components/feedback/States';
+import { BackLink } from '../components/navigation/BackLink';
+import { UpiAppBadges } from '../components/payment/UpiAppBadges';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { formatINR } from '../utils/format';
@@ -35,9 +36,7 @@ export function CartPage() {
 
   function proceed() {
     if (!user) {
-      navigate('/login', {
-        state: { redirectTo: '/payment' },
-      });
+      navigate('/login', { state: { redirectTo: '/payment' } });
     } else {
       navigate('/payment');
     }
@@ -45,21 +44,15 @@ export function CartPage() {
 
   return (
     <AppShell>
-      <PageContainer>
+      <PageContainer className={items.length > 0 ? 'pb-cart-checkout' : undefined}>
         <Section size="sm">
-          <button
-            type="button"
-            onClick={() => navigate(-1)}
-            className="mb-4 inline-flex items-center gap-1 text-small text-ink-600 hover:text-forest-800"
-          >
-            <ArrowLeft className="h-4 w-4" /> Continue shopping
-          </button>
+          <BackLink to="/products">Continue shopping</BackLink>
           <SectionHeader
             eyebrow="Your Cart"
             title={items.length ? `${itemCount} items in cart` : 'Your cart'}
             description={
               items.length
-                ? 'Review your items, then head to checkout — we accept UPI.'
+                ? 'Review your items, then checkout with UPI.'
                 : undefined
             }
           />
@@ -71,7 +64,7 @@ export function CartPage() {
               icon={<ShoppingBag className="h-6 w-6" />}
               action={
                 <Link to="/products">
-                  <Button rightIcon={<ArrowRight className="h-4 w-4" />}>
+                  <Button size="lg" rightIcon={<ArrowRight className="h-4 w-4" />}>
                     Explore products
                   </Button>
                 </Link>
@@ -79,15 +72,14 @@ export function CartPage() {
             />
           ) : (
             <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
-              {/* Items */}
               <div className="space-y-3">
                 {items.map((it) => (
                   <Card
                     key={`${it.type}-${it.id}`}
                     padding="md"
-                    className="flex gap-3"
+                    className="flex gap-3 sm:gap-4"
                   >
-                    <div className="h-20 w-20 shrink-0 overflow-hidden rounded-md bg-forest-50">
+                    <div className="h-20 w-20 sm:h-24 sm:w-24 shrink-0 overflow-hidden rounded-lg bg-forest-50">
                       {it.image && (
                         <img
                           src={it.image}
@@ -102,7 +94,7 @@ export function CartPage() {
                           <p className="text-body font-serif font-semibold text-ink-900 leading-tight line-clamp-2">
                             {it.name}
                           </p>
-                          <div className="mt-1 flex items-center gap-2">
+                          <div className="mt-1.5 flex flex-wrap items-center gap-2">
                             <Badge
                               variant={it.type === 'training' ? 'online' : 'fresh'}
                             >
@@ -118,30 +110,30 @@ export function CartPage() {
                         <button
                           type="button"
                           onClick={() => removeItem(it.id, it.type)}
-                          className="rounded-md p-1.5 text-ink-500 hover:text-danger hover:bg-ink-100/60"
+                          className="touch-icon text-ink-500 hover:text-danger hover:bg-danger/5 shrink-0"
                           aria-label={`Remove ${it.name}`}
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <Trash2 className="h-5 w-5" />
                         </button>
                       </div>
-                      <div className="mt-2 flex items-center justify-between">
+                      <div className="mt-3 flex items-center justify-between gap-2">
                         {it.type === 'training' ? (
                           <span className="text-caption text-ink-500">
                             Single enrolment
                           </span>
                         ) : (
-                          <div className="flex items-center rounded-md border border-ink-200">
+                          <div className="flex items-center rounded-lg border border-ink-200 bg-cream-50/50">
                             <button
                               type="button"
                               onClick={() =>
                                 updateQty(it.id, it.type, it.qty - 1)
                               }
-                              className="h-9 w-9 text-ink-700 hover:bg-forest-50"
+                              className="touch-icon text-ink-700 hover:bg-forest-50"
                               aria-label="Decrease quantity"
                             >
-                              <Minus className="h-4 w-4 mx-auto" />
+                              <Minus className="h-4 w-4" />
                             </button>
-                            <span className="w-8 text-center text-body font-medium">
+                            <span className="w-10 text-center text-body font-semibold tabular-nums">
                               {it.qty}
                             </span>
                             <button
@@ -149,10 +141,10 @@ export function CartPage() {
                               onClick={() =>
                                 updateQty(it.id, it.type, it.qty + 1)
                               }
-                              className="h-9 w-9 text-ink-700 hover:bg-forest-50"
+                              className="touch-icon text-ink-700 hover:bg-forest-50"
                               aria-label="Increase quantity"
                             >
-                              <Plus className="h-4 w-4 mx-auto" />
+                              <Plus className="h-4 w-4" />
                             </button>
                           </div>
                         )}
@@ -165,12 +157,11 @@ export function CartPage() {
                 ))}
               </div>
 
-              {/* Summary */}
               <div>
                 <Card
                   padding="lg"
                   elevated
-                  className="lg:sticky lg:top-24 space-y-3"
+                  className="lg:sticky lg:top-24 space-y-4"
                 >
                   <h3 className="font-serif text-h3 text-ink-900">
                     Order summary
@@ -203,15 +194,17 @@ export function CartPage() {
                       for free shipping.
                     </p>
                   )}
+                  <UpiAppBadges />
                   <Button
                     fullWidth
                     size="lg"
                     onClick={proceed}
-                    rightIcon={<ArrowRight className="h-4 w-4" />}
+                    rightIcon={<ArrowRight className="h-5 w-5" />}
+                    className="hidden lg:flex shadow-md"
                   >
                     Proceed to payment
                   </Button>
-                  <p className="text-caption text-ink-500 text-center">
+                  <p className="text-caption text-ink-500 text-center hidden lg:block">
                     Secure UPI checkout · Receipt on approval
                   </p>
                 </Card>
@@ -220,6 +213,29 @@ export function CartPage() {
           )}
         </Section>
       </PageContainer>
+
+      {items.length > 0 && (
+        <div
+          className="fixed inset-x-0 bottom-[var(--bottom-nav-h)] z-30 border-t border-ink-100 bg-surface-raised/95 backdrop-blur-md px-4 py-3 pb-safe shadow-raised lg:hidden"
+        >
+          <div className="mx-auto flex max-w-content items-center gap-3">
+            <div className="min-w-0 flex-1">
+              <p className="text-caption text-ink-500">Total</p>
+              <p className="text-price font-semibold text-ink-900 leading-tight">
+                {formatINR(total)}
+              </p>
+            </div>
+            <Button
+              size="lg"
+              className="shrink-0"
+              onClick={proceed}
+              rightIcon={<ArrowRight className="h-5 w-5" />}
+            >
+              Checkout
+            </Button>
+          </div>
+        </div>
+      )}
     </AppShell>
   );
 }

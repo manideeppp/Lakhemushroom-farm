@@ -134,4 +134,25 @@
   .safe-bottom {
     padding-bottom: env(safe-area-inset-bottom);
   }
+  .pb-checkout-bar {
+    padding-bottom: calc(env(safe-area-inset-bottom) + 5.5rem);
+  }
+  @media (min-width: 1024px) {
+    .pb-checkout-bar {
+      padding-bottom: 0;
+    }
+  }
+  .pb-cart-checkout {
+    padding-bottom: calc(
+      env(safe-area-inset-bottom) + var(--bottom-nav-h) + 5.5rem
+    );
+  }
+  @media (min-width: 1024px) {
+    .pb-cart-checkout {
+      padding-bottom: 0;
+    }
+  }
+  .touch-icon {
+    @apply inline-flex h-11 w-11 items-center justify-center rounded-md;
+  }
 }

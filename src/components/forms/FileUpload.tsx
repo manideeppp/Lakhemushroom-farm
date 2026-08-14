@@ -76,7 +76,7 @@ export function FileUpload({
         onDragLeave={() => setDragging(false)}
         onDrop={onDrop}
         className={cn(
-          'flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed',
+          'flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed min-h-[120px]',
           'bg-cream-50 py-6 px-4 text-center cursor-pointer transition',
           dragging
             ? 'border-forest-400 bg-forest-50'
@@ -117,7 +117,7 @@ export function FileUpload({
                 clear();
               }}
               aria-label="Remove file"
-              className="rounded-md p-1 text-ink-500 hover:text-ink-900 hover:bg-ink-100/60"
+              className="touch-icon text-ink-500 hover:text-ink-900 hover:bg-ink-100/60 shrink-0"
             >
               <X className="h-4 w-4" />
             </button>
