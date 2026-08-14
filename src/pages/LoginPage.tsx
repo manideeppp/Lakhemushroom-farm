@@ -214,10 +214,18 @@ export function LoginPage() {
                   <div className="text-caption text-ink-700">
                     <p className="font-medium text-ink-900">Demo mode — no real email</p>
                     <p className="mt-1">
-                      Supabase is not connected on this deploy. No OTP email will be sent.
-                      Set <span className="font-mono">VITE_SUPABASE_URL</span> and{' '}
-                      <span className="font-mono">VITE_SUPABASE_ANON_KEY</span> on Vercel,
-                      then redeploy.
+                      Supabase is not connected on this deploy. Copy the same values
+                      from your local <span className="font-mono">.env.local</span> into
+                      Vercel → Project → Settings → Environment Variables:
+                    </p>
+                    <ul className="mt-2 list-disc pl-4 space-y-0.5 font-mono text-ink-800">
+                      <li>VITE_SUPABASE_URL</li>
+                      <li>VITE_SUPABASE_ANON_KEY</li>
+                    </ul>
+                    <p className="mt-2">
+                      Enable for <strong>Production</strong>, then{' '}
+                      <strong>Redeploy</strong> (Vite only reads env vars at build
+                      time — adding them without redeploying keeps demo mode).
                     </p>
                     <p className="mt-2">
                       For testing now, use code{' '}
