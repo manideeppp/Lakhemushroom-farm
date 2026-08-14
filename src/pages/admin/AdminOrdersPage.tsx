@@ -9,7 +9,7 @@ import { LoadingState } from '../../components/feedback/States';
 import { useToast } from '../../components/feedback/ToastProvider';
 import { listAllOrders, updateOrderStatus } from '../../lib/data';
 import type { Order, OrderStatus } from '../../types/order';
-import { isPendingOrderStatusStatus } from '../../types/order';
+import { isPendingOrderStatus } from '../../types/order';
 import { formatDateTime } from '../../utils/ids';
 import { formatINR } from '../../utils/format';
 import { cn } from '../../utils/cn';
@@ -21,10 +21,6 @@ const TABS: { key: 'all' | OrderStatus; label: string }[] = [
   { key: 'rejected', label: 'Rejected' },
   { key: 'cancelled', label: 'Cancelled' },
 ];
-
-function isPendingOrderStatus(status: string): boolean {
-  return isPendingOrderStatusStatus(status);
-}
 
 export function AdminOrdersPage() {
   const { toast } = useToast();
