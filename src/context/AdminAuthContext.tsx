@@ -18,8 +18,6 @@ import {
 interface AdminAuthContextValue {
   isAdmin: boolean;
   loading: boolean;
-  /** False until portal password is synced to Supabase (when applicable). */
-  portalReady: boolean;
   signIn: (password: string) => Promise<void>;
   signOut: () => void;
 }
@@ -34,46 +32,34 @@ export function useAdminAuth(): AdminAuthContextValue {
 }
 /* eslint-enable react-refresh/only-export-components */
 
+function hasValidSession(): boolean {
+  const s = readStore<{ createdAt: number } | null>(ADMIN_SESSION_KEY, null);
+  if (!s) return false;
+  const ttl = 8 * 60 * 60 * 1000;
+  if (Date.now() - s.createdAt > ttl) {
+    removeStore(ADMIN_SESSION_KEY);
+    return false;
+  }
+  return true;
+}
+
 export function AdminAuthProvider({ children }: { children: ReactNode }) {
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [portalReady, setPortalReady] = useState<boolean>(false);
 
   useEffect(() => {
-    let cancelled = false;
-    async function boot() {
-      const s = readStore<{ createdAt: number; portalSecret?: string } | null>(
-        ADMIN_SESSION_KEY,
-        null
-      );
-      if (!s) {
-        if (!cancelled) {
-          setPortalReady(true);
-          setLoading(false);
-        }
-        return;
-      }
-      setIsAdmin(true);
-      const secret = s.portalSecret ?? config.admin.password;
-      try {
-        await publishAdminPortalSecret(secret);
-      } catch (err) {
-        console.warn(err);
-      }
-      if (!cancelled) {
-        setPortalReady(true);
-        setLoading(false);
-      }
+    const active = hasValidSession();
+    setIsAdmin(active);
+    if (active) {
+      const s = readStore<{ portalSecret?: string } | null>(ADMIN_SESSION_KEY, null);
+      const secret = s?.portalSecret ?? config.admin.password;
+      void publishAdminPortalSecret(secret);
     }
-    void boot();
-    return () => {
-      cancelled = true;
-    };
+    setLoading(false);
   }, []);
 
   const signIn = useCallback(async (password: string) => {
-    // Simulated latency so brute-force attempts feel painful.
-    await new Promise((r) => setTimeout(r, 350));
+    await new Promise((r) => setTimeout(r, 200));
     const expected = config.admin.password;
     if (!expected) {
       throw new Error(
@@ -83,21 +69,19 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
     if (password !== expected) {
       throw new Error('Incorrect password.');
     }
-    await publishAdminPortalSecret(password);
     writeAdminSession(password);
     setIsAdmin(true);
-    setPortalReady(true);
+    void publishAdminPortalSecret(password);
   }, []);
 
   const signOut = useCallback(() => {
     removeStore(ADMIN_SESSION_KEY);
     setIsAdmin(false);
-    setPortalReady(false);
   }, []);
 
   const value = useMemo<AdminAuthContextValue>(
-    () => ({ isAdmin, loading, portalReady, signIn, signOut }),
-    [isAdmin, loading, portalReady, signIn, signOut]
+    () => ({ isAdmin, loading, signIn, signOut }),
+    [isAdmin, loading, signIn, signOut]
   );
 
   return (

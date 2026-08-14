@@ -63,17 +63,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setProfile(null);
       return;
     }
-    let p = await getProfile(u.id);
-    if (!p) {
-      p = await upsertProfile({
+    try {
+      let p = await getProfile(u.id);
+      if (!p) {
+        p = await upsertProfile({
+          id: u.id,
+          email: u.email,
+          is_admin: isAdminEmail(u.email),
+        });
+      } else if (isAdminEmail(u.email) && !p.is_admin) {
+        p = await upsertProfile({ ...p, is_admin: true });
+      }
+      setProfile(p);
+    } catch (err) {
+      console.warn('Profile load failed — using session fallback', err);
+      setProfile({
         id: u.id,
         email: u.email,
         is_admin: isAdminEmail(u.email),
       });
-    } else if (isAdminEmail(u.email) && !p.is_admin) {
-      p = await upsertProfile({ ...p, is_admin: true });
     }
-    setProfile(p);
   }, []);
 
   const refreshProfile = useCallback(async () => {

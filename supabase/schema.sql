@@ -259,6 +259,8 @@ create table if not exists public.testimonials (
 
 -- profiles
 alter table public.profiles enable row level security;
+create policy "profiles: self insert" on public.profiles
+  for insert with check (auth.uid() = id);
 create policy "profiles: self read" on public.profiles
   for select using (auth.uid() = id);
 create policy "profiles: self update" on public.profiles

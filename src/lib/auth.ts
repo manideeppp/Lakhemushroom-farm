@@ -12,5 +12,5 @@ export function isValidOtpFormat(code: string): boolean {
 }
 
 export function isCompleteOtp(code: string): boolean {
-  return normalizeOtpCode(code).length === OTP_LENGTH;
+  return isValidOtpFormat(code);
 }

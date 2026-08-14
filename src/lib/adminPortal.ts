@@ -46,23 +46,16 @@ export function writeAdminSession(portalSecret: string): void {
 }
 
 /**
- * After local password check, sync secret to Supabase so RPCs accept Vercel password.
+ * Sync portal password to Supabase when possible. Never blocks admin sign-in.
  */
-export async function publishAdminPortalSecret(password: string): Promise<void> {
-  if (!isSupabaseConfigured || !password) return;
+export async function publishAdminPortalSecret(password: string): Promise<boolean> {
+  if (!isSupabaseConfigured || !password) return false;
   const { error } = await supabase.rpc('admin_publish_portal_secret', {
     portal_secret: password,
   });
   if (error) {
-    const msg = error.message ?? 'Could not sync admin password';
-    if (
-      msg.includes('Could not find the function') ||
-      msg.includes('schema cache')
-    ) {
-      throw new Error(
-        'Admin database functions missing. Run supabase/setup_all.sql in Supabase SQL Editor.'
-      );
-    }
-    throw new Error(`Admin password sync failed: ${msg}`);
+    console.warn('admin_publish_portal_secret:', error.message);
+    return false;
   }
+  return true;
 }
