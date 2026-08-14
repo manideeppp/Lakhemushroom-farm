@@ -22,6 +22,7 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../components/feedback/ToastProvider';
 import { createOrder, uploadPaymentScreenshot } from '../lib/data';
+import { getErrorMessage } from '../utils/errors';
 import type { OrderItemType } from '../types/order';
 import { formatINR } from '../utils/format';
 import { config } from '../lib/config';
@@ -131,6 +132,7 @@ export function PaymentPage() {
           item_type: it.type as OrderItemType,
           product_id: it.type === 'product' ? it.id : null,
           course_id: it.type === 'training' ? it.id : null,
+          slug: it.slug,
           name: it.name,
           unit_price: it.price,
           qty: it.qty,
@@ -143,7 +145,7 @@ export function PaymentPage() {
       toast({
         tone: 'danger',
         title: 'Could not submit order',
-        message: err instanceof Error ? err.message : 'Please try again.',
+        message: getErrorMessage(err, 'Please try again.'),
       });
     } finally {
       setSubmitting(false);

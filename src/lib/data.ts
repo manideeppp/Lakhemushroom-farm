@@ -348,9 +348,56 @@ export interface CreateOrderInput {
   subtotal: number;
   shipping: number;
   total: number;
-  items: Array<Omit<OrderItem, 'id' | 'order_id' | 'status'>>;
+  items: Array<
+    Omit<OrderItem, 'id' | 'order_id' | 'status'> & { slug?: string }
+  >;
   upi_txn_id?: string;
   payment_screenshot_url?: string;
+}
+
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+function isUuid(value: string | null | undefined): boolean {
+  return typeof value === 'string' && UUID_RE.test(value);
+}
+
+async function resolveProductId(
+  id: string | null | undefined,
+  slug?: string
+): Promise<string | null> {
+  if (isUuid(id)) return id!;
+  if (!slug) return null;
+  const { data, error } = await supabase
+    .from('products')
+    .select('id')
+    .eq('slug', slug)
+    .maybeSingle();
+  if (error) throw error;
+  return (data?.id as string) ?? null;
+}
+
+/** Sample/demo slugs mapped to rows seeded in supabase/setup_all.sql */
+const LEGACY_COURSE_SLUGS: Record<string, string> = {
+  'online-training': 'a-z-mushroom-farming-online',
+  'offline-training': 'weekend-farm-immersion',
+};
+
+async function resolveCourseId(
+  id: string | null | undefined,
+  slug?: string
+): Promise<string | null> {
+  if (isUuid(id)) return id!;
+  const legacySlug =
+    slug && slug in LEGACY_COURSE_SLUGS ? LEGACY_COURSE_SLUGS[slug] : slug;
+  if (!legacySlug) return null;
+  const { data, error } = await supabase
+    .from('training_courses')
+    .select('id')
+    .eq('slug', legacySlug)
+    .maybeSingle();
+  if (error) throw error;
+  return (data?.id as string) ?? null;
 }
 
 export async function createOrder(input: CreateOrderInput): Promise<Order> {
@@ -409,17 +456,28 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
   if (error) throw error;
   const orderId = orderRow.id as string;
 
-  const itemRows = input.items.map((it) => ({
-    order_id: orderId,
-    item_type: it.item_type,
-    product_id: it.product_id ?? null,
-    course_id: it.course_id ?? null,
-    name: it.name,
-    unit_price: it.unit_price,
-    qty: it.qty,
-    image: it.image ?? null,
-    status: it.item_type === 'training' ? 'access_pending' : 'pending',
-  }));
+  const itemRows = [];
+  for (const it of input.items) {
+    const product_id =
+      it.item_type === 'product'
+        ? await resolveProductId(it.product_id, it.slug)
+        : null;
+    const course_id =
+      it.item_type === 'training'
+        ? await resolveCourseId(it.course_id, it.slug)
+        : null;
+    itemRows.push({
+      order_id: orderId,
+      item_type: it.item_type,
+      product_id,
+      course_id,
+      name: it.name,
+      unit_price: it.unit_price,
+      qty: it.qty,
+      image: it.image ?? null,
+      status: it.item_type === 'training' ? 'access_pending' : 'pending',
+    });
+  }
 
   const { data: items, error: itemsErr } = await supabase
     .from('order_items')
@@ -863,10 +921,11 @@ export async function uploadPaymentScreenshot(
     .from('payment-screenshots')
     .upload(path, file, { upsert: false });
   if (error) throw error;
-  const { data } = supabase.storage
+  const { data: signed, error: signErr } = await supabase.storage
     .from('payment-screenshots')
-    .getPublicUrl(path);
-  return data.publicUrl;
+    .createSignedUrl(path, 60 * 60 * 24 * 365);
+  if (signErr) throw signErr;
+  return signed.signedUrl;
 }
 
 // ---------------------------------------------------------------------------

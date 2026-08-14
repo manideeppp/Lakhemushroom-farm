@@ -86,5 +86,17 @@ function mapAuthMessage(message: string): string {
     return 'That code did not work. Check the code and try again.';
   }
 
+  if (lower.includes('row-level security') || lower.includes('violates row-level')) {
+    return 'Could not save your order. Sign in again and retry, or contact support.';
+  }
+
+  if (lower.includes('bucket') || lower.includes('storage')) {
+    return 'Could not upload payment screenshot. Run supabase/setup_all.sql to create the payment-screenshots bucket.';
+  }
+
+  if (lower.includes('invalid input syntax for type uuid')) {
+    return 'Cart item mismatch — clear your cart, refresh the page, and add items again.';
+  }
+
   return message;
 }
