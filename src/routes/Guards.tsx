@@ -26,9 +26,11 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
  * Admin auth is completely independent of the user (email-OTP) auth.
  */
 export function AdminRoute({ children }: { children: ReactNode }) {
-  const { isAdmin, loading } = useAdminAuth();
+  const { isAdmin, loading, portalReady } = useAdminAuth();
   const location = useLocation();
-  if (loading) return <LoadingState message="Checking admin session…" />;
+  if (loading || (isAdmin && !portalReady)) {
+    return <LoadingState message="Checking admin session…" />;
+  }
   if (!isAdmin) {
     return (
       <Navigate

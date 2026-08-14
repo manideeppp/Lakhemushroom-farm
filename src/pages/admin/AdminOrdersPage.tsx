@@ -50,7 +50,7 @@ export function AdminOrdersPage() {
   async function quickApprove(order: Order, next: 'approved' | 'rejected') {
     try {
       setActingId(order.id);
-      await updateOrderStatus(order.id, next);
+      await updateOrderStatus(order.order_ref, next);
       toast({
         tone: next === 'approved' ? 'success' : 'warning',
         message: `Order ${order.order_ref} ${next}.`,
@@ -102,10 +102,8 @@ export function AdminOrdersPage() {
           <p className="font-medium text-danger">Could not load orders</p>
           <p className="mt-1">{loadError}</p>
           <p className="mt-2 text-caption text-ink-600">
-            Run both SQL files in Supabase:{' '}
-            <code className="font-mono">20260814_admin_portal_rpc.sql</code> and{' '}
-            <code className="font-mono">20260815_fix_admin_approve.sql</code>, then
-            sign out and sign in at /admin again.
+            Run <code className="font-mono">supabase/setup_all.sql</code> in
+            Supabase, then sign out and sign in at /admin again.
           </p>
         </Card>
       )}

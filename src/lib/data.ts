@@ -131,7 +131,7 @@ async function adminRpc<T>(
       msg.includes('schema cache')
     ) {
       throw new Error(
-        'Admin database functions missing. Run supabase/migrations/20260814_admin_portal_rpc.sql and 20260815_fix_admin_approve.sql in Supabase SQL Editor.'
+        'Admin database functions missing. Run supabase/setup_all.sql in Supabase SQL Editor.'
       );
     }
     if (msg.includes('forbidden') || error.code === '42501') {
@@ -448,37 +448,35 @@ export async function getOrderByRef(ref: string): Promise<Order | null> {
       localGet<Order[]>(K.orders, []).find((o) => o.order_ref === ref) ?? null
     );
   }
+  if (isAdminPortalActive()) {
+    const rpcData = await adminRpc<unknown>('admin_get_order', {
+      order_ref: ref,
+    });
+    if (rpcData) return rpcData as Order;
+  }
   const { data, error } = await supabase
     .from('orders')
     .select('*, items:order_items(*)')
     .eq('order_ref', ref)
     .maybeSingle();
   if (error) throw error;
-  if (data) return data as Order;
-  if (isAdminPortalActive()) {
-    const rpcData = await adminRpc<unknown>('admin_get_order', {
-      order_ref: ref,
-    });
-    return (rpcData as Order) ?? null;
-  }
-  return null;
+  return (data as Order) ?? null;
 }
 
 export async function updateOrderStatus(
-  orderId: string,
+  orderRef: string,
   status: OrderStatus,
   admin_notes?: string
 ): Promise<void> {
   if (!isSupabaseConfigured) {
     const all = localGet<Order[]>(K.orders, []);
-    const i = all.findIndex((o) => o.id === orderId);
+    const i = all.findIndex((o) => o.order_ref === orderRef);
     if (i >= 0) {
       all[i].status = status;
       all[i].admin_notes = admin_notes;
       all[i].updated_at = new Date().toISOString();
       if (status === 'approved') {
         all[i].approved_at = new Date().toISOString();
-        // move items forward
         all[i].items = all[i].items.map((it) => ({
           ...it,
           status:
@@ -499,10 +497,13 @@ export async function updateOrderStatus(
   if (!isAdminPortalActive()) {
     throw new Error('Admin session expired. Sign in again at /admin.');
   }
+  if (!orderRef?.trim()) {
+    throw new Error('Missing order reference. Refresh and try again.');
+  }
   await adminRpc('admin_update_order_status', {
-    order_id: orderId,
+    order_ref: orderRef,
     new_status: status,
-    admin_notes,
+    admin_notes: admin_notes ?? null,
   });
 }
 

@@ -62,7 +62,7 @@ export function AdminOrderDetailPage() {
     if (!order) return;
     try {
       setSaving(true);
-      await updateOrderStatus(order.id, next, notes);
+      await updateOrderStatus(order.order_ref, next, notes);
       toast({
         tone: next === 'approved' ? 'success' : 'warning',
         message: `Order ${next}.`,

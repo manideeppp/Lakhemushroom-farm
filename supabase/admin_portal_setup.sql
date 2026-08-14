@@ -117,9 +117,11 @@ begin
 end;
 $$;
 
+drop function if exists public.admin_update_order_status(text, uuid, text, text);
+
 create or replace function public.admin_update_order_status(
   portal_secret text,
-  order_id uuid,
+  order_ref text,
   new_status text,
   admin_notes text default null
 )
@@ -129,9 +131,18 @@ security definer
 set search_path = public
 as $$
 declare
-  target_order_id uuid := order_id;
+  target_order_id uuid;
 begin
   perform public.assert_portal_secret(portal_secret);
+
+  select o.id into target_order_id
+  from public.orders o
+  where o.order_ref = admin_update_order_status.order_ref;
+
+  if target_order_id is null then
+    raise exception 'order not found: %', order_ref using errcode = 'P0002';
+  end if;
+
   update public.orders
   set
     status = new_status,
@@ -260,7 +271,7 @@ grant execute on function public.admin_publish_portal_secret(text) to anon, auth
 grant execute on function public.assert_portal_secret(text) to anon, authenticated;
 grant execute on function public.admin_list_orders(text) to anon, authenticated;
 grant execute on function public.admin_get_order(text, text) to anon, authenticated;
-grant execute on function public.admin_update_order_status(text, uuid, text, text) to anon, authenticated;
+grant execute on function public.admin_update_order_status(text, text, text, text) to anon, authenticated;
 grant execute on function public.admin_update_order_item_status(text, uuid, text) to anon, authenticated;
 grant execute on function public.admin_list_bookings(text) to anon, authenticated;
 grant execute on function public.admin_update_booking_status(text, uuid, text, text) to anon, authenticated;
