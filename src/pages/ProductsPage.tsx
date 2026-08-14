@@ -35,7 +35,9 @@ export function ProductsPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    void listProducts().then(setProducts);
+    void listProducts()
+      .then(setProducts)
+      .catch(() => setProducts([]));
   }, []);
 
   const filtered = useMemo(() => {

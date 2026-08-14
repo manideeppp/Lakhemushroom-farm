@@ -99,9 +99,16 @@ if (fs.existsSync(INDEX)) {
   }
 }
 
-const hasSupabase = runtime.VITE_SUPABASE_URL && runtime.VITE_SUPABASE_ANON_KEY;
+const hasUrl = !!runtime.VITE_SUPABASE_URL;
+const anonKey = runtime.VITE_SUPABASE_ANON_KEY ?? '';
+const hasJwtAnon = anonKey.startsWith('eyJ');
+if (hasUrl && anonKey && !hasJwtAnon) {
+  console.warn(
+    '[runtime-env] VITE_SUPABASE_ANON_KEY must be the JWT anon key (eyJ…), not sb_publishable_* — app will use demo catalog until fixed.'
+  );
+}
 console.log(
-  hasSupabase
+  hasUrl && hasJwtAnon
     ? '[runtime-env] Supabase configured for production build.'
-    : '[runtime-env] Warning: VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY missing — demo mode on deploy.'
+    : '[runtime-env] Demo mode on deploy (missing or invalid Supabase anon key).'
 );

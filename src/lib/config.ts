@@ -69,8 +69,13 @@ export const config = {
   },
 };
 
+/** supabase-js requires the legacy JWT anon key (eyJ…), not sb_publishable_* keys. */
+export function isValidSupabaseAnonKey(key: string): boolean {
+  return key.startsWith('eyJ');
+}
+
 export function isSupabaseConfigured(): boolean {
-  return !!(
-    readRuntimeEnv('VITE_SUPABASE_URL') && readRuntimeEnv('VITE_SUPABASE_ANON_KEY')
-  );
+  const url = readRuntimeEnv('VITE_SUPABASE_URL');
+  const anonKey = readRuntimeEnv('VITE_SUPABASE_ANON_KEY');
+  return !!(url && anonKey && isValidSupabaseAnonKey(anonKey));
 }

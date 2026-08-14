@@ -30,7 +30,9 @@ export function TrainingPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    void listTraining().then(setCourses);
+    void listTraining()
+      .then(setCourses)
+      .catch(() => setCourses([]));
   }, []);
 
   const filtered = useMemo(() => {

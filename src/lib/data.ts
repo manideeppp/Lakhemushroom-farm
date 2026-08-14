@@ -157,12 +157,18 @@ function parseRpcArray<T>(data: unknown): T[] {
 export async function listProducts(): Promise<Product[]> {
   if (!isSupabaseConfigured())
     return mergeSampleProducts(localGet<Product[]>(K.products, []));
-  const { data, error } = await supabase
-    .from('products')
-    .select('*')
-    .order('created_at', { ascending: false });
-  if (error) throw error;
-  return mergeSampleProducts((data ?? []) as Product[]);
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    const rows = mergeSampleProducts((data ?? []) as Product[]);
+    return rows.length > 0 ? rows : mergeSampleProducts(SAMPLE_PRODUCTS);
+  } catch (err) {
+    console.warn('listProducts failed — using sample catalog', err);
+    return mergeSampleProducts(SAMPLE_PRODUCTS);
+  }
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
@@ -217,12 +223,18 @@ export async function deleteProduct(id: string): Promise<void> {
 export async function listTraining(): Promise<TrainingCourse[]> {
   if (!isSupabaseConfigured())
     return mergeSampleTraining(localGet<TrainingCourse[]>(K.training, []));
-  const { data: courses, error } = await supabase
-    .from('training_courses')
-    .select('*')
-    .order('created_at', { ascending: false });
-  if (error) throw error;
-  return mergeSampleTraining((courses ?? []) as TrainingCourse[]);
+  try {
+    const { data: courses, error } = await supabase
+      .from('training_courses')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    const rows = mergeSampleTraining((courses ?? []) as TrainingCourse[]);
+    return rows.length > 0 ? rows : mergeSampleTraining(SAMPLE_TRAINING);
+  } catch (err) {
+    console.warn('listTraining failed — using sample programs', err);
+    return mergeSampleTraining(SAMPLE_TRAINING);
+  }
 }
 
 export async function getTrainingBySlug(
