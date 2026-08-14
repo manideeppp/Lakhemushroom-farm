@@ -59,7 +59,7 @@ export function LoginPage() {
       toast({
         tone: 'success',
         title: 'Code sent',
-        message: isSupabaseConfigured
+        message: isSupabaseConfigured()
           ? `Check ${email} for your ${OTP_LENGTH}-digit code.`
           : `Demo mode: use ${DEMO_OTP} (or any ${OTP_LENGTH} digits).`,
       });
@@ -208,7 +208,7 @@ export function LoginPage() {
                 </div>
               )}
 
-              {!isSupabaseConfigured && (
+              {!isSupabaseConfigured() && (
                 <div className="flex items-start gap-2 rounded-md border border-warning/40 bg-cream-100 p-3">
                   <Info className="h-4 w-4 mt-0.5 text-clay-500 shrink-0" />
                   <div className="text-caption text-ink-700">
@@ -236,7 +236,7 @@ export function LoginPage() {
                 </div>
               )}
 
-              {isSupabaseConfigured && step === 'otp' && (
+              {isSupabaseConfigured() && step === 'otp' && (
                 <div className="flex items-start gap-2 rounded-md bg-cream-100 border border-cream-200 p-3">
                   <Info className="h-4 w-4 mt-0.5 text-clay-500 shrink-0" />
                   <div className="text-caption text-ink-700 space-y-2">

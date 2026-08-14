@@ -86,6 +86,19 @@ for (const key of KEYS) {
 const body = `window.__RUNTIME_ENV__ = ${JSON.stringify(runtime, null, 2)};\n`;
 fs.writeFileSync(OUT, body);
 
+const INDEX = path.join(ROOT, 'index.html');
+if (fs.existsSync(INDEX)) {
+  const inline = `window.__RUNTIME_ENV__ = ${JSON.stringify(runtime)};`;
+  let html = fs.readFileSync(INDEX, 'utf8');
+  if (html.includes('id="lakhe-runtime-env"')) {
+    html = html.replace(
+      /<script id="lakhe-runtime-env">[\s\S]*?<\/script>/,
+      `<script id="lakhe-runtime-env">${inline}</script>`
+    );
+    fs.writeFileSync(INDEX, html);
+  }
+}
+
 const hasSupabase = runtime.VITE_SUPABASE_URL && runtime.VITE_SUPABASE_ANON_KEY;
 console.log(
   hasSupabase

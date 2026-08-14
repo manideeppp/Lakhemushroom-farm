@@ -94,7 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let cancelled = false;
 
     async function boot() {
-      if (isSupabaseConfigured) {
+      if (isSupabaseConfigured()) {
         const { data } = await supabase.auth.getSession();
         const s = data.session;
         const u: SessionUser | null = s?.user
@@ -130,7 +130,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const requestOtp = useCallback(async (email: string) => {
     const trimmed = email.trim().toLowerCase();
-    if (isSupabaseConfigured) {
+    if (isSupabaseConfigured()) {
       const redirectTo =
         typeof window !== 'undefined'
           ? `${window.location.origin}/login`
@@ -158,7 +158,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!isValidOtpFormat(token)) {
         throw new Error(`Enter the ${OTP_LENGTH}-digit code from your email.`);
       }
-      if (isSupabaseConfigured) {
+      if (isSupabaseConfigured()) {
         const { data, error } = await supabase.auth.verifyOtp({
           email: trimmed,
           token,
@@ -187,7 +187,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const signOut = useCallback(async () => {
-    if (isSupabaseConfigured) await supabase.auth.signOut();
+    if (isSupabaseConfigured()) await supabase.auth.signOut();
     removeStore(DEMO_SESSION_KEY);
     setUser(null);
     setProfile(null);

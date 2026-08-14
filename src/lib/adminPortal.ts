@@ -49,7 +49,7 @@ export function writeAdminSession(portalSecret: string): void {
  * Sync portal password to Supabase when possible. Never blocks admin sign-in.
  */
 export async function publishAdminPortalSecret(password: string): Promise<boolean> {
-  if (!isSupabaseConfigured || !password) return false;
+  if (!isSupabaseConfigured() || !password) return false;
   const { error } = await supabase.rpc('admin_publish_portal_secret', {
     portal_secret: password,
   });

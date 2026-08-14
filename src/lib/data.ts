@@ -104,12 +104,12 @@ function seedIfEmpty(): void {
     localSet<TrainingProgress[]>(K.progress, []);
 }
 
-if (typeof window !== 'undefined' && !isSupabaseConfigured) {
+if (typeof window !== 'undefined' && !isSupabaseConfigured()) {
   seedIfEmpty();
 }
 
 function useAdminRpc(): boolean {
-  return isSupabaseConfigured && isAdminPortalActive();
+  return isSupabaseConfigured() && isAdminPortalActive();
 }
 
 async function adminRpc<T>(
@@ -155,7 +155,7 @@ function parseRpcArray<T>(data: unknown): T[] {
 // ---------------------------------------------------------------------------
 
 export async function listProducts(): Promise<Product[]> {
-  if (!isSupabaseConfigured)
+  if (!isSupabaseConfigured())
     return mergeSampleProducts(localGet<Product[]>(K.products, []));
   const { data, error } = await supabase
     .from('products')
@@ -166,7 +166,7 @@ export async function listProducts(): Promise<Product[]> {
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
-  if (!isSupabaseConfigured) {
+  if (!isSupabaseConfigured()) {
     const product =
       localGet<Product[]>(K.products, []).find((p) => p.slug === slug) ?? null;
     return product ? withProductImages(product) : null;
@@ -181,7 +181,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
 }
 
 export async function upsertProduct(p: Product): Promise<Product> {
-  if (!isSupabaseConfigured) {
+  if (!isSupabaseConfigured()) {
     const items = localGet<Product[]>(K.products, []);
     const i = items.findIndex((x) => x.id === p.id);
     if (i >= 0) items[i] = p;
@@ -199,7 +199,7 @@ export async function upsertProduct(p: Product): Promise<Product> {
 }
 
 export async function deleteProduct(id: string): Promise<void> {
-  if (!isSupabaseConfigured) {
+  if (!isSupabaseConfigured()) {
     const items = localGet<Product[]>(K.products, []).filter(
       (x) => x.id !== id
     );
@@ -215,7 +215,7 @@ export async function deleteProduct(id: string): Promise<void> {
 // ---------------------------------------------------------------------------
 
 export async function listTraining(): Promise<TrainingCourse[]> {
-  if (!isSupabaseConfigured)
+  if (!isSupabaseConfigured())
     return mergeSampleTraining(localGet<TrainingCourse[]>(K.training, []));
   const { data: courses, error } = await supabase
     .from('training_courses')
@@ -228,7 +228,7 @@ export async function listTraining(): Promise<TrainingCourse[]> {
 export async function getTrainingBySlug(
   slug: string
 ): Promise<TrainingCourse | null> {
-  if (!isSupabaseConfigured) {
+  if (!isSupabaseConfigured()) {
     const course =
       localGet<TrainingCourse[]>(K.training, []).find((t) => t.slug === slug) ??
       null;
@@ -249,7 +249,7 @@ export async function getTrainingBySlug(
 export async function getTrainingModulesForCourse(
   courseId: string
 ): Promise<TrainingModule[]> {
-  if (!isSupabaseConfigured) {
+  if (!isSupabaseConfigured()) {
     return (
       localGet<TrainingCourse[]>(K.training, []).find((t) => t.id === courseId)
         ?.modules ?? []
@@ -265,7 +265,7 @@ export async function getTrainingModulesForCourse(
 }
 
 export async function upsertTraining(t: TrainingCourse): Promise<TrainingCourse> {
-  if (!isSupabaseConfigured) {
+  if (!isSupabaseConfigured()) {
     const items = localGet<TrainingCourse[]>(K.training, []);
     const i = items.findIndex((x) => x.id === t.id);
     if (i >= 0) items[i] = t;
@@ -288,7 +288,7 @@ export async function upsertTraining(t: TrainingCourse): Promise<TrainingCourse>
 // ---------------------------------------------------------------------------
 
 export async function listProgress(userId: string): Promise<TrainingProgress[]> {
-  if (!isSupabaseConfigured) {
+  if (!isSupabaseConfigured()) {
     return localGet<TrainingProgress[]>(K.progress, []).filter(
       (p) => p.user_id === userId
     );
@@ -312,7 +312,7 @@ export async function markModuleComplete(
     module_id: moduleId,
     completed_at: new Date().toISOString(),
   };
-  if (!isSupabaseConfigured) {
+  if (!isSupabaseConfigured()) {
     const all = localGet<TrainingProgress[]>(K.progress, []);
     if (!all.some((p) => p.user_id === userId && p.module_id === moduleId))
       all.push(record);
@@ -342,7 +342,7 @@ export interface CreateOrderInput {
 }
 
 export async function createOrder(input: CreateOrderInput): Promise<Order> {
-  if (!isSupabaseConfigured) {
+  if (!isSupabaseConfigured()) {
     const orderId = newId();
     const order_ref = generateOrderRef(nextSeq('order'));
     const now = new Date().toISOString();
@@ -419,7 +419,7 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
 }
 
 export async function listOrdersForUser(userId: string): Promise<Order[]> {
-  if (!isSupabaseConfigured) {
+  if (!isSupabaseConfigured()) {
     return localGet<Order[]>(K.orders, []).filter((o) => o.user_id === userId);
   }
   const { data, error } = await supabase
@@ -432,7 +432,7 @@ export async function listOrdersForUser(userId: string): Promise<Order[]> {
 }
 
 export async function listAllOrders(): Promise<Order[]> {
-  if (!isSupabaseConfigured) {
+  if (!isSupabaseConfigured()) {
     return localGet<Order[]>(K.orders, []);
   }
   if (!isAdminPortalActive()) {
@@ -443,7 +443,7 @@ export async function listAllOrders(): Promise<Order[]> {
 }
 
 export async function getOrderByRef(ref: string): Promise<Order | null> {
-  if (!isSupabaseConfigured) {
+  if (!isSupabaseConfigured()) {
     return (
       localGet<Order[]>(K.orders, []).find((o) => o.order_ref === ref) ?? null
     );
@@ -468,7 +468,7 @@ export async function updateOrderStatus(
   status: OrderStatus,
   admin_notes?: string
 ): Promise<void> {
-  if (!isSupabaseConfigured) {
+  if (!isSupabaseConfigured()) {
     const all = localGet<Order[]>(K.orders, []);
     const i = all.findIndex((o) => o.order_ref === orderRef);
     if (i >= 0) {
@@ -511,7 +511,7 @@ export async function updateOrderItemStatus(
   itemId: string,
   status: OrderItemStatus
 ): Promise<void> {
-  if (!isSupabaseConfigured) {
+  if (!isSupabaseConfigured()) {
     const all = localGet<Order[]>(K.orders, []);
     for (const o of all) {
       const i = o.items.findIndex((x) => x.id === itemId);
@@ -550,7 +550,7 @@ export interface CreateBookingInput {
 export async function createBooking(
   input: CreateBookingInput
 ): Promise<OfflineBooking> {
-  if (!isSupabaseConfigured) {
+  if (!isSupabaseConfigured()) {
     const b: OfflineBooking = {
       id: newId(),
       booking_ref: generateBookingRef(nextSeq('booking')),
@@ -582,7 +582,7 @@ export async function createBooking(
 export async function listBookingsForUser(
   userId: string
 ): Promise<OfflineBooking[]> {
-  if (!isSupabaseConfigured) {
+  if (!isSupabaseConfigured()) {
     return localGet<OfflineBooking[]>(K.bookings, []).filter(
       (b) => b.user_id === userId
     );
@@ -597,7 +597,7 @@ export async function listBookingsForUser(
 }
 
 export async function listAllBookings(): Promise<OfflineBooking[]> {
-  if (!isSupabaseConfigured) {
+  if (!isSupabaseConfigured()) {
     return localGet<OfflineBooking[]>(K.bookings, []);
   }
   if (useAdminRpc()) {
@@ -617,7 +617,7 @@ export async function updateBookingStatus(
   status: BookingStatus,
   admin_notes?: string
 ): Promise<void> {
-  if (!isSupabaseConfigured) {
+  if (!isSupabaseConfigured()) {
     const all = localGet<OfflineBooking[]>(K.bookings, []);
     const i = all.findIndex((b) => b.id === id);
     if (i >= 0) {
@@ -658,7 +658,7 @@ export interface CreateQueryInput {
 export async function createQuery(
   input: CreateQueryInput
 ): Promise<CustomerQuery> {
-  if (!isSupabaseConfigured) {
+  if (!isSupabaseConfigured()) {
     const q: CustomerQuery = {
       ...input,
       id: newId(),
@@ -680,7 +680,7 @@ export async function createQuery(
 }
 
 export async function listQueries(): Promise<CustomerQuery[]> {
-  if (!isSupabaseConfigured) return localGet<CustomerQuery[]>(K.queries, []);
+  if (!isSupabaseConfigured()) return localGet<CustomerQuery[]>(K.queries, []);
   if (useAdminRpc()) {
     const data = await adminRpc<unknown>('admin_list_queries');
     return parseRpcArray<CustomerQuery>(data);
@@ -698,7 +698,7 @@ export async function updateQueryStatus(
   status: QueryStatus,
   admin_notes?: string
 ): Promise<void> {
-  if (!isSupabaseConfigured) {
+  if (!isSupabaseConfigured()) {
     const all = localGet<CustomerQuery[]>(K.queries, []);
     const i = all.findIndex((q) => q.id === id);
     if (i >= 0) {
@@ -728,7 +728,7 @@ export async function updateQueryStatus(
 // ---------------------------------------------------------------------------
 
 export async function listGallery(): Promise<GalleryItem[]> {
-  if (!isSupabaseConfigured) return localGet<GalleryItem[]>(K.gallery, []);
+  if (!isSupabaseConfigured()) return localGet<GalleryItem[]>(K.gallery, []);
   const { data, error } = await supabase
     .from('gallery_items')
     .select('*')
@@ -738,7 +738,7 @@ export async function listGallery(): Promise<GalleryItem[]> {
 }
 
 export async function upsertGalleryItem(item: GalleryItem): Promise<GalleryItem> {
-  if (!isSupabaseConfigured) {
+  if (!isSupabaseConfigured()) {
     const all = localGet<GalleryItem[]>(K.gallery, []);
     const i = all.findIndex((x) => x.id === item.id);
     if (i >= 0) all[i] = item;
@@ -756,7 +756,7 @@ export async function upsertGalleryItem(item: GalleryItem): Promise<GalleryItem>
 }
 
 export async function deleteGalleryItem(id: string): Promise<void> {
-  if (!isSupabaseConfigured) {
+  if (!isSupabaseConfigured()) {
     localSet(
       K.gallery,
       localGet<GalleryItem[]>(K.gallery, []).filter((x) => x.id !== id)
@@ -768,7 +768,7 @@ export async function deleteGalleryItem(id: string): Promise<void> {
 }
 
 export async function listTestimonials(): Promise<Testimonial[]> {
-  if (!isSupabaseConfigured)
+  if (!isSupabaseConfigured())
     return localGet<Testimonial[]>(K.testimonials, []);
   const { data, error } = await supabase
     .from('testimonials')
@@ -783,7 +783,7 @@ export async function listTestimonials(): Promise<Testimonial[]> {
 // ---------------------------------------------------------------------------
 
 export async function getProfile(userId: string): Promise<Profile | null> {
-  if (!isSupabaseConfigured) {
+  if (!isSupabaseConfigured()) {
     return (
       localGet<Profile[]>(K.profiles, []).find((p) => p.id === userId) ?? null
     );
@@ -798,7 +798,7 @@ export async function getProfile(userId: string): Promise<Profile | null> {
 }
 
 export async function upsertProfile(profile: Profile): Promise<Profile> {
-  if (!isSupabaseConfigured) {
+  if (!isSupabaseConfigured()) {
     const all = localGet<Profile[]>(K.profiles, []);
     const i = all.findIndex((p) => p.id === profile.id);
     if (i >= 0) all[i] = profile;
@@ -816,7 +816,7 @@ export async function upsertProfile(profile: Profile): Promise<Profile> {
 }
 
 export async function listCustomers(): Promise<Profile[]> {
-  if (!isSupabaseConfigured) return localGet<Profile[]>(K.profiles, []);
+  if (!isSupabaseConfigured()) return localGet<Profile[]>(K.profiles, []);
   if (useAdminRpc()) {
     const data = await adminRpc<unknown>('admin_list_profiles');
     return parseRpcArray<Profile>(data);
@@ -837,7 +837,7 @@ export async function uploadPaymentScreenshot(
   userId: string,
   file: File
 ): Promise<string> {
-  if (!isSupabaseConfigured) {
+  if (!isSupabaseConfigured()) {
     // Convert to a data URL so we can display it in demo mode.
     return await new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
