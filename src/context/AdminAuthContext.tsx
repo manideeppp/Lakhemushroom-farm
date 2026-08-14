@@ -12,6 +12,7 @@ import { readStore, writeStore, removeStore } from '../lib/storage';
 import {
   ADMIN_SESSION_KEY,
   ADMIN_SESSION_TTL_MS,
+  publishAdminPortalSecret,
 } from '../lib/adminPortal';
 
 interface AdminAuthContextValue {
@@ -51,7 +52,10 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const s = readSession();
-    setIsAdmin(!!s);
+    if (s) {
+      setIsAdmin(true);
+      void publishAdminPortalSecret(config.admin.password);
+    }
     setLoading(false);
   }, []);
 
@@ -67,6 +71,7 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
     if (password !== expected) {
       throw new Error('Incorrect password.');
     }
+    await publishAdminPortalSecret(password);
     const session: AdminSession = { createdAt: Date.now() };
     writeStore(ADMIN_SESSION_KEY, session);
     setIsAdmin(true);

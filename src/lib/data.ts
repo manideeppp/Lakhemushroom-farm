@@ -124,7 +124,23 @@ async function adminRpc<T>(
     portal_secret,
     ...params,
   });
-  if (error) throw error;
+  if (error) {
+    const msg = error.message ?? 'Admin RPC failed';
+    if (
+      msg.includes('Could not find the function') ||
+      msg.includes('schema cache')
+    ) {
+      throw new Error(
+        'Admin database functions missing. Run supabase/migrations/20260814_admin_portal_rpc.sql and 20260815_fix_admin_approve.sql in Supabase SQL Editor.'
+      );
+    }
+    if (msg.includes('forbidden') || error.code === '42501') {
+      throw new Error(
+        'Admin password mismatch in database. Sign out of /admin and sign in again, or run 20260815_fix_admin_approve.sql in Supabase.'
+      );
+    }
+    throw error;
+  }
   return data as T;
 }
 
@@ -419,16 +435,11 @@ export async function listAllOrders(): Promise<Order[]> {
   if (!isSupabaseConfigured) {
     return localGet<Order[]>(K.orders, []);
   }
-  if (useAdminRpc()) {
-    const data = await adminRpc<unknown>('admin_list_orders');
-    return parseRpcArray<Order>(data);
+  if (!isAdminPortalActive()) {
+    throw new Error('Admin session expired. Sign in again at /admin.');
   }
-  const { data, error } = await supabase
-    .from('orders')
-    .select('*, items:order_items(*)')
-    .order('created_at', { ascending: false });
-  if (error) throw error;
-  return (data ?? []) as Order[];
+  const data = await adminRpc<unknown>('admin_list_orders');
+  return parseRpcArray<Order>(data);
 }
 
 export async function getOrderByRef(ref: string): Promise<Order | null> {
@@ -444,7 +455,7 @@ export async function getOrderByRef(ref: string): Promise<Order | null> {
     .maybeSingle();
   if (error) throw error;
   if (data) return data as Order;
-  if (useAdminRpc()) {
+  if (isAdminPortalActive()) {
     const rpcData = await adminRpc<unknown>('admin_get_order', {
       order_ref: ref,
     });
@@ -485,40 +496,14 @@ export async function updateOrderStatus(
     }
     return;
   }
-  if (useAdminRpc()) {
-    await adminRpc('admin_update_order_status', {
-      order_id: orderId,
-      new_status: status,
-      admin_notes,
-    });
-    return;
+  if (!isAdminPortalActive()) {
+    throw new Error('Admin session expired. Sign in again at /admin.');
   }
-  const patch: Record<string, unknown> = { status, admin_notes };
-  if (status === 'approved') patch.approved_at = new Date().toISOString();
-  const { error } = await supabase
-    .from('orders')
-    .update(patch)
-    .eq('id', orderId);
-  if (error) throw error;
-
-  // Cascade item statuses
-  if (status === 'approved') {
-    await supabase
-      .from('order_items')
-      .update({ status: 'processing' })
-      .eq('order_id', orderId)
-      .eq('item_type', 'product');
-    await supabase
-      .from('order_items')
-      .update({ status: 'access_granted' })
-      .eq('order_id', orderId)
-      .eq('item_type', 'training');
-  } else if (status === 'rejected') {
-    await supabase
-      .from('order_items')
-      .update({ status: 'rejected' })
-      .eq('order_id', orderId);
-  }
+  await adminRpc('admin_update_order_status', {
+    order_id: orderId,
+    new_status: status,
+    admin_notes,
+  });
 }
 
 export async function updateOrderItemStatus(
@@ -537,18 +522,13 @@ export async function updateOrderItemStatus(
     localSet(K.orders, all);
     return;
   }
-  if (useAdminRpc()) {
-    await adminRpc('admin_update_order_item_status', {
-      item_id: itemId,
-      new_status: status,
-    });
-    return;
+  if (!isAdminPortalActive()) {
+    throw new Error('Admin session expired. Sign in again at /admin.');
   }
-  const { error } = await supabase
-    .from('order_items')
-    .update({ status })
-    .eq('id', itemId);
-  if (error) throw error;
+  await adminRpc('admin_update_order_item_status', {
+    item_id: itemId,
+    new_status: status,
+  });
 }
 
 // ---------------------------------------------------------------------------

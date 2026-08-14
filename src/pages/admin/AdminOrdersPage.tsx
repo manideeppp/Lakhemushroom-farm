@@ -1,11 +1,13 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search } from 'lucide-react';
+import { CheckCircle2, Search, XCircle } from 'lucide-react';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
+import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/forms/Input';
 import { LoadingState } from '../../components/feedback/States';
-import { listAllOrders } from '../../lib/data';
+import { useToast } from '../../components/feedback/ToastProvider';
+import { listAllOrders, updateOrderStatus } from '../../lib/data';
 import type { Order, OrderStatus } from '../../types/order';
 import { formatDateTime } from '../../utils/ids';
 import { formatINR } from '../../utils/format';
@@ -20,13 +22,49 @@ const TABS: { key: 'all' | OrderStatus; label: string }[] = [
 ];
 
 export function AdminOrdersPage() {
+  const { toast } = useToast();
   const [orders, setOrders] = useState<Order[] | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [q, setQ] = useState('');
   const [tab, setTab] = useState<(typeof TABS)[number]['key']>('all');
+  const [actingId, setActingId] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    setLoadError(null);
+    setOrders(null);
+    try {
+      const o = await listAllOrders();
+      setOrders(o);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : 'Could not load orders.';
+      setLoadError(message);
+      setOrders([]);
+    }
+  }, []);
 
   useEffect(() => {
-    void listAllOrders().then(setOrders);
-  }, []);
+    void load();
+  }, [load]);
+
+  async function quickApprove(order: Order, next: 'approved' | 'rejected') {
+    try {
+      setActingId(order.id);
+      await updateOrderStatus(order.id, next);
+      toast({
+        tone: next === 'approved' ? 'success' : 'warning',
+        message: `Order ${order.order_ref} ${next}.`,
+      });
+      await load();
+    } catch (err) {
+      toast({
+        tone: 'danger',
+        message: err instanceof Error ? err.message : 'Could not update order.',
+      });
+    } finally {
+      setActingId(null);
+    }
+  }
 
   const filtered = useMemo(() => {
     if (!orders) return null;
@@ -54,7 +92,23 @@ export function AdminOrdersPage() {
             All orders
           </h2>
         </div>
+        <Button variant="outline" size="sm" onClick={() => void load()}>
+          Refresh
+        </Button>
       </div>
+
+      {loadError && (
+        <Card padding="md" className="border-danger/30 bg-cream-100 text-small text-ink-800">
+          <p className="font-medium text-danger">Could not load orders</p>
+          <p className="mt-1">{loadError}</p>
+          <p className="mt-2 text-caption text-ink-600">
+            Run both SQL files in Supabase:{' '}
+            <code className="font-mono">20260814_admin_portal_rpc.sql</code> and{' '}
+            <code className="font-mono">20260815_fix_admin_approve.sql</code>, then
+            sign out and sign in at /admin again.
+          </p>
+        </Card>
+      )}
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <Input
@@ -87,7 +141,9 @@ export function AdminOrdersPage() {
         <LoadingState />
       ) : filtered.length === 0 ? (
         <Card padding="lg" className="text-center text-small text-ink-600">
-          No orders match the filters.
+          {orders?.length === 0
+            ? 'No orders yet. When customers pay, they appear here.'
+            : 'No orders match the filters.'}
         </Card>
       ) : (
         <Card padding="none" className="overflow-x-auto">
@@ -99,14 +155,12 @@ export function AdminOrdersPage() {
                 <th className="px-3 py-2 text-right font-medium">Total</th>
                 <th className="px-3 py-2 text-left font-medium">Status</th>
                 <th className="px-3 py-2 text-left font-medium">Placed</th>
+                <th className="px-3 py-2 text-right font-medium">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-ink-100">
               {filtered.map((o) => (
-                <tr
-                  key={o.id}
-                  className="hover:bg-forest-50/40 cursor-pointer"
-                >
+                <tr key={o.id} className="hover:bg-forest-50/40">
                   <td className="px-3 py-2">
                     <Link
                       to={`/admin/orders/${o.order_ref}`}
@@ -139,6 +193,36 @@ export function AdminOrdersPage() {
                   </td>
                   <td className="px-3 py-2 text-ink-700">
                     {formatDateTime(o.created_at)}
+                  </td>
+                  <td className="px-3 py-2">
+                    {o.status === 'pending_verification' ? (
+                      <div className="flex justify-end gap-1">
+                        <Button
+                          size="sm"
+                          loading={actingId === o.id}
+                          leftIcon={<CheckCircle2 className="h-3.5 w-3.5" />}
+                          onClick={() => void quickApprove(o, 'approved')}
+                        >
+                          Approve
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="danger"
+                          loading={actingId === o.id}
+                          leftIcon={<XCircle className="h-3.5 w-3.5" />}
+                          onClick={() => void quickApprove(o, 'rejected')}
+                        >
+                          Reject
+                        </Button>
+                      </div>
+                    ) : (
+                      <Link
+                        to={`/admin/orders/${o.order_ref}`}
+                        className="text-caption text-forest-800 hover:underline"
+                      >
+                        View
+                      </Link>
+                    )}
                   </td>
                 </tr>
               ))}
