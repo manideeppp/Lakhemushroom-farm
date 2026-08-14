@@ -2,14 +2,15 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   ArrowRight,
+  ExternalLink,
   Globe2,
   Leaf,
+  MapPin,
   MessageCircle,
   Package,
   Play,
   Sparkles,
   Sprout,
-  Star,
 } from 'lucide-react';
 import { AppShell } from '../components/layout/AppShell';
 import { PageContainer } from '../components/layout/PageContainer';
@@ -28,13 +29,26 @@ import {
   TrainingCard,
 } from '../components/cards/Cards';
 import { ResponsiveImage } from '../components/media/ResponsiveImage';
+import { ResponsiveVideo } from '../components/media/ResponsiveVideo';
 import type { BadgeVariant } from '../components/ui/Badge';
+import { TestimonialCarousel } from '../components/feedback/TestimonialCarousel';
+import { HomeQueryForm } from '../components/forms/HomeQueryForm';
 import {
   listGallery,
   listProducts,
   listTestimonials,
   listTraining,
 } from '../lib/data';
+import { SAMPLE_PRODUCTS } from '../data/products';
+import { SAMPLE_TRAINING } from '../data/training';
+import {
+  SAMPLE_TESTIMONIALS,
+} from '../data/gallery';
+import {
+  HOME_FOUNDER_IMAGE,
+  HOME_STORY_IMAGE,
+  HOME_FARM_SHOWCASE,
+} from '../data/home';
 import type { Product } from '../types/product';
 import type { TrainingCourse, TrainingFormat } from '../types/training';
 import type { GalleryItem, Testimonial } from '../types/profile';
@@ -71,6 +85,25 @@ export function HomePage() {
       setGallery(g);
     })();
   }, []);
+
+  const displayProducts =
+    products.length > 0 ? products : SAMPLE_PRODUCTS;
+  const displayTraining =
+    training.length > 0 ? training : SAMPLE_TRAINING;
+  const displayTestimonials =
+    testimonials.length > 0 ? testimonials : SAMPLE_TESTIMONIALS;
+  const showcaseGallery =
+    gallery.length > 0
+      ? gallery
+      : HOME_FARM_SHOWCASE.map((item, i) => ({
+          id: item.id,
+          type: item.type,
+          category: 'farm' as const,
+          media_url: item.media_url,
+          thumbnail_url: item.thumbnail_url,
+          caption: item.caption,
+          order: i + 1,
+        }));
 
   return (
     <AppShell>
@@ -144,8 +177,8 @@ export function HomePage() {
               >
                 <div className="grid grid-cols-[7rem_1fr] sm:grid-cols-[9rem_1fr]">
                   <ResponsiveImage
-                    src="https://images.unsplash.com/photo-1611574474461-46f3f36fbb90?auto=format&fit=crop&w=800&q=70"
-                    alt=""
+                    src={HOME_STORY_IMAGE}
+                    alt="Lakhe mushroom farm landscape"
                     aspect="aspect-square"
                     rounded="none"
                   />
@@ -176,8 +209,8 @@ export function HomePage() {
               >
                 <div className="grid grid-cols-[7rem_1fr] sm:grid-cols-[9rem_1fr]">
                   <ResponsiveImage
-                    src="https://images.unsplash.com/photo-1524178232363-1ba1f8b83d0b?auto=format&fit=crop&w=800&q=70"
-                    alt=""
+                    src={HOME_FOUNDER_IMAGE}
+                    alt="Lakhe Mushroom Farm founder"
                     aspect="aspect-square"
                     rounded="none"
                   />
@@ -216,21 +249,33 @@ export function HomePage() {
             }
           />
           <HorizontalScroll padded gap="md">
-            {gallery.slice(0, 10).map((g) => (
-              <div key={g.id} className="snap-start shrink-0 w-56 sm:w-64">
+            {showcaseGallery.slice(0, 12).map((g) => (
+              <div key={g.id} className="snap-start shrink-0 w-56 sm:w-72">
                 <Card padding="none" className="overflow-hidden">
                   <div className="relative">
-                    <ResponsiveImage
-                      src={g.thumbnail_url ?? g.media_url}
-                      alt={g.caption ?? 'Farm photo'}
-                      aspect="aspect-[3/4]"
-                      rounded="none"
-                    />
+                    {g.type === 'video' ? (
+                      <ResponsiveVideo
+                        src={g.media_url}
+                        poster={g.thumbnail_url}
+                        aspect="aspect-[3/4]"
+                        rounded="none"
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        controls={false}
+                      />
+                    ) : (
+                      <ResponsiveImage
+                        src={g.media_url}
+                        alt={g.caption ?? 'Farm photo'}
+                        aspect="aspect-[3/4]"
+                        rounded="none"
+                      />
+                    )}
                     {g.type === 'video' && (
-                      <span className="absolute inset-0 flex items-center justify-center">
-                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-forest-900/70 text-cream-50">
-                          <Play className="h-4 w-4" />
-                        </span>
+                      <span className="absolute bottom-3 left-3 flex items-center gap-1 rounded-pill bg-forest-900/75 px-2 py-1 text-caption text-cream-50">
+                        <Play className="h-3 w-3" /> Video
                       </span>
                     )}
                   </div>
@@ -295,7 +340,7 @@ export function HomePage() {
             }
           />
           <ResponsiveGrid cols={{ base: 2, md: 3, lg: 4 }} gap="md">
-            {products.slice(0, 4).map((p) => (
+            {displayProducts.slice(0, 4).map((p) => (
               <ProductCard
                 key={p.id}
                 name={p.name}
@@ -346,7 +391,7 @@ export function HomePage() {
             }
           />
           <ResponsiveGrid cols={{ base: 1, md: 2, lg: 3 }} gap="md">
-            {training.slice(0, 3).map((t) => (
+            {displayTraining.slice(0, 3).map((t) => (
               <TrainingCard
                 key={t.id}
                 title={t.title}
@@ -359,40 +404,6 @@ export function HomePage() {
               />
             ))}
           </ResponsiveGrid>
-        </Section>
-
-        {/* FARM SETUP */}
-        <Section size="md">
-          <Card padding="none" className="overflow-hidden">
-            <div className="grid gap-0 md:grid-cols-2">
-              <ResponsiveImage
-                src="https://images.unsplash.com/photo-1615398265937-71bc7a9c8dfe?auto=format&fit=crop&w=1600&q=70"
-                alt="Consultancy meeting on a farm"
-                aspect="aspect-[4/3] md:h-full md:aspect-auto"
-                rounded="none"
-              />
-              <div className="p-6 sm:p-10 flex flex-col justify-center gap-3">
-                <span className="text-label uppercase tracking-widest text-forest-600 font-medium">
-                  Farm Setup & Consultancy
-                </span>
-                <h2 className="font-serif text-h1 sm:text-display text-ink-900 leading-tight">
-                  From an idea to a working farm
-                </h2>
-                <p className="text-body text-ink-700 leading-relaxed">
-                  Infrastructure planning, cultivation guidance, market linkages
-                  and help with government subsidies — end-to-end support so you
-                  can start with confidence.
-                </p>
-                <div className="pt-2">
-                  <Link to="/consultancy">
-                    <Button rightIcon={<ArrowRight className="h-4 w-4" />}>
-                      Explore consultancy
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </Card>
         </Section>
 
         {/* STATS */}
@@ -415,27 +426,63 @@ export function HomePage() {
             eyebrow="What people say"
             title="Trusted by home cooks, farmers and cohorts abroad"
           />
-          <ResponsiveGrid cols={{ base: 1, md: 2, lg: 4 }} gap="md">
-            {testimonials.slice(0, 4).map((t) => (
-              <Card key={t.id} padding="lg" className="flex flex-col gap-3 h-full">
-                <div className="flex items-center gap-0.5 text-warning">
-                  {Array.from({ length: t.rating }).map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-current" />
-                  ))}
-                </div>
-                <p className="text-small text-ink-700 leading-relaxed">
-                  “{t.quote}”
+          <TestimonialCarousel items={displayTestimonials} />
+        </Section>
+
+        {/* QUERY + MAP */}
+        <Section size="md">
+          <ResponsiveGrid cols={{ base: 1, lg: 2 }} gap="lg">
+            <Card padding="lg" elevated className="space-y-4">
+              <div>
+                <span className="text-label uppercase tracking-widest text-forest-600 font-medium">
+                  Ask us anything
+                </span>
+                <h2 className="font-serif text-h2 text-ink-900 mt-1">
+                  Send a quick query
+                </h2>
+                <p className="text-small text-ink-600 mt-1">
+                  Products, training, orders — we usually reply within a day.
                 </p>
-                <div className="mt-auto pt-2">
-                  <p className="text-body font-serif text-ink-900">{t.name}</p>
-                  {(t.role || t.location) && (
-                    <p className="text-caption text-ink-500">
-                      {[t.role, t.location].filter(Boolean).join(' · ')}
+              </div>
+              <HomeQueryForm />
+            </Card>
+
+            <Card padding="none" className="overflow-hidden flex flex-col">
+              <div className="p-5 sm:p-6 border-b border-ink-100">
+                <div className="flex items-start gap-3">
+                  <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-forest-50 text-forest-800">
+                    <MapPin className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <h2 className="font-serif text-h2 text-ink-900">
+                      Visit the farm
+                    </h2>
+                    <p className="text-small text-ink-600 mt-1">
+                      {config.business.address}
                     </p>
-                  )}
+                    <a
+                      href={config.business.mapsUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-2 inline-flex items-center gap-1 text-small font-medium text-forest-800 hover:underline"
+                    >
+                      Open in Google Maps
+                      <ExternalLink className="h-3.5 w-3.5" />
+                    </a>
+                  </div>
                 </div>
-              </Card>
-            ))}
+              </div>
+              <div className="relative min-h-[280px] flex-1 bg-ink-100">
+                <iframe
+                  title="Lakhe Mushroom Farm on Google Maps"
+                  src={config.business.mapsEmbedUrl}
+                  className="absolute inset-0 h-full w-full border-0"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  allowFullScreen
+                />
+              </div>
+            </Card>
           </ResponsiveGrid>
         </Section>
 
@@ -481,8 +528,8 @@ export function HomePage() {
                   Have a question? Let’s talk.
                 </h3>
                 <p className="text-small text-cream-200/85 max-w-md">
-                  Product enquiries, training queries, farm-setup consultations —
-                  we usually reply within a day.
+                  Product enquiries, training queries and order help — we
+                  usually reply within a day.
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">

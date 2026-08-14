@@ -10,6 +10,11 @@ import {
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { readStore, writeStore, removeStore } from '../lib/storage';
 import { getProfile, isAdminEmail, upsertProfile } from '../lib/data';
+import {
+  isValidOtpFormat,
+  normalizeOtpCode,
+  OTP_LENGTH,
+} from '../lib/auth';
 import type { Profile } from '../types/profile';
 
 interface SessionUser {
@@ -33,7 +38,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 
 const DEMO_SESSION_KEY = 'lakhe.demo.session';
 const DEMO_PENDING_KEY = 'lakhe.demo.pending';
-const DEMO_OTP = '123456'; // In demo mode any code works, but this is shown to the user.
+const DEMO_OTP = '12345678'; // Demo mode: any valid-length code works; this is shown as a hint.
 
 /* eslint-disable react-refresh/only-export-components */
 export function useAuth(): AuthContextValue {
@@ -118,11 +123,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const trimmed = email.trim().toLowerCase();
     if (isSupabaseConfigured) {
       // NOTE: Supabase sends the email using the "Magic Link" template.
-      // For the user to actually receive a 6-digit code (not just a link),
-      // the template MUST include `{{ .Token }}` — configure it in
-      // Supabase Dashboard → Authentication → Email Templates → Magic Link.
-      // `emailRedirectTo: undefined` keeps the link-based fallback minimal;
-      // the OTP code itself is what we verify below.
+      // For the user to receive the numeric code in email (not just a link),
+      // the Magic Link template MUST include `{{ .Token }}`.
       const { error } = await supabase.auth.signInWithOtp({
         email: trimmed,
         options: {
@@ -145,10 +147,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const verifyOtp = useCallback(
     async (email: string, code: string) => {
       const trimmed = email.trim().toLowerCase();
+      const token = normalizeOtpCode(code);
+      if (!isValidOtpFormat(token)) {
+        throw new Error(`Enter the ${OTP_LENGTH}-digit code from your email.`);
+      }
       if (isSupabaseConfigured) {
         const { data, error } = await supabase.auth.verifyOtp({
           email: trimmed,
-          token: code,
+          token,
           type: 'email',
         });
         if (error) throw error;
@@ -158,8 +164,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(u);
         await loadProfile(u);
       } else {
-        // Demo: accept any 6-digit code.
-        if (!/^\d{6}$/.test(code)) throw new Error('Enter the 6-digit OTP');
+        // Demo: accept any 6–10 digit code.
+        if (!isValidOtpFormat(token)) {
+          throw new Error(`Enter the ${OTP_LENGTH}-digit code.`);
+        }
         const u: SessionUser = { id: `demo-${trimmed}`, email: trimmed };
         writeStore(DEMO_SESSION_KEY, u);
         setUser(u);

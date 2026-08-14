@@ -23,11 +23,11 @@ export interface OTPInputProps {
 }
 
 /**
- * OTPInput — accessible 6-digit style entry.
+ * OTPInput — accessible multi-digit code entry (default matches Supabase OTP length).
  * Uncontrolled by default; supply `value` to control externally.
  */
 export function OTPInput({
-  length = 6,
+  length = 8,
   value,
   onChange,
   onComplete,
@@ -102,7 +102,10 @@ export function OTPInput({
         <p className="mb-2 text-label font-medium text-ink-800">{label}</p>
       )}
       <div
-        className="flex items-center justify-between gap-2 sm:gap-3"
+        className={cn(
+          'flex items-center justify-between',
+          length > 6 ? 'gap-1 sm:gap-1.5' : 'gap-2 sm:gap-3'
+        )}
         role="group"
         aria-label="One time passcode"
       >
@@ -122,9 +125,12 @@ export function OTPInput({
             onKeyDown={(e) => handleKeyDown(i, e)}
             onPaste={handlePaste}
             className={cn(
-              'h-12 w-11 sm:h-14 sm:w-12 flex-1 rounded-md border bg-surface-raised text-center',
-              'font-serif text-h2 text-ink-900 tracking-widest outline-none',
+              'rounded-md border bg-surface-raised text-center',
+              'font-serif text-ink-900 tracking-widest outline-none',
               'transition-shadow duration-150 ease-gentle',
+              length > 6
+                ? 'h-11 w-8 sm:h-12 sm:w-10 flex-1 text-h3'
+                : 'h-12 w-11 sm:h-14 sm:w-12 flex-1 text-h2',
               error
                 ? 'border-danger/60 focus:shadow-[0_0_0_3px_rgba(168,56,46,0.18)]'
                 : 'border-ink-200 focus:border-forest-400 focus:shadow-focus',

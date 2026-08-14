@@ -78,11 +78,42 @@ export const SAMPLE_GALLERY: GalleryItem[] = [
     type: 'video',
     category: 'farm',
     media_url:
-      'https://cdn.pixabay.com/vimeo/379537184/farming-30000.mp4',
+      'https://videos.pexels.com/video-files/6963395/6963395-uhd_2560_1440_25fps.mp4',
     thumbnail_url:
-      'https://images.unsplash.com/photo-1601300961833-e6f635e6f4f6?auto=format&fit=crop&w=1600&q=70',
-    caption: 'Inside the farm — video tour',
+      'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=1600&q=80',
+    caption: 'Walking through the farm',
     order: 9,
+  },
+  {
+    id: 'g10',
+    type: 'video',
+    category: 'cultivation',
+    media_url:
+      'https://videos.pexels.com/video-files/4508067/4508067-uhd_2560_1440_25fps.mp4',
+    thumbnail_url:
+      'https://images.unsplash.com/photo-1607301405390-d831c242f59b?auto=format&fit=crop&w=1600&q=80',
+    caption: 'Harvest & packing',
+    order: 10,
+  },
+  {
+    id: 'g11',
+    type: 'image',
+    category: 'cultivation',
+    media_url:
+      'https://images.unsplash.com/photo-1611743331025-2bbf67c72934?auto=format&fit=crop&w=1600&q=80',
+    caption: 'Oyster mushrooms on the shelf',
+    order: 11,
+  },
+  {
+    id: 'g12',
+    type: 'video',
+    category: 'training',
+    media_url:
+      'https://videos.pexels.com/video-files/3571264/3571264-hd_1920_1080_30fps.mp4',
+    thumbnail_url:
+      'https://images.unsplash.com/photo-1601300961833-e6f635e6f4f6?auto=format&fit=crop&w=1600&q=80',
+    caption: 'Greenhouse cultivation clip',
+    order: 12,
   },
 ];
 
@@ -122,5 +153,23 @@ export const SAMPLE_TESTIMONIALS: Testimonial[] = [
     rating: 5,
     quote:
       'The offline workshop felt personal and honest. No shortcuts, no upsells — just real practice.',
+  },
+  {
+    id: 't5',
+    name: 'Sneha Reddy',
+    location: 'Hyderabad',
+    role: 'Online student',
+    rating: 5,
+    quote:
+      'Clear modules and honest advice. I started selling dried mushrooms to neighbours within two months.',
+  },
+  {
+    id: 't6',
+    name: 'Jean Dupont',
+    location: 'Paris, France',
+    role: 'Product buyer',
+    rating: 5,
+    quote:
+      'The fresh oysters arrived beautifully packed. You can taste the care in every batch.',
   },
 ];

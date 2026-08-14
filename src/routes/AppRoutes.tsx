@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
 import { HomePage } from '../pages/HomePage';
 import { UIPreviewPage } from '../pages/UIPreviewPage';
@@ -7,7 +7,6 @@ import { NotFoundPage } from '../pages/NotFoundPage';
 import { AboutPage } from '../pages/AboutPage';
 import { FounderPage } from '../pages/FounderPage';
 import { GalleryPage } from '../pages/GalleryPage';
-import { ConsultancyPage } from '../pages/ConsultancyPage';
 import { ContactPage } from '../pages/ContactPage';
 
 import { ProductsPage } from '../pages/ProductsPage';
@@ -51,7 +50,7 @@ export function AppRoutes() {
       <Route path="/about" element={<AboutPage />} />
       <Route path="/founder" element={<FounderPage />} />
       <Route path="/gallery" element={<GalleryPage />} />
-      <Route path="/consultancy" element={<ConsultancyPage />} />
+      <Route path="/consultancy" element={<Navigate to="/contact" replace />} />
       <Route path="/contact" element={<ContactPage />} />
 
       {/* Commerce (public) */}

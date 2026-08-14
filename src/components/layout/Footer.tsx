@@ -12,8 +12,8 @@ export function Footer() {
           <div>
             <LakheLogo size="md" tone="light" />
             <p className="mt-4 text-small text-cream-200/85 max-w-xs leading-relaxed">
-              Premium mushroom products, expert training, and end-to-end farm
-              setup consultancy — grown with care, sold with honesty.
+              Premium mushroom products and expert training — grown with care,
+              sold with honesty.
             </p>
           </div>
 
@@ -22,7 +22,6 @@ export function Footer() {
             <ul className="mt-3 space-y-2 text-small text-cream-200/85">
               <li><Link to="/products" className="hover:text-cream-50">Products</Link></li>
               <li><Link to="/training" className="hover:text-cream-50">Training</Link></li>
-              <li><Link to="/consultancy" className="hover:text-cream-50">Farm Setup</Link></li>
               <li><Link to="/gallery" className="hover:text-cream-50">Gallery</Link></li>
             </ul>
           </div>

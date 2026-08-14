@@ -17,7 +17,7 @@ export interface HeaderProps {
 const desktopLinks = [
   { to: '/products', label: 'Products' },
   { to: '/training', label: 'Training' },
-  { to: '/consultancy', label: 'Farm Setup' },
+  { to: '/gallery', label: 'Gallery' },
   { to: '/about', label: 'Our Story' },
   { to: '/contact', label: 'Contact' },
 ];
@@ -26,7 +26,7 @@ const mobileMenuLinks = [
   { to: '/', label: 'Home' },
   { to: '/products', label: 'Products' },
   { to: '/training', label: 'Training' },
-  { to: '/consultancy', label: 'Farm Setup' },
+  { to: '/gallery', label: 'Gallery' },
   { to: '/about', label: 'Our Story' },
   { to: '/founder', label: 'The Founder' },
   { to: '/gallery', label: 'Gallery' },

@@ -13,6 +13,8 @@ import { LakheLogo } from '../components/navigation/LakheLogo';
 import { useAuth, DEMO_OTP } from '../context/AuthContext';
 import { useToast } from '../components/feedback/ToastProvider';
 import { isSupabaseConfigured } from '../lib/supabase';
+import { OTP_LENGTH, isCompleteOtp } from '../lib/auth';
+import { getErrorMessage } from '../utils/errors';
 
 interface LocState {
   redirectTo?: string;
@@ -37,6 +39,7 @@ export function LoginPage() {
   );
   const [sending, setSending] = useState(false);
   const [verifying, setVerifying] = useState(false);
+  const [sendError, setSendError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!authLoading && user) {
@@ -51,20 +54,23 @@ export function LoginPage() {
     }
     try {
       setSending(true);
+      setSendError(null);
       await requestOtp(email);
       toast({
         tone: 'success',
         title: 'Code sent',
         message: isSupabaseConfigured
-          ? `Check ${email} for a 6-digit code.`
-          : `Demo mode: use ${DEMO_OTP} (or any 6 digits).`,
+          ? `Check ${email} for your ${OTP_LENGTH}-digit code.`
+          : `Demo mode: use ${DEMO_OTP} (or any ${OTP_LENGTH} digits).`,
       });
       return true;
     } catch (err) {
+      const message = getErrorMessage(err, 'Could not send code. Try again.');
+      setSendError(message);
       toast({
         tone: 'danger',
-        message:
-          err instanceof Error ? err.message : 'Could not send code. Try again.',
+        title: 'Could not send code',
+        message,
       });
       return false;
     } finally {
@@ -93,10 +99,7 @@ export function LoginPage() {
       toast({
         tone: 'danger',
         title: 'Invalid code',
-        message:
-          err instanceof Error
-            ? err.message
-            : 'That code did not work. Try again.',
+        message: getErrorMessage(err, 'That code did not work. Try again.'),
       });
       setCode('');
     } finally {
@@ -127,8 +130,8 @@ export function LoginPage() {
                 </h1>
                 <p className="text-small text-ink-600 max-w-xs">
                   {step === 'email'
-                    ? 'We send a 6-digit code to your email — no password needed.'
-                    : `We sent a 6-digit code to ${email}.`}
+                    ? `We send a ${OTP_LENGTH}-digit code to your email — no password needed.`
+                    : `We sent a ${OTP_LENGTH}-digit code to ${email}.`}
                 </p>
               </div>
 
@@ -152,11 +155,17 @@ export function LoginPage() {
                   >
                     Send code
                   </Button>
+                  {sendError && (
+                    <p className="text-caption text-danger leading-relaxed">
+                      {sendError}
+                    </p>
+                  )}
                 </form>
               ) : (
                 <div className="space-y-3">
                   <OTPInput
                     autoFocus
+                    length={OTP_LENGTH}
                     value={code}
                     onChange={setCode}
                     onComplete={handleVerify}
@@ -165,7 +174,7 @@ export function LoginPage() {
                     fullWidth
                     size="lg"
                     loading={verifying}
-                    disabled={code.length !== 6}
+                    disabled={!isCompleteOtp(code)}
                     onClick={() => handleVerify(code)}
                   >
                     Verify & continue
@@ -196,7 +205,7 @@ export function LoginPage() {
                   <div className="text-caption text-ink-700">
                     <p className="font-medium text-ink-900">Demo mode</p>
                     <p>
-                      Supabase is not connected — any 6-digit OTP works. Try{' '}
+                      Supabase is not connected — any {OTP_LENGTH}-digit OTP works. Try{' '}
                       <span className="font-mono">{DEMO_OTP}</span>.
                     </p>
                   </div>
@@ -208,7 +217,7 @@ export function LoginPage() {
                   <Info className="h-4 w-4 mt-0.5 text-clay-500 shrink-0" />
                   <div className="text-caption text-ink-700">
                     <p className="font-medium text-ink-900">
-                      Don't see a 6-digit code?
+                      Don't see your code?
                     </p>
                     <p>
                       If the email only shows a "Confirm email address" link,
