@@ -9,6 +9,7 @@ import { LoadingState } from '../../components/feedback/States';
 import { useToast } from '../../components/feedback/ToastProvider';
 import { listAllOrders, updateOrderStatus } from '../../lib/data';
 import type { Order, OrderStatus } from '../../types/order';
+import { isPendingOrderStatusStatus } from '../../types/order';
 import { formatDateTime } from '../../utils/ids';
 import { formatINR } from '../../utils/format';
 import { cn } from '../../utils/cn';
@@ -20,6 +21,10 @@ const TABS: { key: 'all' | OrderStatus; label: string }[] = [
   { key: 'rejected', label: 'Rejected' },
   { key: 'cancelled', label: 'Cancelled' },
 ];
+
+function isPendingOrderStatus(status: string): boolean {
+  return isPendingOrderStatusStatus(status);
+}
 
 export function AdminOrdersPage() {
   const { toast } = useToast();
@@ -144,8 +149,76 @@ export function AdminOrdersPage() {
             : 'No orders match the filters.'}
         </Card>
       ) : (
-        <Card padding="none" className="overflow-x-auto">
-          <table className="w-full text-small">
+        <>
+          <div className="space-y-3 md:hidden">
+            {filtered.map((o) => {
+              const pending = isPendingOrderStatus(o.status);
+              return (
+                <Card key={o.id} padding="md" className="space-y-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <Link
+                        to={`/admin/orders/${o.order_ref}`}
+                        className="font-serif text-h3 font-semibold text-ink-900 hover:text-brand"
+                      >
+                        {o.order_ref}
+                      </Link>
+                      <p className="mt-1 text-small text-ink-900">{o.customer_name}</p>
+                      <p className="text-caption text-ink-500">{o.customer_email}</p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="font-medium text-ink-900">{formatINR(o.total)}</p>
+                      <Badge
+                        className="mt-1"
+                        variant={
+                          o.status === 'approved'
+                            ? 'approved'
+                            : pending
+                              ? 'pending'
+                              : 'neutral'
+                        }
+                      >
+                        {o.status.replace(/_/g, ' ')}
+                      </Badge>
+                    </div>
+                  </div>
+                  <p className="text-caption text-ink-500">
+                    Placed {formatDateTime(o.created_at)}
+                  </p>
+                  {pending ? (
+                    <div className="grid grid-cols-2 gap-2">
+                      <Button
+                        fullWidth
+                        loading={actingId === o.id}
+                        leftIcon={<CheckCircle2 className="h-4 w-4" />}
+                        onClick={() => void quickApprove(o, 'approved')}
+                      >
+                        Approve
+                      </Button>
+                      <Button
+                        fullWidth
+                        variant="danger"
+                        loading={actingId === o.id}
+                        leftIcon={<XCircle className="h-4 w-4" />}
+                        onClick={() => void quickApprove(o, 'rejected')}
+                      >
+                        Reject
+                      </Button>
+                    </div>
+                  ) : (
+                    <Link to={`/admin/orders/${o.order_ref}`}>
+                      <Button fullWidth variant="outline" size="sm">
+                        View order
+                      </Button>
+                    </Link>
+                  )}
+                </Card>
+              );
+            })}
+          </div>
+
+          <Card padding="none" className="hidden md:block overflow-x-auto">
+            <table className="w-full text-small">
             <thead className="bg-cream-100 text-ink-700">
               <tr>
                 <th className="px-3 py-2 text-left font-medium">Order</th>
@@ -181,19 +254,19 @@ export function AdminOrdersPage() {
                       variant={
                         o.status === 'approved'
                           ? 'approved'
-                          : o.status === 'pending_verification'
+                          : isPendingOrderStatus(o.status)
                             ? 'pending'
                             : 'neutral'
                       }
                     >
-                      {o.status.replace('_', ' ')}
+                      {o.status.replace(/_/g, ' ')}
                     </Badge>
                   </td>
                   <td className="px-3 py-2 text-ink-700">
                     {formatDateTime(o.created_at)}
                   </td>
                   <td className="px-3 py-2">
-                    {o.status === 'pending_verification' ? (
+                    {isPendingOrderStatus(o.status) ? (
                       <div className="flex justify-end gap-1">
                         <Button
                           size="sm"
@@ -227,6 +300,7 @@ export function AdminOrdersPage() {
             </tbody>
           </table>
         </Card>
+        </>
       )}
     </div>
   );

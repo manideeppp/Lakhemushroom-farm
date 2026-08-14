@@ -14,6 +14,7 @@ import {
   updateOrderStatus,
 } from '../../lib/data';
 import type { Order, OrderItemStatus } from '../../types/order';
+import { isPendingOrderStatus } from '../../types/order';
 import { formatDateTime } from '../../utils/ids';
 import { formatINR } from '../../utils/format';
 
@@ -91,7 +92,7 @@ export function AdminOrderDetailPage() {
     }
   }
 
-  const pending = order.status === 'pending_verification';
+  const pending = isPendingOrderStatus(order.status);
 
   const verificationCard = (
     <Card padding="lg" elevated className="lg:sticky lg:top-24 space-y-3">
@@ -171,7 +172,7 @@ export function AdminOrderDetailPage() {
                       : 'neutral'
                 }
               >
-                {order.status.replace('_', ' ')}
+                {order.status.replace(/_/g, ' ')}
               </Badge>
             </div>
 

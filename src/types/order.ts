@@ -5,6 +5,10 @@ export type OrderStatus =
   | 'rejected'
   | 'cancelled';
 
+export function isPendingOrderStatus(status: string): boolean {
+  return status.replace(/\s+/g, '_') === 'pending_verification';
+}
+
 export type OrderItemStatus =
   | 'pending'
   | 'processing'
