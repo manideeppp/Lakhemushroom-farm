@@ -209,13 +209,20 @@ export function LoginPage() {
               )}
 
               {!isSupabaseConfigured && (
-                <div className="flex items-start gap-2 rounded-md bg-cream-100 border border-cream-200 p-3">
+                <div className="flex items-start gap-2 rounded-md border border-warning/40 bg-cream-100 p-3">
                   <Info className="h-4 w-4 mt-0.5 text-clay-500 shrink-0" />
                   <div className="text-caption text-ink-700">
-                    <p className="font-medium text-ink-900">Demo mode</p>
-                    <p>
-                      Supabase is not connected — any {OTP_LENGTH}-digit OTP works. Try{' '}
-                      <span className="font-mono">{DEMO_OTP}</span>.
+                    <p className="font-medium text-ink-900">Demo mode — no real email</p>
+                    <p className="mt-1">
+                      Supabase is not connected on this deploy. No OTP email will be sent.
+                      Set <span className="font-mono">VITE_SUPABASE_URL</span> and{' '}
+                      <span className="font-mono">VITE_SUPABASE_ANON_KEY</span> on Vercel,
+                      then redeploy.
+                    </p>
+                    <p className="mt-2">
+                      For testing now, use code{' '}
+                      <span className="font-mono font-semibold">{DEMO_OTP}</span> (or any
+                      6–10 digits).
                     </p>
                   </div>
                 </div>
@@ -224,19 +231,35 @@ export function LoginPage() {
               {isSupabaseConfigured && step === 'otp' && (
                 <div className="flex items-start gap-2 rounded-md bg-cream-100 border border-cream-200 p-3">
                   <Info className="h-4 w-4 mt-0.5 text-clay-500 shrink-0" />
-                  <div className="text-caption text-ink-700">
-                    <p className="font-medium text-ink-900">
-                      Don't see your code?
-                    </p>
+                  <div className="text-caption text-ink-700 space-y-2">
+                    <p className="font-medium text-ink-900">No code in your inbox?</p>
+                    <ul className="list-disc pl-4 space-y-1">
+                      <li>Check spam / promotions for &quot;Your Lakhe sign-in code&quot;.</li>
+                      <li>
+                        In Supabase → <strong>Authentication → Email Templates</strong>, put{' '}
+                        <span className="font-mono">{'{{ .Token }}'}</span> in both{' '}
+                        <strong>Magic Link</strong> and <strong>Confirm signup</strong> templates.
+                      </li>
+                      <li>
+                        Turn <strong>Confirm email</strong> OFF under Authentication →
+                        Sign In / Providers → Email.
+                      </li>
+                      <li>
+                        Set up custom SMTP (Resend): Supabase → Project Settings →
+                        Authentication → SMTP. Default Supabase mail is only ~3 emails/hour.
+                      </li>
+                      <li>
+                        On Resend&apos;s free tier, mail only goes to your Resend account email
+                        until you verify a domain.
+                      </li>
+                      <li>
+                        Add your site URL in Supabase → Authentication → URL Configuration
+                        (Site URL + Redirect URLs).
+                      </li>
+                    </ul>
                     <p>
-                      If the email only shows a "Confirm email address" link,
-                      the Supabase email template needs the{' '}
-                      <span className="font-mono">{'{{ .Token }}'}</span>{' '}
-                      variable. Update{' '}
-                      <strong>
-                        Authentication → Email Templates → Magic Link
-                      </strong>{' '}
-                      in your Supabase dashboard.
+                      Still stuck? Open Supabase → <strong>Logs → Auth</strong> after clicking
+                      Send code — errors there show the exact SMTP/template problem.
                     </p>
                   </div>
                 </div>

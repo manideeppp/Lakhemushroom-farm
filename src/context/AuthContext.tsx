@@ -38,7 +38,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 
 const DEMO_SESSION_KEY = 'lakhe.demo.session';
 const DEMO_PENDING_KEY = 'lakhe.demo.pending';
-const DEMO_OTP = '12345678'; // Demo mode: any valid-length code works; this is shown as a hint.
+const DEMO_OTP = '123456'; // Demo mode: any 6–10 digit code works.
 
 /* eslint-disable react-refresh/only-export-components */
 export function useAuth(): AuthContextValue {
@@ -131,17 +131,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const requestOtp = useCallback(async (email: string) => {
     const trimmed = email.trim().toLowerCase();
     if (isSupabaseConfigured) {
-      // NOTE: Supabase sends the email using the "Magic Link" template.
-      // For the user to receive the numeric code in email (not just a link),
-      // the Magic Link template MUST include `{{ .Token }}`.
+      const redirectTo =
+        typeof window !== 'undefined'
+          ? `${window.location.origin}/login`
+          : undefined;
       const { error } = await supabase.auth.signInWithOtp({
         email: trimmed,
         options: {
           shouldCreateUser: true,
-          emailRedirectTo:
-            typeof window !== 'undefined'
-              ? `${window.location.origin}/login`
-              : undefined,
+          emailRedirectTo: redirectTo,
         },
       });
       if (error) throw error;
