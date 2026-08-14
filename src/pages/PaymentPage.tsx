@@ -23,6 +23,7 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../components/feedback/ToastProvider';
 import { createOrder, uploadPaymentScreenshot } from '../lib/data';
 import { getErrorMessage } from '../utils/errors';
+import { supabase } from '../lib/supabase';
 import type { OrderItemType } from '../types/order';
 import { formatINR } from '../utils/format';
 import { config } from '../lib/config';
@@ -91,10 +92,6 @@ export function PaymentPage() {
   }
 
   async function submitOrder() {
-    if (!user) {
-      navigate('/login', { state: { redirectTo: '/payment' } });
-      return;
-    }
     if (items.length === 0) return;
     if (!customer.name || !customer.phone) {
       toast({ tone: 'warning', message: 'Please enter your name and phone.' });
@@ -112,15 +109,32 @@ export function PaymentPage() {
       toast({ tone: 'warning', message: 'Please enter the UPI transaction reference.' });
       return;
     }
+    const {
+      data: { session },
+      error: sessionError,
+    } = await supabase.auth.getSession();
+    if (sessionError || !session?.user) {
+      navigate('/login', { state: { redirectTo: '/payment' } });
+      return;
+    }
+    const authUser = session.user;
+    const customerEmail = authUser.email?.trim() || user?.email?.trim() || '';
+    if (!customerEmail) {
+      toast({
+        tone: 'warning',
+        message: 'Your account email is missing. Sign out and sign in again.',
+      });
+      return;
+    }
     try {
       setSubmitting(true);
       setUploading(true);
-      const url = await uploadPaymentScreenshot(user.id, file);
+      const url = await uploadPaymentScreenshot(authUser.id, file);
       setUploading(false);
       const order = await createOrder({
-        user_id: user.id,
+        user_id: authUser.id,
         customer_name: customer.name,
-        customer_email: user.email,
+        customer_email: customerEmail,
         customer_phone: customer.phone,
         delivery_address: hasProducts ? customer.address : undefined,
         subtotal,

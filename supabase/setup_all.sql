@@ -274,6 +274,7 @@ end $$;
 
 drop policy if exists "screenshots: self upload" on storage.objects;
 drop policy if exists "screenshots: self read" on storage.objects;
+drop policy if exists "screenshots: public read" on storage.objects;
 
 alter table public.orders add column if not exists delivery_address text;
 
@@ -441,8 +442,8 @@ create policy "testimonials: admin write" on public.testimonials
 -- Storage bucket for payment screenshots
 -- ==============================================================
 insert into storage.buckets (id, name, public)
-values ('payment-screenshots', 'payment-screenshots', false)
-on conflict (id) do nothing;
+values ('payment-screenshots', 'payment-screenshots', true)
+on conflict (id) do update set public = true;
 
 create policy "screenshots: self upload"
   on storage.objects for insert to authenticated
@@ -450,6 +451,10 @@ create policy "screenshots: self upload"
     bucket_id = 'payment-screenshots'
     and (storage.foldername(name))[1] = auth.uid()::text
   );
+
+create policy "screenshots: public read"
+  on storage.objects for select
+  using (bucket_id = 'payment-screenshots');
 
 create policy "screenshots: self read"
   on storage.objects for select to authenticated

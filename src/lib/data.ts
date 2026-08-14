@@ -919,13 +919,15 @@ export async function uploadPaymentScreenshot(
   const path = `${userId}/${Date.now()}-${file.name.replace(/[^\w.-]+/g, '_')}`;
   const { error } = await supabase.storage
     .from('payment-screenshots')
-    .upload(path, file, { upsert: false });
+    .upload(path, file, {
+      upsert: false,
+      contentType: file.type || 'image/jpeg',
+    });
   if (error) throw error;
-  const { data: signed, error: signErr } = await supabase.storage
+  const { data } = supabase.storage
     .from('payment-screenshots')
-    .createSignedUrl(path, 60 * 60 * 24 * 365);
-  if (signErr) throw signErr;
-  return signed.signedUrl;
+    .getPublicUrl(path);
+  return data.publicUrl;
 }
 
 // ---------------------------------------------------------------------------
