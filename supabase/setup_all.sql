@@ -278,6 +278,22 @@ drop policy if exists "screenshots: public read" on storage.objects;
 
 alter table public.orders add column if not exists delivery_address text;
 
+-- Avoid infinite recursion: policies must not query profiles directly.
+create or replace function public.is_admin_user()
+returns boolean
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select coalesce(
+    (select is_admin from public.profiles where id = auth.uid()),
+    false
+  );
+$$;
+
+grant execute on function public.is_admin_user() to anon, authenticated;
+
 -- ==============================================================
 -- Row Level Security
 -- ==============================================================
@@ -291,40 +307,30 @@ create policy "profiles: self read" on public.profiles
 create policy "profiles: self update" on public.profiles
   for update using (auth.uid() = id);
 create policy "profiles: admin read" on public.profiles
-  for select using (
-    exists (select 1 from public.profiles p
-            where p.id = auth.uid() and p.is_admin)
-  );
+  for select using (public.is_admin_user());
 create policy "profiles: admin update" on public.profiles
-  for update using (
-    exists (select 1 from public.profiles p
-            where p.id = auth.uid() and p.is_admin)
-  );
+  for update using (public.is_admin_user());
 
 -- products (public read, admin write)
 alter table public.products enable row level security;
 create policy "products: public read" on public.products
-  for select using (is_published or exists (
-    select 1 from public.profiles p where p.id = auth.uid() and p.is_admin
-  ));
+  for select using (is_published or public.is_admin_user());
 create policy "products: admin write" on public.products
   for all using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin)
+    public.is_admin_user()
   ) with check (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin)
+    public.is_admin_user()
   );
 
 -- training_courses
 alter table public.training_courses enable row level security;
 create policy "training_courses: public read" on public.training_courses
-  for select using (is_published or exists (
-    select 1 from public.profiles p where p.id = auth.uid() and p.is_admin
-  ));
+  for select using (is_published or public.is_admin_user());
 create policy "training_courses: admin write" on public.training_courses
   for all using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin)
+    public.is_admin_user()
   ) with check (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin)
+    public.is_admin_user()
   );
 
 -- training_modules — visible to enrolled users (approved order with matching course) or admins
@@ -341,13 +347,13 @@ create policy "training_modules: enrolled read" on public.training_modules
         and oi.status = 'access_granted'
         and oi.course_id = training_modules.course_id
     )
-    or exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin)
+    or public.is_admin_user()
   );
 create policy "training_modules: admin write" on public.training_modules
   for all using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin)
+    public.is_admin_user()
   ) with check (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin)
+    public.is_admin_user()
   );
 
 -- training_progress
@@ -356,7 +362,7 @@ create policy "training_progress: self all" on public.training_progress
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 create policy "training_progress: admin read" on public.training_progress
   for select using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin)
+    public.is_admin_user()
   );
 
 -- orders
@@ -369,9 +375,9 @@ create policy "orders: self update pending" on public.orders
   for update using (auth.uid() = user_id and status = 'pending_verification');
 create policy "orders: admin all" on public.orders
   for all using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin)
+    public.is_admin_user()
   ) with check (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin)
+    public.is_admin_user()
   );
 
 -- order_items
@@ -386,9 +392,9 @@ create policy "order_items: self insert" on public.order_items
   );
 create policy "order_items: admin all" on public.order_items
   for all using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin)
+    public.is_admin_user()
   ) with check (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin)
+    public.is_admin_user()
   );
 
 -- offline_bookings
@@ -399,9 +405,9 @@ create policy "bookings: public insert" on public.offline_bookings
   for insert with check (true);
 create policy "bookings: admin all" on public.offline_bookings
   for all using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin)
+    public.is_admin_user()
   ) with check (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin)
+    public.is_admin_user()
   );
 
 -- queries
@@ -412,9 +418,9 @@ create policy "queries: public insert" on public.queries
   for insert with check (true);
 create policy "queries: admin all" on public.queries
   for all using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin)
+    public.is_admin_user()
   ) with check (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin)
+    public.is_admin_user()
   );
 
 -- gallery + testimonials (public read, admin write)
@@ -423,9 +429,9 @@ create policy "gallery: public read" on public.gallery_items
   for select using (true);
 create policy "gallery: admin write" on public.gallery_items
   for all using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin)
+    public.is_admin_user()
   ) with check (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin)
+    public.is_admin_user()
   );
 
 alter table public.testimonials enable row level security;
@@ -433,9 +439,9 @@ create policy "testimonials: public read" on public.testimonials
   for select using (is_published);
 create policy "testimonials: admin write" on public.testimonials
   for all using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin)
+    public.is_admin_user()
   ) with check (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin)
+    public.is_admin_user()
   );
 
 -- ==============================================================
@@ -462,7 +468,7 @@ create policy "screenshots: self read"
     bucket_id = 'payment-screenshots'
     and (
       (storage.foldername(name))[1] = auth.uid()::text
-      or exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin)
+      or public.is_admin_user()
     )
   );
 

@@ -2,6 +2,8 @@ type ErrorLike = {
   message?: string;
   msg?: string;
   error_description?: string;
+  details?: string;
+  hint?: string;
   code?: string;
   error_code?: string;
   status?: number;
@@ -18,6 +20,9 @@ const ERROR_CODE_MESSAGES: Record<string, string> = {
     'Please confirm your email first, or turn off "Confirm email" in Supabase Auth settings.',
   invalid_credentials: 'That code did not work. Check the code and try again.',
   otp_expired: 'That code expired. Request a new one.',
+  '42P17':
+    'Database policy error. Run supabase/patches/fix_profiles_rls_recursion.sql in Supabase SQL Editor, then retry.',
+  '42501': 'Permission denied. Sign in again and retry checkout.',
 };
 
 function extractRawMessage(err: ErrorLike): string {
@@ -25,6 +30,8 @@ function extractRawMessage(err: ErrorLike): string {
     err.message,
     err.msg,
     err.error_description,
+    err.details,
+    err.hint,
   ];
   for (const c of candidates) {
     if (typeof c === 'string' && c.trim() && c.trim() !== '{}' && c.trim() !== '[object Object]') {
@@ -96,6 +103,10 @@ function mapAuthMessage(message: string): string {
 
   if (lower.includes('invalid input syntax for type uuid')) {
     return 'Cart item mismatch — clear your cart, refresh the page, and add items again.';
+  }
+
+  if (lower.includes('infinite recursion')) {
+    return 'Database policy error. Run supabase/patches/fix_profiles_rls_recursion.sql in Supabase SQL Editor, then retry.';
   }
 
   return message;
