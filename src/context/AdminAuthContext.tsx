@@ -9,7 +9,10 @@ import {
 } from 'react';
 import { config } from '../lib/config';
 import { readStore, writeStore, removeStore } from '../lib/storage';
-import { ensureSupabaseAdminAccess } from '../lib/adminSession';
+import {
+  ADMIN_SESSION_KEY,
+  ADMIN_SESSION_TTL_MS,
+} from '../lib/adminPortal';
 
 interface AdminAuthContextValue {
   isAdmin: boolean;
@@ -19,10 +22,6 @@ interface AdminAuthContextValue {
 }
 
 const AdminAuthContext = createContext<AdminAuthContextValue | null>(null);
-
-const ADMIN_SESSION_KEY = 'lakhe.admin.session';
-// Session lifetime: 8 hours.
-const SESSION_TTL_MS = 8 * 60 * 60 * 1000;
 
 interface AdminSession {
   createdAt: number;
@@ -39,7 +38,7 @@ export function useAdminAuth(): AdminAuthContextValue {
 function readSession(): AdminSession | null {
   const s = readStore<AdminSession | null>(ADMIN_SESSION_KEY, null);
   if (!s) return null;
-  if (Date.now() - s.createdAt > SESSION_TTL_MS) {
+  if (Date.now() - s.createdAt > ADMIN_SESSION_TTL_MS) {
     removeStore(ADMIN_SESSION_KEY);
     return null;
   }
@@ -68,7 +67,6 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
     if (password !== expected) {
       throw new Error('Incorrect password.');
     }
-    await ensureSupabaseAdminAccess(password);
     const session: AdminSession = { createdAt: Date.now() };
     writeStore(ADMIN_SESSION_KEY, session);
     setIsAdmin(true);

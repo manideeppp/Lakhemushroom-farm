@@ -1,13 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AlertCircle, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { Input } from '../../components/forms/Input';
 import { LoadingState } from '../../components/feedback/States';
 import { listAllOrders } from '../../lib/data';
-import { hasSupabaseAdminAccess } from '../../lib/adminSession';
-import { isSupabaseConfigured } from '../../lib/supabase';
 import type { Order, OrderStatus } from '../../types/order';
 import { formatDateTime } from '../../utils/ids';
 import { formatINR } from '../../utils/format';
@@ -25,16 +23,9 @@ export function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[] | null>(null);
   const [q, setQ] = useState('');
   const [tab, setTab] = useState<(typeof TABS)[number]['key']>('all');
-  const [dbAdmin, setDbAdmin] = useState(true);
 
   useEffect(() => {
-    void (async () => {
-      if (isSupabaseConfigured) {
-        setDbAdmin(await hasSupabaseAdminAccess());
-      }
-      const o = await listAllOrders();
-      setOrders(o);
-    })();
+    void listAllOrders().then(setOrders);
   }, []);
 
   const filtered = useMemo(() => {
@@ -64,24 +55,6 @@ export function AdminOrdersPage() {
           </h2>
         </div>
       </div>
-
-      {isSupabaseConfigured && !dbAdmin && (
-        <Card
-          padding="md"
-          className="border-warning/40 bg-cream-100 text-small text-ink-700"
-        >
-          <p className="flex items-start gap-2">
-            <AlertCircle className="h-4 w-4 shrink-0 mt-0.5 text-warning" />
-            <span>
-              Orders may not load until you sign in on the main site with your
-              admin email, then sign in here again. In Supabase SQL run:
-              <code className="mx-1 font-mono text-caption">
-                update profiles set is_admin = true where email = &apos;your@email.com&apos;;
-              </code>
-            </span>
-          </p>
-        </Card>
-      )}
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <Input

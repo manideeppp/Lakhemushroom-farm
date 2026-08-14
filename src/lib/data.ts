@@ -10,6 +10,7 @@
 import { supabase, isSupabaseConfigured } from './supabase';
 import { readStore, writeStore } from './storage';
 import { config } from './config';
+import { isAdminPortalActive, getAdminPortalSecret } from './adminPortal';
 import { newId, generateOrderRef, generateBookingRef } from '../utils/ids';
 
 import type { Product } from '../types/product';
@@ -105,6 +106,32 @@ function seedIfEmpty(): void {
 
 if (typeof window !== 'undefined' && !isSupabaseConfigured) {
   seedIfEmpty();
+}
+
+function useAdminRpc(): boolean {
+  return isSupabaseConfigured && isAdminPortalActive();
+}
+
+async function adminRpc<T>(
+  fn: string,
+  params: Record<string, unknown> = {}
+): Promise<T> {
+  const portal_secret = getAdminPortalSecret();
+  if (!portal_secret) {
+    throw new Error('Admin session expired. Sign in again at /admin.');
+  }
+  const { data, error } = await supabase.rpc(fn, {
+    portal_secret,
+    ...params,
+  });
+  if (error) throw error;
+  return data as T;
+}
+
+function parseRpcArray<T>(data: unknown): T[] {
+  if (Array.isArray(data)) return data as T[];
+  if (data == null) return [];
+  return JSON.parse(String(data)) as T[];
 }
 
 // ---------------------------------------------------------------------------
@@ -392,6 +419,10 @@ export async function listAllOrders(): Promise<Order[]> {
   if (!isSupabaseConfigured) {
     return localGet<Order[]>(K.orders, []);
   }
+  if (useAdminRpc()) {
+    const data = await adminRpc<unknown>('admin_list_orders');
+    return parseRpcArray<Order>(data);
+  }
   const { data, error } = await supabase
     .from('orders')
     .select('*, items:order_items(*)')
@@ -412,7 +443,14 @@ export async function getOrderByRef(ref: string): Promise<Order | null> {
     .eq('order_ref', ref)
     .maybeSingle();
   if (error) throw error;
-  return (data as Order) ?? null;
+  if (data) return data as Order;
+  if (useAdminRpc()) {
+    const rpcData = await adminRpc<unknown>('admin_get_order', {
+      order_ref: ref,
+    });
+    return (rpcData as Order) ?? null;
+  }
+  return null;
 }
 
 export async function updateOrderStatus(
@@ -445,6 +483,14 @@ export async function updateOrderStatus(
       }
       localSet(K.orders, all);
     }
+    return;
+  }
+  if (useAdminRpc()) {
+    await adminRpc('admin_update_order_status', {
+      order_id: orderId,
+      new_status: status,
+      admin_notes,
+    });
     return;
   }
   const patch: Record<string, unknown> = { status, admin_notes };
@@ -489,6 +535,13 @@ export async function updateOrderItemStatus(
       }
     }
     localSet(K.orders, all);
+    return;
+  }
+  if (useAdminRpc()) {
+    await adminRpc('admin_update_order_item_status', {
+      item_id: itemId,
+      new_status: status,
+    });
     return;
   }
   const { error } = await supabase
@@ -566,6 +619,10 @@ export async function listAllBookings(): Promise<OfflineBooking[]> {
   if (!isSupabaseConfigured) {
     return localGet<OfflineBooking[]>(K.bookings, []);
   }
+  if (useAdminRpc()) {
+    const data = await adminRpc<unknown>('admin_list_bookings');
+    return parseRpcArray<OfflineBooking>(data);
+  }
   const { data, error } = await supabase
     .from('offline_bookings')
     .select('*')
@@ -587,6 +644,14 @@ export async function updateBookingStatus(
       all[i].admin_notes = admin_notes;
       localSet(K.bookings, all);
     }
+    return;
+  }
+  if (useAdminRpc()) {
+    await adminRpc('admin_update_booking_status', {
+      booking_id: id,
+      new_status: status,
+      admin_notes,
+    });
     return;
   }
   const { error } = await supabase
@@ -635,6 +700,10 @@ export async function createQuery(
 
 export async function listQueries(): Promise<CustomerQuery[]> {
   if (!isSupabaseConfigured) return localGet<CustomerQuery[]>(K.queries, []);
+  if (useAdminRpc()) {
+    const data = await adminRpc<unknown>('admin_list_queries');
+    return parseRpcArray<CustomerQuery>(data);
+  }
   const { data, error } = await supabase
     .from('queries')
     .select('*')
@@ -656,6 +725,14 @@ export async function updateQueryStatus(
       all[i].admin_notes = admin_notes;
       localSet(K.queries, all);
     }
+    return;
+  }
+  if (useAdminRpc()) {
+    await adminRpc('admin_update_query_status', {
+      query_id: id,
+      new_status: status,
+      admin_notes,
+    });
     return;
   }
   const { error } = await supabase
@@ -759,6 +836,10 @@ export async function upsertProfile(profile: Profile): Promise<Profile> {
 
 export async function listCustomers(): Promise<Profile[]> {
   if (!isSupabaseConfigured) return localGet<Profile[]>(K.profiles, []);
+  if (useAdminRpc()) {
+    const data = await adminRpc<unknown>('admin_list_profiles');
+    return parseRpcArray<Profile>(data);
+  }
   const { data, error } = await supabase
     .from('profiles')
     .select('*')
