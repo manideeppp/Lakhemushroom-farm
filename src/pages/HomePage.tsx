@@ -487,73 +487,72 @@ export function HomePage() {
           </ResponsiveGrid>
         </Section>
 
-        {/* INTERNATIONAL */}
+        {/* INTERNATIONAL + CONTACT — single block, no double gap */}
         <Section size="md">
-          <Card padding="lg" className="bg-forest-50 border-forest-200 text-forest-900">
-            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <div className="flex items-start gap-3">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-forest-900 text-cream-50">
-                  <Globe2 className="h-5 w-5" />
-                </span>
-                <div>
-                  <h3 className="font-serif text-h2 text-forest-900">
-                    Serving international clients
-                  </h3>
-                  <p className="text-small text-forest-800/80 max-w-md">
-                    From France to the Middle East, our products and training
-                    reach mushroom lovers and cultivators around the world.
-                  </p>
+          <div className="space-y-4">
+            <Card padding="lg" className="bg-forest-50 border-forest-200 text-forest-900">
+              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div className="flex items-start gap-3">
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-forest-900 text-cream-50">
+                    <Globe2 className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <h3 className="font-serif text-h2 text-forest-900">
+                      Serving international clients
+                    </h3>
+                    <p className="text-small text-forest-800/80 max-w-md">
+                      From France to the Middle East, our products and training
+                      reach mushroom lovers and cultivators around the world.
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <Link to="/gallery" className="shrink-0">
-                <Button
-                  variant="primary"
-                  rightIcon={<ArrowRight className="h-4 w-4" />}
-                >
-                  See client stories
-                </Button>
-              </Link>
-            </div>
-          </Card>
-        </Section>
-
-        {/* CONTACT CTA */}
-        <Section size="md">
-          <div
-            className="rounded-2xl border border-forest-800 bg-forest-900 p-5 sm:p-6 shadow-card"
-          >
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-              <div className="min-w-0">
-                <h3 className="font-serif text-h2 text-cream-50">
-                  Have a question? Let&apos;s talk.
-                </h3>
-                <p className="mt-1 text-small text-cream-100/90 max-w-md leading-relaxed">
-                  Product enquiries, training queries and order help — we
-                  usually reply within a day.
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-2 shrink-0">
-                <a
-                  href={`https://wa.me/${config.business.whatsapp}`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
+                <Link to="/gallery" className="shrink-0">
                   <Button
-                    variant="secondary"
-                    className="!bg-cream-50 !text-forest-900 !border-cream-100 hover:!bg-cream-100"
-                    leftIcon={<MessageCircle className="h-4 w-4" />}
+                    variant="primary"
+                    rightIcon={<ArrowRight className="h-4 w-4" />}
                   >
-                    Chat on WhatsApp
-                  </Button>
-                </a>
-                <Link to="/contact">
-                  <Button
-                    variant="outline"
-                    className="!border-cream-200/60 !text-cream-50 hover:!bg-white/10 hover:!text-cream-50"
-                  >
-                    Send a query
+                    See client stories
                   </Button>
                 </Link>
+              </div>
+            </Card>
+
+            <div
+              className="rounded-2xl border border-forest-800 bg-forest-900 p-5 sm:p-6 shadow-card"
+            >
+              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div className="min-w-0">
+                  <h3 className="font-serif text-h2 text-cream-50">
+                    Have a question? Let&apos;s talk.
+                  </h3>
+                  <p className="mt-1 text-small text-cream-100/90 max-w-md leading-relaxed">
+                    Product enquiries, training queries and order help — we
+                    usually reply within a day.
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2 shrink-0">
+                  <a
+                    href={`https://wa.me/${config.business.whatsapp}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <Button
+                      variant="secondary"
+                      className="!bg-cream-50 !text-forest-900 !border-cream-100 hover:!bg-cream-100"
+                      leftIcon={<MessageCircle className="h-4 w-4" />}
+                    >
+                      Chat on WhatsApp
+                    </Button>
+                  </a>
+                  <Link to="/contact">
+                    <Button
+                      variant="outline"
+                      className="!border-cream-200/60 !text-cream-50 hover:!bg-white/10 hover:!text-cream-50"
+                    >
+                      Send a query
+                    </Button>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>

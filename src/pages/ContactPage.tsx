@@ -83,11 +83,12 @@ export function ContactPage() {
         <Section size="sm">
           <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
             <Card padding="lg">
-              <form onSubmit={submit} className="space-y-3">
+              <form onSubmit={submit} className="space-y-4">
                 <div className="grid gap-3 sm:grid-cols-2">
                   <Input
                     label="Name"
                     required
+                    autoComplete="name"
                     value={form.name}
                     onChange={(e) =>
                       setForm({ ...form, name: e.target.value })
@@ -97,6 +98,7 @@ export function ContactPage() {
                     label="Email"
                     type="email"
                     required
+                    autoComplete="email"
                     value={form.email}
                     onChange={(e) =>
                       setForm({ ...form, email: e.target.value })
@@ -107,6 +109,7 @@ export function ContactPage() {
                   <Input
                     label="Phone (optional)"
                     inputMode="tel"
+                    autoComplete="tel"
                     value={form.phone}
                     onChange={(e) =>
                       setForm({ ...form, phone: e.target.value })

@@ -36,8 +36,8 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             'text-body text-ink-900 placeholder:text-ink-400 outline-none resize-y',
             'transition-shadow duration-150 ease-gentle',
             error
-              ? 'border-danger/60 focus:shadow-[0_0_0_3px_rgba(168,56,46,0.18)]'
-              : 'border-ink-200/90 focus:border-forest-500 focus:shadow-focus',
+              ? 'border-danger/60 focus:ring-2 focus:ring-danger/15'
+              : 'border-ink-200/90 focus:border-forest-500 focus:ring-2 focus:ring-forest-500/20',
             className
           )}
           {...rest}

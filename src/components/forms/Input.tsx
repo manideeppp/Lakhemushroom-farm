@@ -51,10 +51,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
           'group flex items-center gap-2 rounded-xl border bg-surface-raised px-3.5 h-12 shadow-sm',
           'transition-[border-color,box-shadow] duration-150 ease-gentle',
           error
-            ? 'border-danger/60 focus-within:shadow-[0_0_0_3px_rgba(168,56,46,0.18)]'
+            ? 'border-danger/60 focus-within:ring-2 focus-within:ring-danger/15'
             : success
-              ? 'border-forest-300 focus-within:shadow-focus'
-              : 'border-ink-200/90 focus-within:border-forest-500 focus-within:shadow-focus',
+              ? 'border-forest-300 focus-within:ring-2 focus-within:ring-forest-500/20'
+              : 'border-ink-200/90 focus-within:border-forest-500 focus-within:ring-2 focus-within:ring-forest-500/20',
           disabled && 'bg-ink-50 opacity-70 cursor-not-allowed'
         )}
       >

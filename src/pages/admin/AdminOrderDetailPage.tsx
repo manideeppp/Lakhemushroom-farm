@@ -91,6 +91,45 @@ export function AdminOrderDetailPage() {
     }
   }
 
+  const pending = order.status === 'pending_verification';
+
+  const verificationCard = (
+    <Card padding="lg" elevated className="lg:sticky lg:top-24 space-y-3">
+      <h3 className="font-serif text-h3 text-ink-900">Verification</h3>
+      <p className="text-small text-ink-600">
+        Review payment proof and delivery details, then approve or reject.
+      </p>
+      <Textarea
+        label="Admin notes (optional)"
+        rows={4}
+        value={notes}
+        onChange={(e) => setNotes(e.target.value)}
+        placeholder="Anything to record about this order?"
+      />
+      <div className="flex flex-col gap-2">
+        <Button
+          fullWidth
+          loading={saving}
+          leftIcon={<CheckCircle2 className="h-4 w-4" />}
+          onClick={() => void updateStatus('approved')}
+          disabled={order.status === 'approved'}
+        >
+          Approve order
+        </Button>
+        <Button
+          fullWidth
+          variant="danger"
+          loading={saving}
+          leftIcon={<XCircle className="h-4 w-4" />}
+          onClick={() => void updateStatus('rejected')}
+          disabled={order.status === 'rejected'}
+        >
+          Reject order
+        </Button>
+      </div>
+    </Card>
+  );
+
   return (
     <div className="space-y-4">
       <button
@@ -101,9 +140,17 @@ export function AdminOrderDetailPage() {
         <ArrowLeft className="h-4 w-4" /> Back
       </button>
 
+      {pending && (
+        <div className="lg:hidden space-y-2">
+          <p className="text-caption font-medium text-forest-700 uppercase tracking-widest">
+            Action required
+          </p>
+          {verificationCard}
+        </div>
+      )}
+
       <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
         <div className="space-y-4">
-          {/* Order header */}
           <Card padding="lg">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
@@ -158,7 +205,6 @@ export function AdminOrderDetailPage() {
             </div>
           </Card>
 
-          {/* Payment proof */}
           {order.payment_screenshot_url && (
             <Card padding="lg">
               <h2 className="font-serif text-h2 text-ink-900">
@@ -187,7 +233,6 @@ export function AdminOrderDetailPage() {
             </Card>
           )}
 
-          {/* Items with per-item status */}
           <Card padding="lg">
             <h2 className="font-serif text-h2 text-ink-900">Items</h2>
             <ul className="mt-3 divide-y divide-ink-100">
@@ -195,25 +240,27 @@ export function AdminOrderDetailPage() {
                 const options =
                   it.item_type === 'training' ? TRAINING_STATUS : PRODUCT_STATUS;
                 return (
-                  <li key={it.id} className="py-3 flex items-start gap-3">
-                    <span className="h-12 w-12 shrink-0 overflow-hidden rounded-md bg-forest-50">
-                      {it.image && (
-                        <img
-                          src={it.image}
-                          alt=""
-                          className="h-full w-full object-cover"
-                        />
-                      )}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-serif text-body font-semibold text-ink-900">
-                        {it.name}
-                      </p>
-                      <p className="text-caption text-ink-500">
-                        {it.item_type} · {formatINR(it.unit_price)} × {it.qty}
-                      </p>
+                  <li key={it.id} className="py-3 flex flex-col gap-2 sm:flex-row sm:items-start">
+                    <div className="flex items-start gap-3 flex-1 min-w-0">
+                      <span className="h-12 w-12 shrink-0 overflow-hidden rounded-md bg-forest-50">
+                        {it.image && (
+                          <img
+                            src={it.image}
+                            alt=""
+                            className="h-full w-full object-cover"
+                          />
+                        )}
+                      </span>
+                      <div className="min-w-0">
+                        <p className="font-serif text-body font-semibold text-ink-900">
+                          {it.name}
+                        </p>
+                        <p className="text-caption text-ink-500">
+                          {it.item_type} · {formatINR(it.unit_price)} × {it.qty}
+                        </p>
+                      </div>
                     </div>
-                    <div className="w-48">
+                    <div className="w-full sm:w-48 shrink-0">
                       <Select
                         value={it.status}
                         onChange={(e) =>
@@ -234,44 +281,7 @@ export function AdminOrderDetailPage() {
           </Card>
         </div>
 
-        {/* Actions sidebar */}
-        <div>
-          <Card padding="lg" elevated className="lg:sticky lg:top-24 space-y-3">
-            <h3 className="font-serif text-h3 text-ink-900">Verification</h3>
-            <p className="text-small text-ink-600">
-              Approving will notify the customer, move products to Processing,
-              and grant training access.
-            </p>
-            <Textarea
-              label="Admin notes (optional)"
-              rows={4}
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Anything to record about this order?"
-            />
-            <div className="flex flex-col gap-2">
-              <Button
-                fullWidth
-                loading={saving}
-                leftIcon={<CheckCircle2 className="h-4 w-4" />}
-                onClick={() => void updateStatus('approved')}
-                disabled={order.status === 'approved'}
-              >
-                Approve order
-              </Button>
-              <Button
-                fullWidth
-                variant="danger"
-                loading={saving}
-                leftIcon={<XCircle className="h-4 w-4" />}
-                onClick={() => void updateStatus('rejected')}
-                disabled={order.status === 'rejected'}
-              >
-                Reject order
-              </Button>
-            </div>
-          </Card>
-        </div>
+        <div className="hidden lg:block">{verificationCard}</div>
       </div>
     </div>
   );

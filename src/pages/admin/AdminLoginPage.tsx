@@ -77,8 +77,8 @@ export function AdminLoginPage() {
                   Sign in to admin
                 </h1>
                 <p className="text-small text-ink-600 max-w-xs">
-                  Enter the admin password to manage orders, products, training
-                  and site content.
+                  Enter the admin password. For order approval, sign in on the
+                  main site with your admin email first.
                 </p>
               </div>
 

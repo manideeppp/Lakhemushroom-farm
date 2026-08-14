@@ -108,6 +108,22 @@ export function OrderDetailsPage() {
                     <p className="mt-0.5">{order.admin_notes}</p>
                   </div>
                 )}
+                {order.status === 'approved' && (
+                  <div className="mt-3 rounded-xl border border-forest-200 bg-forest-50 p-4 text-small">
+                    <p className="font-medium text-forest-900 flex items-center gap-1.5">
+                      <CheckCircle2 className="h-4 w-4 text-success" />
+                      Payment verified
+                    </p>
+                    {order.approved_at && (
+                      <p className="mt-1 text-forest-800">
+                        Approved on {formatDateTime(order.approved_at)}
+                      </p>
+                    )}
+                    <p className="mt-1 text-forest-800/90">
+                      Products move to dispatch; training access is granted when ready.
+                    </p>
+                  </div>
+                )}
                 <div className="mt-4 flex flex-wrap gap-2">
                   <Link to={`/orders/${order.order_ref}/receipt`}>
                     <Button leftIcon={<Download className="h-4 w-4" />}>
@@ -253,6 +269,14 @@ export function OrderDetailsPage() {
                     <p className="text-ink-700">{order.customer_phone}</p>
                   )}
                 </div>
+                {order.delivery_address && (
+                  <div className="border-t border-ink-100 pt-3 text-small">
+                    <p className="text-caption text-ink-500">Delivery address</p>
+                    <p className="text-ink-900 leading-relaxed">
+                      {order.delivery_address}
+                    </p>
+                  </div>
+                )}
                 {order.upi_txn_id && (
                   <div className="border-t border-ink-100 pt-3 text-small">
                     <p className="text-caption text-ink-500">UPI reference</p>

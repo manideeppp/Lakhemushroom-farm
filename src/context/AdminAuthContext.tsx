@@ -9,6 +9,7 @@ import {
 } from 'react';
 import { config } from '../lib/config';
 import { readStore, writeStore, removeStore } from '../lib/storage';
+import { ensureSupabaseAdminAccess } from '../lib/adminSession';
 
 interface AdminAuthContextValue {
   isAdmin: boolean;
@@ -67,6 +68,7 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
     if (password !== expected) {
       throw new Error('Incorrect password.');
     }
+    await ensureSupabaseAdminAccess(password);
     const session: AdminSession = { createdAt: Date.now() };
     writeStore(ADMIN_SESSION_KEY, session);
     setIsAdmin(true);

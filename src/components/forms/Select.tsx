@@ -32,8 +32,8 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
           'relative flex items-center rounded-xl border bg-surface-raised h-12 shadow-sm',
           'transition-shadow duration-150 ease-gentle',
           error
-            ? 'border-danger/60 focus-within:shadow-[0_0_0_3px_rgba(168,56,46,0.18)]'
-            : 'border-ink-200/90 focus-within:border-forest-500 focus-within:shadow-focus'
+            ? 'border-danger/60 focus-within:ring-2 focus-within:ring-danger/15'
+            : 'border-ink-200/90 focus-within:border-forest-500 focus-within:ring-2 focus-within:ring-forest-500/20'
         )}
       >
         <select

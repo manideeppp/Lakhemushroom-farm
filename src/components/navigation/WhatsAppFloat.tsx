@@ -1,3 +1,4 @@
+import { useLocation } from 'react-router-dom';
 import { MessageCircle } from 'lucide-react';
 import { config } from '../../lib/config';
 import { cn } from '../../utils/cn';
@@ -14,6 +15,11 @@ export function WhatsAppFloat({
   className,
   withBottomNav = true,
 }: WhatsAppFloatProps) {
+  const location = useLocation();
+  const hideOnContact = location.pathname === '/contact';
+
+  if (hideOnContact) return null;
+
   return (
     <a
       href={`https://wa.me/${config.business.whatsapp}`}
