@@ -15,6 +15,7 @@ import { Button } from '../components/ui/Button';
 import { EmptyState } from '../components/feedback/States';
 import { BackLink } from '../components/navigation/BackLink';
 import { UpiAppBadges } from '../components/payment/UpiAppBadges';
+import { CouponCodeField } from '../components/payment/CouponCodeField';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { formatINR } from '../utils/format';
@@ -23,7 +24,7 @@ const SHIPPING_FLAT = 60;
 const FREE_SHIPPING_THRESHOLD = 999;
 
 export function CartPage() {
-  const { items, subtotal, updateQty, removeItem, itemCount } = useCart();
+  const { items, subtotal, discount, updateQty, removeItem, itemCount } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -32,7 +33,7 @@ export function CartPage() {
       ? 0
       : SHIPPING_FLAT
     : 0;
-  const total = subtotal + shipping;
+  const total = Math.max(0, subtotal + shipping - discount);
 
   function proceed() {
     if (!user) {
@@ -166,6 +167,7 @@ export function CartPage() {
                   <h3 className="font-serif text-h3 text-ink-900">
                     Order summary
                   </h3>
+                  <CouponCodeField />
                   <dl className="space-y-1.5 text-small text-ink-700">
                     <div className="flex justify-between">
                       <dt>Subtotal</dt>
@@ -179,6 +181,12 @@ export function CartPage() {
                         {shipping === 0 ? 'Free' : formatINR(shipping)}
                       </dd>
                     </div>
+                    {discount > 0 && (
+                      <div className="flex justify-between text-forest-800">
+                        <dt>Coupon discount</dt>
+                        <dd className="font-medium">−{formatINR(discount)}</dd>
+                      </div>
+                    )}
                     <div className="flex justify-between border-t border-ink-100 pt-2 mt-2">
                       <dt className="text-body font-semibold text-ink-900">
                         Total
@@ -216,23 +224,29 @@ export function CartPage() {
 
       {items.length > 0 && (
         <div
-          className="fixed inset-x-0 bottom-[var(--bottom-nav-h)] z-30 border-t border-ink-100 bg-surface-raised/95 backdrop-blur-md px-4 py-3 pb-safe shadow-raised lg:hidden"
+          className="fixed inset-x-0 bottom-[var(--bottom-nav-h)] z-30 px-4 pb-safe lg:hidden"
         >
-          <div className="mx-auto flex max-w-content items-center gap-3">
-            <div className="min-w-0 flex-1">
-              <p className="text-caption text-ink-500">Total</p>
-              <p className="text-price font-semibold text-ink-900 leading-tight">
-                {formatINR(total)}
-              </p>
+          <div
+            className="mx-auto max-w-content rounded-2xl border border-forest-200/60 bg-surface-raised/98 backdrop-blur-md shadow-raised px-4 py-3"
+          >
+            <div className="flex items-center gap-3">
+              <div className="min-w-0 flex-1">
+                <p className="text-caption text-ink-500">
+                  {itemCount} items · Total
+                </p>
+                <p className="text-price font-semibold text-ink-900 leading-tight">
+                  {formatINR(total)}
+                </p>
+              </div>
+              <Button
+                size="lg"
+                className="shrink-0 min-w-[130px] shadow-md"
+                onClick={proceed}
+                rightIcon={<ArrowRight className="h-5 w-5" />}
+              >
+                Checkout
+              </Button>
             </div>
-            <Button
-              size="lg"
-              className="shrink-0"
-              onClick={proceed}
-              rightIcon={<ArrowRight className="h-5 w-5" />}
-            >
-              Checkout
-            </Button>
           </div>
         </div>
       )}

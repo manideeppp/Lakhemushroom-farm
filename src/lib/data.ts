@@ -32,6 +32,7 @@ import type {
   QueryStatus,
 } from '../types/booking';
 import type { GalleryItem, Profile, Testimonial } from '../types/profile';
+import type { Coupon, CouponDiscountType } from '../types/coupon';
 
 import { SAMPLE_PRODUCTS } from '../data/products';
 import { SAMPLE_TRAINING } from '../data/training';
@@ -57,6 +58,7 @@ const K = {
   queries: 'lakhe.queries',
   progress: 'lakhe.progress',
   profiles: 'lakhe.profiles',
+  coupons: 'lakhe.coupons',
   seq: 'lakhe.seq',
 };
 
@@ -102,6 +104,19 @@ function seedIfEmpty(): void {
     localSet<CustomerQuery[]>(K.queries, []);
   if (!localStorage.getItem(K.progress))
     localSet<TrainingProgress[]>(K.progress, []);
+  if (!localStorage.getItem(K.coupons))
+    localSet<Coupon[]>(K.coupons, [
+      {
+        id: 'coupon-welcome',
+        code: 'WELCOME10',
+        description: '10% off your first order',
+        discount_type: 'percent',
+        discount_value: 10,
+        min_subtotal: 100,
+        used_count: 0,
+        is_active: true,
+      },
+    ]);
 }
 
 if (typeof window !== 'undefined' && !isSupabaseConfigured()) {
@@ -353,6 +368,8 @@ export interface CreateOrderInput {
   >;
   upi_txn_id?: string;
   payment_screenshot_url?: string;
+  coupon_code?: string;
+  discount?: number;
 }
 
 const UUID_RE =
@@ -420,6 +437,8 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
       payment_method: 'upi',
       upi_txn_id: input.upi_txn_id,
       payment_screenshot_url: input.payment_screenshot_url,
+      coupon_code: input.coupon_code,
+      discount: input.discount ?? 0,
       created_at: now,
       updated_at: now,
       approved_at: null,
@@ -434,6 +453,16 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
     const all = localGet<Order[]>(K.orders, []);
     all.unshift(order);
     localSet(K.orders, all);
+    if (input.coupon_code) {
+      const coupons = localGet<Coupon[]>(K.coupons, []);
+      const ci = coupons.findIndex(
+        (c) => c.code.toUpperCase() === input.coupon_code!.toUpperCase()
+      );
+      if (ci >= 0) {
+        coupons[ci].used_count += 1;
+        localSet(K.coupons, coupons);
+      }
+    }
     return order;
   }
 
@@ -450,6 +479,8 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
       total: input.total,
       upi_txn_id: input.upi_txn_id,
       payment_screenshot_url: input.payment_screenshot_url,
+      coupon_code: input.coupon_code ?? null,
+      discount: input.discount ?? 0,
     })
     .select()
     .single();
@@ -484,6 +515,10 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
     .insert(itemRows)
     .select();
   if (itemsErr) throw itemsErr;
+
+  if (input.coupon_code) {
+    await supabase.rpc('increment_coupon_use', { p_code: input.coupon_code });
+  }
 
   return { ...(orderRow as Order), items: (items ?? []) as OrderItem[] };
 }
@@ -575,6 +610,150 @@ export async function updateOrderStatus(
     new_status: status,
     admin_notes: admin_notes ?? null,
   });
+}
+
+export async function deleteOrder(orderRef: string): Promise<void> {
+  if (!isSupabaseConfigured()) {
+    const all = localGet<Order[]>(K.orders, []);
+    localSet(
+      K.orders,
+      all.filter((o) => o.order_ref !== orderRef)
+    );
+    return;
+  }
+  if (!isAdminPortalActive()) {
+    throw new Error('Admin session expired. Sign in again at /admin.');
+  }
+  await adminRpc('admin_delete_order', { order_ref: orderRef });
+}
+
+// ---------------------------------------------------------------------------
+// Coupons
+// ---------------------------------------------------------------------------
+
+export interface CouponValidation {
+  valid: boolean;
+  message?: string;
+  code?: string;
+  discount?: number;
+  discount_type?: CouponDiscountType;
+  discount_value?: number;
+}
+
+function localCouponDiscount(coupon: Coupon, subtotal: number): number {
+  const raw =
+    coupon.discount_type === 'percent'
+      ? Math.round(subtotal * (coupon.discount_value / 100))
+      : coupon.discount_value;
+  return Math.min(raw, subtotal);
+}
+
+export async function validateCouponCode(
+  code: string,
+  subtotal: number
+): Promise<CouponValidation> {
+  const trimmed = code.trim();
+  if (!trimmed) {
+    return { valid: false, message: 'Enter a coupon code.' };
+  }
+
+  if (!isSupabaseConfigured()) {
+    const coupons = localGet<Coupon[]>(K.coupons, []);
+    const coupon = coupons.find(
+      (c) => c.code.toUpperCase() === trimmed.toUpperCase()
+    );
+    if (!coupon || !coupon.is_active) {
+      return { valid: false, message: 'Coupon not found.' };
+    }
+    if (subtotal < coupon.min_subtotal) {
+      return {
+        valid: false,
+        message: `Minimum order ₹${coupon.min_subtotal} required.`,
+      };
+    }
+    if (
+      coupon.max_uses != null &&
+      coupon.used_count >= coupon.max_uses
+    ) {
+      return { valid: false, message: 'This coupon has been fully used.' };
+    }
+    const discount = localCouponDiscount(coupon, subtotal);
+    return {
+      valid: true,
+      code: coupon.code,
+      discount,
+      discount_type: coupon.discount_type,
+      discount_value: coupon.discount_value,
+    };
+  }
+
+  const { data, error } = await supabase.rpc('validate_coupon', {
+    p_code: trimmed,
+    p_subtotal: subtotal,
+  });
+  if (error) throw error;
+  const row = data as Record<string, unknown>;
+  if (!row?.valid) {
+    return {
+      valid: false,
+      message: (row?.message as string) ?? 'Invalid coupon.',
+    };
+  }
+  return {
+    valid: true,
+    code: row.code as string,
+    discount: Number(row.discount),
+    discount_type: row.discount_type as CouponDiscountType,
+    discount_value: Number(row.discount_value),
+  };
+}
+
+export async function listCoupons(): Promise<Coupon[]> {
+  if (!isSupabaseConfigured()) {
+    return localGet<Coupon[]>(K.coupons, []);
+  }
+  if (!isAdminPortalActive()) {
+    throw new Error('Admin session expired. Sign in again at /admin.');
+  }
+  const data = await adminRpc<unknown>('admin_list_coupons');
+  return parseRpcArray<Coupon>(data);
+}
+
+export async function upsertCoupon(coupon: Coupon): Promise<Coupon> {
+  if (!isSupabaseConfigured()) {
+    const all = localGet<Coupon[]>(K.coupons, []);
+    const i = all.findIndex((c) => c.id === coupon.id);
+    const row = { ...coupon, code: coupon.code.toUpperCase() };
+    if (i >= 0) all[i] = row;
+    else all.unshift(row);
+    localSet(K.coupons, all);
+    return row;
+  }
+  if (!isAdminPortalActive()) {
+    throw new Error('Admin session expired. Sign in again at /admin.');
+  }
+  const data = await adminRpc<unknown>('admin_upsert_coupon', {
+    coupon: {
+      ...coupon,
+      code: coupon.code.toUpperCase(),
+    },
+  });
+  return data as Coupon;
+}
+
+export async function deleteCoupon(id: string): Promise<void> {
+  if (!isSupabaseConfigured()) {
+    const all = localGet<Coupon[]>(K.coupons, []);
+    localSet(
+      K.coupons,
+      all.filter((c) => c.id !== id)
+    );
+    return;
+  }
+  if (!isAdminPortalActive()) {
+    throw new Error('Admin session expired. Sign in again at /admin.');
+  }
+  await adminRpc('admin_delete_coupon', { coupon_id: id });
 }
 
 export async function updateOrderItemStatus(

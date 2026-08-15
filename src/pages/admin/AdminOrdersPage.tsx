@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { CheckCircle2, Search, XCircle } from 'lucide-react';
+import { CheckCircle2, Search, Trash2, XCircle } from 'lucide-react';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/forms/Input';
 import { LoadingState } from '../../components/feedback/States';
 import { useToast } from '../../components/feedback/ToastProvider';
-import { listAllOrders, updateOrderStatus } from '../../lib/data';
+import { listAllOrders, updateOrderStatus, deleteOrder } from '../../lib/data';
 import type { Order, OrderStatus } from '../../types/order';
 import { isPendingOrderStatus } from '../../types/order';
 import { formatDateTime } from '../../utils/ids';
@@ -61,6 +61,23 @@ export function AdminOrdersPage() {
       toast({
         tone: 'danger',
         message: err instanceof Error ? err.message : 'Could not update order.',
+      });
+    } finally {
+      setActingId(null);
+    }
+  }
+
+  async function removeOrder(order: Order) {
+    if (!confirm(`Delete order ${order.order_ref}? This cannot be undone.`)) return;
+    try {
+      setActingId(order.id);
+      await deleteOrder(order.order_ref);
+      toast({ tone: 'success', message: `Order ${order.order_ref} deleted.` });
+      await load();
+    } catch (err) {
+      toast({
+        tone: 'danger',
+        message: err instanceof Error ? err.message : 'Could not delete order.',
       });
     } finally {
       setActingId(null);
@@ -208,6 +225,17 @@ export function AdminOrdersPage() {
                       </Button>
                     </Link>
                   )}
+                  <Button
+                    fullWidth
+                    variant="ghost"
+                    size="sm"
+                    className="text-danger hover:bg-danger/5"
+                    leftIcon={<Trash2 className="h-3.5 w-3.5" />}
+                    loading={actingId === o.id}
+                    onClick={() => void removeOrder(o)}
+                  >
+                    Delete order
+                  </Button>
                 </Card>
               );
             })}
@@ -283,12 +311,22 @@ export function AdminOrdersPage() {
                         </Button>
                       </div>
                     ) : (
-                      <Link
-                        to={`/admin/orders/${o.order_ref}`}
-                        className="text-caption text-forest-800 hover:underline"
-                      >
-                        View
-                      </Link>
+                      <div className="flex justify-end items-center gap-2">
+                        <Link
+                          to={`/admin/orders/${o.order_ref}`}
+                          className="text-caption text-forest-800 hover:underline"
+                        >
+                          View
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => void removeOrder(o)}
+                          className="touch-icon text-ink-400 hover:text-danger hover:bg-danger/5"
+                          aria-label="Delete order"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
                     )}
                   </td>
                 </tr>

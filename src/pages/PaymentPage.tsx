@@ -17,6 +17,7 @@ import { EmptyState } from '../components/feedback/States';
 import { BackLink } from '../components/navigation/BackLink';
 import { CheckoutStepper } from '../components/payment/CheckoutStepper';
 import { OrderSummaryCard } from '../components/payment/OrderSummaryCard';
+import { CouponCodeField } from '../components/payment/CouponCodeField';
 import { UpiAppBadges } from '../components/payment/UpiAppBadges';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
@@ -32,7 +33,7 @@ const SHIPPING_FLAT = 60;
 const FREE_SHIPPING_THRESHOLD = 999;
 
 export function PaymentPage() {
-  const { items, subtotal, clear } = useCart();
+  const { items, subtotal, discount, appliedCoupon, clear } = useCart();
   const { user, profile } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -52,7 +53,7 @@ export function PaymentPage() {
       ? 0
       : SHIPPING_FLAT
     : 0;
-  const total = subtotal + shipping;
+  const total = Math.max(0, subtotal + shipping - discount);
 
   const canSubmit =
     customer.name.trim() &&
@@ -142,6 +143,8 @@ export function PaymentPage() {
         total,
         upi_txn_id: txnId,
         payment_screenshot_url: url,
+        coupon_code: appliedCoupon?.code,
+        discount,
         items: items.map((it) => ({
           item_type: it.type as OrderItemType,
           product_id: it.type === 'product' ? it.id : null,
@@ -213,15 +216,20 @@ export function PaymentPage() {
                 items={items}
                 subtotal={subtotal}
                 shipping={shipping}
+                discount={discount}
+                couponCode={appliedCoupon?.code}
                 total={total}
                 className="lg:sticky lg:top-24"
                 footer={
-                  uploading ? (
-                    <p className="mt-3 flex items-center gap-2 text-caption text-forest-800">
-                      <Loader2 className="h-4 w-4 animate-spin" /> Uploading
-                      screenshot…
-                    </p>
-                  ) : null
+                  <>
+                    <CouponCodeField className="mt-3" />
+                    {uploading ? (
+                      <p className="mt-3 flex items-center gap-2 text-caption text-forest-800">
+                        <Loader2 className="h-4 w-4 animate-spin" /> Uploading
+                        screenshot…
+                      </p>
+                    ) : null}
+                  </>
                 }
               />
               <div className="mt-3 hidden lg:block">

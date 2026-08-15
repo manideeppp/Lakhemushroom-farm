@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, CheckCircle2, ExternalLink, XCircle } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, ExternalLink, Trash2, XCircle } from 'lucide-react';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
@@ -12,6 +12,7 @@ import {
   getOrderByRef,
   updateOrderItemStatus,
   updateOrderStatus,
+  deleteOrder,
 } from '../../lib/data';
 import type { Order, OrderItemStatus } from '../../types/order';
 import { isPendingOrderStatus } from '../../types/order';
@@ -92,6 +93,24 @@ export function AdminOrderDetailPage() {
     }
   }
 
+  async function removeOrder() {
+    if (!order) return;
+    if (!confirm(`Delete order ${order.order_ref}? This cannot be undone.`)) return;
+    try {
+      setSaving(true);
+      await deleteOrder(order.order_ref);
+      toast({ tone: 'success', message: 'Order deleted.' });
+      navigate('/admin/orders', { replace: true });
+    } catch (err) {
+      toast({
+        tone: 'danger',
+        message: err instanceof Error ? err.message : 'Could not delete.',
+      });
+    } finally {
+      setSaving(false);
+    }
+  }
+
   const pending = isPendingOrderStatus(order.status);
 
   const verificationCard = (
@@ -126,6 +145,16 @@ export function AdminOrderDetailPage() {
           disabled={order.status === 'rejected'}
         >
           Reject order
+        </Button>
+        <Button
+          fullWidth
+          variant="ghost"
+          className="text-danger hover:bg-danger/5"
+          loading={saving}
+          leftIcon={<Trash2 className="h-4 w-4" />}
+          onClick={() => void removeOrder()}
+        >
+          Delete order
         </Button>
       </div>
     </Card>

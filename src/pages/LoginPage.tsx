@@ -8,12 +8,16 @@ import { Card } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/forms/Input';
-import { OTPInput } from '../components/forms/OTPInput';
 import { LakheLogo } from '../components/navigation/LakheLogo';
 import { useAuth, DEMO_OTP } from '../context/AuthContext';
 import { useToast } from '../components/feedback/ToastProvider';
 import { isSupabaseConfigured } from '../lib/supabase';
-import { OTP_LENGTH, isCompleteOtp } from '../lib/auth';
+import {
+  OTP_LENGTH,
+  isCompleteOtp,
+  isValidOtpFormat,
+  normalizeOtpCode,
+} from '../lib/auth';
 import { getErrorMessage } from '../utils/errors';
 
 interface LocState {
@@ -107,6 +111,14 @@ export function LoginPage() {
     }
   }
 
+  function onCodeChange(raw: string) {
+    const digits = normalizeOtpCode(raw).slice(0, 10);
+    setCode(digits);
+    if (isValidOtpFormat(digits) && digits.length >= OTP_LENGTH) {
+      void handleVerify(digits);
+    }
+  }
+
   return (
     <AppShell hideBottomNav hideFooter>
       <div className="relative min-h-[70vh] bg-gradient-to-b from-cream-100 via-surface to-surface">
@@ -129,158 +141,116 @@ export function LoginPage() {
                 elevated
                 className="space-y-5 border-ink-100/80 shadow-card ring-1 ring-ink-100/60"
               >
-              <div className="flex flex-col items-center text-center gap-2">
-                <LakheLogo size="lg" />
-                <Badge variant="natural" className="w-fit">
-                  <Sparkles className="h-3 w-3" /> Sign in
-                </Badge>
-                <h1 className="font-serif text-h1 text-ink-900 leading-tight">
-                  {step === 'email' ? 'Sign in to Lakhe' : 'Enter your code'}
-                </h1>
-                <p className="text-small text-ink-600 max-w-xs">
-                  {step === 'email'
-                    ? `We send a ${OTP_LENGTH}-digit code to your email — no password needed.`
-                    : `We sent a ${OTP_LENGTH}-digit code to ${email}.`}
-                </p>
-              </div>
+                <div className="flex flex-col items-center text-center gap-2">
+                  <LakheLogo size="lg" />
+                  <Badge variant="natural" className="w-fit">
+                    <Sparkles className="h-3 w-3" /> Sign in
+                  </Badge>
+                  <h1 className="font-serif text-h1 text-ink-900 leading-tight">
+                    {step === 'email' ? 'Sign in to Lakhe' : 'Enter your code'}
+                  </h1>
+                  <p className="text-small text-ink-600 max-w-xs">
+                    {step === 'email'
+                      ? `We send a ${OTP_LENGTH}-digit code to your email — no password needed.`
+                      : `Paste the ${OTP_LENGTH}-digit code from your email.`}
+                  </p>
+                </div>
 
-              {step === 'email' ? (
-                <form onSubmit={handleRequest} className="space-y-3">
-                  <Input
-                    label="Email"
-                    type="email"
-                    required
-                    autoFocus
-                    leftIcon={<Mail className="h-4 w-4" />}
-                    placeholder="you@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                  <Button
-                    type="submit"
-                    fullWidth
-                    size="lg"
-                    loading={sending}
-                  >
-                    Send code
-                  </Button>
-                  {sendError && (
-                    <p className="text-caption text-danger leading-relaxed">
-                      {sendError}
-                    </p>
-                  )}
-                </form>
-              ) : (
-                <div className="space-y-3">
-                  <OTPInput
-                    autoFocus
-                    length={OTP_LENGTH}
-                    value={code}
-                    onChange={setCode}
-                    onComplete={handleVerify}
-                  />
-                  <Button
-                    fullWidth
-                    size="lg"
-                    loading={verifying}
-                    disabled={!isCompleteOtp(code)}
-                    onClick={() => handleVerify(code)}
-                  >
-                    Verify & continue
-                  </Button>
-                  <div className="flex items-center justify-between text-caption">
-                    <button
-                      type="button"
-                      className="text-forest-800 hover:underline"
-                      onClick={() => setStep('email')}
+                {step === 'email' ? (
+                  <form onSubmit={handleRequest} className="space-y-3">
+                    <Input
+                      label="Email"
+                      type="email"
+                      required
+                      autoFocus
+                      leftIcon={<Mail className="h-4 w-4" />}
+                      placeholder="you@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <Button
+                      type="submit"
+                      fullWidth
+                      size="lg"
+                      loading={sending}
                     >
-                      Change email
-                    </button>
-                    <button
-                      type="button"
-                      className="text-forest-800 hover:underline disabled:opacity-60"
-                      disabled={sending}
-                      onClick={() => void handleResend()}
+                      Send code
+                    </Button>
+                    {sendError && (
+                      <p className="text-caption text-danger leading-relaxed">
+                        {sendError}
+                      </p>
+                    )}
+                  </form>
+                ) : (
+                  <div className="space-y-3">
+                    <Input
+                      label="Verification code"
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="one-time-code"
+                      autoFocus
+                      placeholder={`Paste ${OTP_LENGTH}-digit code`}
+                      value={code}
+                      onChange={(e) => onCodeChange(e.target.value)}
+                      onPaste={(e) => {
+                        e.preventDefault();
+                        const text = e.clipboardData.getData('text');
+                        onCodeChange(text);
+                      }}
+                      hint="Copy from email and paste here — verifies automatically."
+                      className="text-center font-mono text-lg tracking-[0.35em]"
+                    />
+                    <Button
+                      fullWidth
+                      size="lg"
+                      loading={verifying}
+                      disabled={!isCompleteOtp(code)}
+                      onClick={() => handleVerify(code)}
                     >
-                      Resend code
-                    </button>
+                      Verify & continue
+                    </Button>
+                    <div className="flex items-center justify-between text-caption">
+                      <button
+                        type="button"
+                        className="text-forest-800 hover:underline"
+                        onClick={() => setStep('email')}
+                      >
+                        Change email
+                      </button>
+                      <button
+                        type="button"
+                        className="text-forest-800 hover:underline disabled:opacity-60"
+                        disabled={sending}
+                        onClick={() => void handleResend()}
+                      >
+                        Resend code
+                      </button>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {!isSupabaseConfigured() && (
-                <div className="flex items-start gap-2 rounded-md border border-warning/40 bg-cream-100 p-3">
-                  <Info className="h-4 w-4 mt-0.5 text-clay-500 shrink-0" />
-                  <div className="text-caption text-ink-700">
-                    <p className="font-medium text-ink-900">Demo mode — no real email</p>
-                    <p className="mt-1">
-                      Supabase is not connected on this deploy. Copy the same values
-                      from your local <span className="font-mono">.env.local</span> into
-                      Vercel → Project → Settings → Environment Variables:
-                    </p>
-                    <ul className="mt-2 list-disc pl-4 space-y-0.5 font-mono text-ink-800">
-                      <li>VITE_SUPABASE_URL</li>
-                      <li>VITE_SUPABASE_ANON_KEY</li>
-                    </ul>
-                    <p className="mt-2">
-                      Enable for <strong>Production</strong>, then{' '}
-                      <strong>Redeploy</strong> (Vite only reads env vars at build
-                      time — adding them without redeploying keeps demo mode).
-                    </p>
-                    <p className="mt-2">
-                      For testing now, use code{' '}
-                      <span className="font-mono font-semibold">{DEMO_OTP}</span> (or any
-                      6–10 digits).
-                    </p>
+                {!isSupabaseConfigured() && (
+                  <div className="flex items-start gap-2 rounded-md border border-warning/40 bg-cream-100 p-3">
+                    <Info className="h-4 w-4 mt-0.5 text-clay-500 shrink-0" />
+                    <div className="text-caption text-ink-700">
+                      <p className="font-medium text-ink-900">Demo mode</p>
+                      <p className="mt-1">
+                        Use code{' '}
+                        <span className="font-mono font-semibold">{DEMO_OTP}</span>
+                      </p>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {isSupabaseConfigured() && step === 'otp' && (
-                <div className="flex items-start gap-2 rounded-md bg-cream-100 border border-cream-200 p-3">
-                  <Info className="h-4 w-4 mt-0.5 text-clay-500 shrink-0" />
-                  <div className="text-caption text-ink-700 space-y-2">
-                    <p className="font-medium text-ink-900">No code in your inbox?</p>
-                    <ul className="list-disc pl-4 space-y-1">
-                      <li>Check spam / promotions for &quot;Your Lakhe sign-in code&quot;.</li>
-                      <li>
-                        In Supabase → <strong>Authentication → Email Templates</strong>, put{' '}
-                        <span className="font-mono">{'{{ .Token }}'}</span> in both{' '}
-                        <strong>Magic Link</strong> and <strong>Confirm signup</strong> templates.
-                      </li>
-                      <li>
-                        Turn <strong>Confirm email</strong> OFF under Authentication →
-                        Sign In / Providers → Email.
-                      </li>
-                      <li>
-                        Set up custom SMTP (Resend): Supabase → Project Settings →
-                        Authentication → SMTP. Default Supabase mail is only ~3 emails/hour.
-                      </li>
-                      <li>
-                        On Resend&apos;s free tier, mail only goes to your Resend account email
-                        until you verify a domain.
-                      </li>
-                      <li>
-                        Add your site URL in Supabase → Authentication → URL Configuration
-                        (Site URL + Redirect URLs).
-                      </li>
-                    </ul>
-                    <p>
-                      Still stuck? Open Supabase → <strong>Logs → Auth</strong> after clicking
-                      Send code — errors there show the exact SMTP/template problem.
-                    </p>
-                  </div>
+                <div className="flex items-center justify-center gap-2 text-caption text-ink-500">
+                  <ShieldCheck className="h-4 w-4 text-forest-600" />
+                  We only use your email to keep your orders safe.
                 </div>
-              )}
-
-              <div className="flex items-center justify-center gap-2 text-caption text-ink-500">
-                <ShieldCheck className="h-4 w-4 text-forest-600" />
-                We only use your email to keep your orders safe.
-              </div>
-            </Card>
-          </div>
-        </Section>
-      </PageContainer>
+              </Card>
+            </div>
+          </Section>
+        </PageContainer>
       </div>
     </AppShell>
   );

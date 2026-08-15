@@ -1,8 +1,10 @@
 import type { ReactNode } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Header } from './Header';
 import { MobileBottomNav } from '../navigation/MobileBottomNav';
 import { Footer } from './Footer';
 import { WhatsAppFloat } from '../navigation/WhatsAppFloat';
+import { AddedToCartBar } from '../cart/AddedToCartBar';
 import { cn } from '../../utils/cn';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
@@ -31,13 +33,15 @@ export function AppShell({
   hideFooter = false,
   className,
 }: AppShellProps) {
-  const { itemCount } = useCart();
+  const { itemCount, recentAdd } = useCart();
   const { user, profile } = useAuth();
+  const location = useLocation();
 
   const cartCount = cartCountProp ?? itemCount;
   const isLoggedIn = isLoggedInProp ?? !!user;
   const userName =
     userNameProp ?? profile?.full_name ?? user?.email?.split('@')[0];
+  const showFooter = !hideFooter && location.pathname === '/';
 
   return (
     <div className="min-h-dvh flex flex-col bg-surface text-ink-800">
@@ -46,6 +50,7 @@ export function AppShell({
         isLoggedIn={isLoggedIn}
         userName={userName}
       />
+      {recentAdd && <AddedToCartBar />}
       <main
         className={cn(
           'flex-1 w-full',
@@ -56,7 +61,7 @@ export function AppShell({
       >
         {children}
       </main>
-      {!hideFooter && <Footer />}
+      {!hideFooter && showFooter && <Footer />}
       {!hideBottomNav && <MobileBottomNav cartCount={cartCount} />}
       <WhatsAppFloat withBottomNav={!hideBottomNav} />
     </div>

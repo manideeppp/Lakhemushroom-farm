@@ -29,13 +29,19 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
       )}
       <div
         className={cn(
-          'relative flex items-center rounded-xl border bg-surface-raised h-12 shadow-sm',
-          'transition-shadow duration-150 ease-gentle',
-          error
-            ? 'border-danger/60 focus-within:ring-2 focus-within:ring-danger/15'
-            : 'border-ink-200/90 focus-within:border-forest-500 focus-within:ring-2 focus-within:ring-forest-500/20'
+          'form-field-shell',
+          error && 'border-danger/50 focus-within:border-danger/60'
         )}
       >
+        <div
+          className={cn(
+            'form-field-inner relative flex items-center h-12',
+            'transition-shadow duration-150 ease-gentle',
+            error
+              ? 'focus-within:ring-2 focus-within:ring-danger/15'
+              : 'focus-within:ring-2 focus-within:ring-forest-500/15'
+          )}
+        >
         <select
           ref={ref}
           id={inputId}
@@ -54,6 +60,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
           className="pointer-events-none absolute right-3 h-4 w-4 text-ink-500"
           aria-hidden
         />
+        </div>
       </div>
       {hint && !error && (
         <p className="mt-1 text-caption text-ink-500">{hint}</p>

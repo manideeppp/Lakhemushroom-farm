@@ -35,6 +35,7 @@ import { AdminTrainingPage } from '../pages/admin/AdminTrainingPage';
 import { AdminBookingsPage } from '../pages/admin/AdminBookingsPage';
 import { AdminQueriesPage } from '../pages/admin/AdminQueriesPage';
 import { AdminGalleryPage } from '../pages/admin/AdminGalleryPage';
+import { AdminCouponsPage } from '../pages/admin/AdminCouponsPage';
 
 import { AdminRoute, ProtectedRoute } from './Guards';
 
@@ -135,6 +136,7 @@ export function AppRoutes() {
         <Route index element={<AdminDashboardPage />} />
         <Route path="orders" element={<AdminOrdersPage />} />
         <Route path="orders/:ref" element={<AdminOrderDetailPage />} />
+        <Route path="coupons" element={<AdminCouponsPage />} />
         <Route path="customers" element={<AdminCustomersPage />} />
         <Route path="products" element={<AdminProductsPage />} />
         <Route path="training" element={<AdminTrainingPage />} />

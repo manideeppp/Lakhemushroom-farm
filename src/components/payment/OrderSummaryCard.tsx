@@ -8,6 +8,8 @@ export function OrderSummaryCard({
   items,
   subtotal,
   shipping,
+  discount = 0,
+  couponCode,
   total,
   footer,
   className,
@@ -15,6 +17,8 @@ export function OrderSummaryCard({
   items: CartItem[];
   subtotal: number;
   shipping: number;
+  discount?: number;
+  couponCode?: string;
   total: number;
   footer?: ReactNode;
   className?: string;
@@ -60,6 +64,12 @@ export function OrderSummaryCard({
             {shipping === 0 ? 'Free' : formatINR(shipping)}
           </dd>
         </div>
+        {discount > 0 && (
+          <div className="flex justify-between text-forest-800">
+            <dt>Coupon{couponCode ? ` (${couponCode})` : ''}</dt>
+            <dd className="font-medium">−{formatINR(discount)}</dd>
+          </div>
+        )}
         <div className="flex justify-between border-t border-ink-100 pt-2 mt-2">
           <dt className="text-body font-semibold text-ink-900">Total</dt>
           <dd className="text-price font-semibold text-ink-900">

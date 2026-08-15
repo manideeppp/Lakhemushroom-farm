@@ -6,6 +6,8 @@ import { Section, SectionHeader } from '../components/layout/Section';
 import { ResponsiveImage } from '../components/media/ResponsiveImage';
 import { ResponsiveVideo } from '../components/media/ResponsiveVideo';
 import { LoadingState, EmptyState } from '../components/feedback/States';
+import { AutoScrollGallery } from '../components/gallery/AutoScrollGallery';
+import { Card } from '../components/ui/Card';
 import { listGallery } from '../lib/data';
 import type { GalleryItem } from '../types/profile';
 import { cn } from '../utils/cn';
@@ -63,6 +65,28 @@ export function GalleryPage() {
             ))}
           </div>
         </Section>
+
+        {items && items.length > 0 && (
+          <Section size="sm">
+            <AutoScrollGallery className="py-1">
+              {items.slice(0, 16).map((g) => (
+                <button
+                  key={`scroll-${g.id}`}
+                  type="button"
+                  onClick={() => setLightbox(g)}
+                  className="w-48 sm:w-64 shrink-0 overflow-hidden rounded-lg border border-ink-100 focus-visible:shadow-focus"
+                >
+                  <ResponsiveImage
+                    src={g.thumbnail_url || g.media_url}
+                    alt={g.caption ?? 'Gallery'}
+                    aspect="aspect-[4/5]"
+                    rounded="none"
+                  />
+                </button>
+              ))}
+            </AutoScrollGallery>
+          </Section>
+        )}
 
         <Section size="sm">
           {!filtered ? (

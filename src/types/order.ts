@@ -45,6 +45,8 @@ export interface Order {
   payment_method: 'upi';
   upi_txn_id?: string;
   payment_screenshot_url?: string;
+  coupon_code?: string;
+  discount?: number;
   admin_notes?: string;
   created_at: string;
   updated_at?: string;

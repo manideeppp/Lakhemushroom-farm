@@ -11,6 +11,7 @@ import {
   Menu,
   Package,
   ShoppingBag,
+  Tag,
   Users2,
   X,
 } from 'lucide-react';
@@ -28,6 +29,7 @@ interface NavItem {
 const NAV: NavItem[] = [
   { to: '/admin', label: 'Dashboard', icon: <LayoutDashboard className="h-4 w-4" /> },
   { to: '/admin/orders', label: 'Orders', icon: <ShoppingBag className="h-4 w-4" /> },
+  { to: '/admin/coupons', label: 'Coupons', icon: <Tag className="h-4 w-4" /> },
   { to: '/admin/customers', label: 'Customers', icon: <Users2 className="h-4 w-4" /> },
   { to: '/admin/products', label: 'Products', icon: <Package className="h-4 w-4" /> },
   { to: '/admin/training', label: 'Training', icon: <BookOpen className="h-4 w-4" /> },

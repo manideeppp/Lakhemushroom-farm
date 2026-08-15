@@ -16,9 +16,9 @@ import { AppShell } from '../components/layout/AppShell';
 import { PageContainer } from '../components/layout/PageContainer';
 import { Section, SectionHeader } from '../components/layout/Section';
 import {
-  HorizontalScroll,
   ResponsiveGrid,
 } from '../components/layout/Layout';
+import { AutoScrollGallery } from '../components/gallery/AutoScrollGallery';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { Card } from '../components/ui/Card';
@@ -249,9 +249,9 @@ export function HomePage() {
               </Link>
             }
           />
-          <HorizontalScroll padded gap="md">
+          <AutoScrollGallery className="py-1">
             {showcaseGallery.slice(0, 12).map((g) => (
-              <div key={g.id} className="snap-start shrink-0 w-56 sm:w-72">
+              <div key={g.id} className="w-56 sm:w-72 shrink-0">
                 <Card padding="none" className="overflow-hidden">
                   <div className="relative">
                     {g.type === 'video' ? (
@@ -288,7 +288,7 @@ export function HomePage() {
                 </Card>
               </div>
             ))}
-          </HorizontalScroll>
+          </AutoScrollGallery>
         </Section>
       </PageContainer>
 

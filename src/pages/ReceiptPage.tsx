@@ -73,6 +73,17 @@ export function ReceiptPage() {
 
           {/* Receipt */}
           <div className="mx-auto max-w-3xl bg-surface-raised border border-ink-100 rounded-lg shadow-subtle p-8 print:shadow-none print:border-0 print:rounded-none">
+            {order.delivery_address && (
+              <div className="mb-5 rounded-xl border-2 border-forest-300 bg-forest-50 px-4 py-4 shadow-sm">
+                <p className="text-caption font-semibold uppercase tracking-widest text-forest-800">
+                  Delivery address
+                </p>
+                <p className="mt-2 text-body font-semibold text-ink-900 leading-relaxed">
+                  {order.delivery_address}
+                </p>
+              </div>
+            )}
+
             <header className="flex flex-wrap items-start justify-between gap-4 border-b border-ink-200 pb-5">
               <div className="flex items-center gap-3">
                 <LakheLogo size="md" />
@@ -183,6 +194,12 @@ export function ReceiptPage() {
                   {order.shipping === 0 ? 'Free' : formatINR(order.shipping)}
                 </span>
               </div>
+              {(order.discount ?? 0) > 0 && (
+                <div className="flex justify-between text-forest-800">
+                  <span>Coupon{order.coupon_code ? ` (${order.coupon_code})` : ''}</span>
+                  <span className="font-medium">−{formatINR(order.discount!)}</span>
+                </div>
+              )}
               <div className="flex justify-between border-t border-ink-200 pt-1 mt-1">
                 <span className="text-body font-semibold text-ink-900">
                   Total paid
