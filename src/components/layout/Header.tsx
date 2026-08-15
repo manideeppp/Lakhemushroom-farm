@@ -53,7 +53,7 @@ export function Header({
     <>
       <header
         className={cn(
-          'sticky top-0 z-40 w-full bg-surface/85 backdrop-blur-md border-b border-ink-100',
+          'sticky top-0 z-40 w-full bg-surface/85 backdrop-blur-md border-b border-ink-100 print:hidden',
           className
         )}
       >

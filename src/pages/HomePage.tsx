@@ -495,8 +495,8 @@ export function HomePage() {
         </Section>
 
         {/* INTERNATIONAL + CONTACT */}
-        <Section size="sm" className="!pt-4 sm:!pt-5 !pb-0">
-          <div className="space-y-4">
+        <Section size="sm" className="!pt-3 sm:!pt-4 !pb-0 !mb-0">
+          <div className="space-y-3">
             <Card padding="lg" className="bg-forest-50 border-forest-200 text-forest-900">
               <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div className="flex items-start gap-3">
