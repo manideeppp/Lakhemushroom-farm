@@ -1,13 +1,14 @@
+import homeStoryFarm from '../assets/home-story-farm.png';
+import founderPortrait from '../assets/founder-portrait.png';
+
 /** Open-source media URLs for the home page (Unsplash / Pexels / Coverr). */
 
 export const HOME_HERO_IMAGE =
   'https://images.unsplash.com/photo-1611574474461-46f3f36fbb90?auto=format&fit=crop&w=2000&q=80';
 
-export const HOME_STORY_IMAGE =
-  'https://images.unsplash.com/photo-1500382017468-90403fed7ef7?auto=format&fit=crop&w=800&q=80';
+export const HOME_STORY_IMAGE = homeStoryFarm;
 
-export const HOME_FOUNDER_IMAGE =
-  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80';
+export const HOME_FOUNDER_IMAGE = founderPortrait;
 
 export const HOME_FARM_SHOWCASE = [
   {

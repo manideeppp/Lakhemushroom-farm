@@ -12,31 +12,30 @@ import { AppShell } from '../components/layout/AppShell';
 import { PageContainer } from '../components/layout/PageContainer';
 import { Section, SectionHeader } from '../components/layout/Section';
 import { ResponsiveGrid } from '../components/layout/Layout';
-import { ResponsiveImage } from '../components/media/ResponsiveImage';
 import { Card } from '../components/ui/Card';
-import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 import { config } from '../lib/config';
+import { HOME_FOUNDER_IMAGE } from '../data/home';
 
 export function FounderPage() {
   return (
     <AppShell>
       <PageContainer as="section" className="pt-4 sm:pt-8">
-        <div className="relative overflow-hidden rounded-2xl bg-forest-900 text-cream-50 shadow-card">
-          <div className="grid gap-0 md:grid-cols-2">
-            <div className="relative min-h-[280px] md:min-h-[420px]">
-              <ResponsiveImage
-                src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=1400&q=70"
+        <div className="overflow-hidden rounded-2xl border border-ink-100 bg-white shadow-card">
+          <div className="grid gap-0 md:grid-cols-2 md:items-stretch">
+            <div
+              className="flex items-end justify-center bg-gradient-to-b from-sage-50/60 to-white px-4 pt-6 pb-0 sm:px-8 sm:pt-8 min-h-[280px] md:min-h-[420px]"
+            >
+              <img
+                src={HOME_FOUNDER_IMAGE}
                 alt="Founder of Lakhe Mushroom Farm"
-                aspect="aspect-auto h-full"
-                rounded="none"
-                containerClassName="!h-full"
+                className="w-full max-h-[min(70vh,520px)] object-contain object-bottom"
               />
             </div>
-            <div className="relative flex flex-col justify-center gap-3 px-6 py-10 sm:px-10 sm:py-14">
-              <Badge variant="natural" className="w-fit">
-                <Sprout className="h-3 w-3" /> Meet the Founder
-              </Badge>
+            <div className="relative flex flex-col justify-center gap-3 bg-forest-900 px-6 py-10 text-cream-50 sm:px-10 sm:py-14">
+              <p className="text-label uppercase tracking-[0.2em] text-cream-200/90 font-medium">
+                Meet the founder
+              </p>
               <h1 className="font-serif text-[2.25rem] leading-[1.05] sm:text-hero tracking-tight">
                 The person behind
                 <br />

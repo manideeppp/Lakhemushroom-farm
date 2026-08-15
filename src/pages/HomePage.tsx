@@ -48,6 +48,8 @@ import type { TrainingCourse, TrainingFormat } from '../types/training';
 import type { GalleryItem } from '../types/profile';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../components/feedback/ToastProvider';
+import { config } from '../lib/config';
+import { WhatsAppIcon } from '../components/icons/WhatsAppIcon';
 
 const formatLabel: Record<TrainingFormat, 'Online' | 'Offline'> = {
   online: 'Online',
@@ -432,13 +434,15 @@ export function HomePage() {
         <PageContainer>
           <Section size="md">
             <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
-              <ResponsiveImage
-                src={HOME_STORY_IMAGE}
-                alt="Lakhe mushroom farm"
-                aspect="aspect-[4/3]"
-                rounded="lg"
-                className="shadow-subtle"
-              />
+              <div
+                className="flex items-center justify-center rounded-2xl border border-ink-100 bg-white p-3 sm:p-5 shadow-subtle"
+              >
+                <img
+                  src={HOME_STORY_IMAGE}
+                  alt="Lakhe Mushroom Farm — spawn, grow, harvest and pack"
+                  className="w-full h-auto max-h-[min(75vh,560px)] object-contain"
+                />
+              </div>
               <div>
                 <p className="text-label uppercase tracking-widest text-forest-700 font-medium">
                   Our story
@@ -486,13 +490,15 @@ export function HomePage() {
                   </Button>
                 </Link>
               </div>
-              <ResponsiveImage
-                src={HOME_FOUNDER_IMAGE}
-                alt="Lakhe Mushroom Farm founder"
-                aspect="aspect-[4/3]"
-                rounded="lg"
-                className="order-1 lg:order-2 shadow-subtle"
-              />
+              <div
+                className="order-1 lg:order-2 flex items-end justify-center rounded-2xl border border-ink-100 bg-white p-3 sm:p-5 shadow-subtle"
+              >
+                <img
+                  src={HOME_FOUNDER_IMAGE}
+                  alt="Founder of Lakhe Mushroom Farm"
+                  className="w-full h-auto max-h-[min(75vh,640px)] object-contain object-bottom"
+                />
+              </div>
             </div>
           </Section>
         </PageContainer>
@@ -565,16 +571,18 @@ export function HomePage() {
                     Explore training
                   </Button>
                 </Link>
-                <Link to="/contact">
-                  <Button
-                    size="lg"
-                    variant="ghost"
-                    className="!text-cream-100 hover:!bg-white/10"
-                  >
-                    Talk to us
-                  </Button>
-                </Link>
               </div>
+              <a
+                href={`https://wa.me/${config.business.whatsapp}`}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-5 inline-flex items-center justify-center gap-2 rounded-xl border border-cream-200/25 bg-white/5 px-5 py-2.5 text-small font-medium text-cream-50 transition-colors hover:bg-white/10 hover:border-cream-200/40"
+              >
+                <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#25D366] text-white">
+                  <WhatsAppIcon className="h-4 w-4" />
+                </span>
+                Talk to us on WhatsApp
+              </a>
             </div>
           </Section>
         </PageContainer>

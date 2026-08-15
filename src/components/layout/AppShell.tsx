@@ -4,6 +4,7 @@ import { Header } from './Header';
 import { MobileBottomNav } from '../navigation/MobileBottomNav';
 import { Footer } from './Footer';
 import { AddedToCartBar } from '../cart/AddedToCartBar';
+import { CheckoutTopBar } from '../cart/CheckoutTopBar';
 import { cn } from '../../utils/cn';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
@@ -41,6 +42,8 @@ export function AppShell({
   const userName =
     userNameProp ?? profile?.full_name ?? user?.email?.split('@')[0];
   const showFooter = !hideFooter && location.pathname === '/';
+  const onCheckoutPath =
+    location.pathname === '/cart' || location.pathname === '/payment';
 
   return (
     <div className="min-h-dvh flex flex-col bg-white text-ink-800">
@@ -49,10 +52,14 @@ export function AppShell({
         isLoggedIn={isLoggedIn}
         userName={userName}
       />
-      {recentAdd && <AddedToCartBar />}
+      {recentAdd && !onCheckoutPath && <AddedToCartBar />}
+      {onCheckoutPath && itemCount > 0 && <CheckoutTopBar />}
       <main
         className={cn(
           'flex-1 w-full',
+          (recentAdd && !onCheckoutPath) || (onCheckoutPath && itemCount > 0)
+            ? 'pt-12 sm:pt-[3.25rem]'
+            : undefined,
           !hideBottomNav &&
             'pb-[calc(var(--bottom-nav-h)+env(safe-area-inset-bottom)+8px)] lg:pb-0',
           className

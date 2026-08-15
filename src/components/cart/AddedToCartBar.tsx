@@ -1,17 +1,29 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, ShoppingBag, X } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
 import { formatINR } from '../../utils/format';
 
 export function AddedToCartBar() {
   const { recentAdd, dismissRecentAdd, itemCount, subtotal } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   if (!recentAdd) return null;
 
+  function goCheckout() {
+    dismissRecentAdd();
+    if (!user) {
+      navigate('/login', { state: { redirectTo: '/payment' } });
+    } else {
+      navigate('/payment');
+    }
+  }
+
   return (
     <div
-      className="fixed inset-x-0 top-[var(--header-h)] z-40 border-b border-forest-200/60 bg-forest-900/95 text-cream-50 shadow-lg backdrop-blur-md animate-slide-up lg:hidden"
+      className="fixed inset-x-0 top-[var(--header-h)] z-40 border-b border-forest-200/60 bg-forest-900/95 text-cream-50 shadow-lg backdrop-blur-md animate-slide-up"
       role="status"
     >
       <div className="mx-auto flex max-w-content items-center gap-2 px-4 py-2.5">
@@ -24,15 +36,25 @@ export function AddedToCartBar() {
             {itemCount} items · {formatINR(subtotal)}
           </p>
         </div>
-        <Link to="/cart" onClick={() => dismissRecentAdd()}>
+        <div className="flex shrink-0 items-center gap-1.5">
+          <Link to="/cart" onClick={() => dismissRecentAdd()}>
+            <Button
+              size="sm"
+              variant="outline"
+              className="!border-cream-200/50 !text-cream-50 hover:!bg-white/10 hidden xs:inline-flex"
+            >
+              View cart
+            </Button>
+          </Link>
           <Button
             size="sm"
-            className="!bg-cream-50 !text-forest-900 hover:!bg-cream-100 shrink-0"
+            className="!bg-cream-50 !text-forest-900 hover:!bg-cream-100"
             rightIcon={<ArrowRight className="h-3.5 w-3.5" />}
+            onClick={goCheckout}
           >
-            View cart
+            Checkout
           </Button>
-        </Link>
+        </div>
         <button
           type="button"
           onClick={() => dismissRecentAdd()}
