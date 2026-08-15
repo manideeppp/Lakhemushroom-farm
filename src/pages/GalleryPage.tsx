@@ -7,7 +7,6 @@ import { ResponsiveImage } from '../components/media/ResponsiveImage';
 import { ResponsiveVideo } from '../components/media/ResponsiveVideo';
 import { LoadingState, EmptyState } from '../components/feedback/States';
 import { AutoScrollGallery } from '../components/gallery/AutoScrollGallery';
-import { Card } from '../components/ui/Card';
 import { listGallery } from '../lib/data';
 import type { GalleryItem } from '../types/profile';
 import { cn } from '../utils/cn';
