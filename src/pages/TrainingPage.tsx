@@ -10,8 +10,7 @@ import { listTraining } from '../lib/data';
 import type { TrainingCourse, TrainingFormat } from '../types/training';
 import { cn } from '../utils/cn';
 
-const FORMATS: { key: 'all' | TrainingFormat; label: string }[] = [
-  { key: 'all', label: 'All formats' },
+const FORMATS: { key: TrainingFormat; label: string }[] = [
   { key: 'online', label: 'Online' },
   { key: 'offline', label: 'Offline' },
 ];
@@ -26,7 +25,7 @@ const formatLabel: Record<TrainingFormat, 'Online' | 'Offline'> = {
 
 export function TrainingPage() {
   const [courses, setCourses] = useState<TrainingCourse[] | null>(null);
-  const [format, setFormat] = useState<(typeof FORMATS)[number]['key']>('all');
+  const [format, setFormat] = useState<TrainingFormat>('online');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,9 +36,6 @@ export function TrainingPage() {
 
   const filtered = useMemo(() => {
     if (!courses) return null;
-    if (format === 'all') return courses;
-    // Treat legacy "hybrid" courses as offline so the public catalogue
-    // only exposes Online / Offline options.
     return courses.filter((c) => {
       const publicFormat: TrainingFormat = c.format === 'hybrid' ? 'offline' : c.format;
       return publicFormat === format;

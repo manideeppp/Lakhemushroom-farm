@@ -91,6 +91,13 @@ export function HomePage() {
     products.length > 0 ? mergeSampleProducts(products) : SAMPLE_PRODUCTS;
   const displayTraining =
     training.length > 0 ? mergeSampleTraining(training) : SAMPLE_TRAINING;
+  const homeTraining = (() => {
+    const online = displayTraining.find((t) => t.format === 'online');
+    const offline = displayTraining.find(
+      (t) => t.format === 'offline' || t.format === 'hybrid'
+    );
+    return [online, offline].filter(Boolean) as TrainingCourse[];
+  })();
   const displayTestimonials =
     testimonials.length > 0 ? testimonials : SAMPLE_TESTIMONIALS;
   const showcaseGallery =
@@ -241,7 +248,7 @@ export function HomePage() {
             action={
               <Link to="/gallery">
                 <Button
-                  variant="ghost"
+                  variant="primary"
                   rightIcon={<ArrowRight className="h-4 w-4" />}
                 >
                   Full gallery
@@ -332,7 +339,7 @@ export function HomePage() {
             action={
               <Link to="/products">
                 <Button
-                  variant="ghost"
+                  variant="primary"
                   rightIcon={<ArrowRight className="h-4 w-4" />}
                 >
                   View all
@@ -383,7 +390,7 @@ export function HomePage() {
             action={
               <Link to="/training">
                 <Button
-                  variant="ghost"
+                  variant="primary"
                   rightIcon={<ArrowRight className="h-4 w-4" />}
                 >
                   View all
@@ -391,8 +398,8 @@ export function HomePage() {
               </Link>
             }
           />
-          <ResponsiveGrid cols={{ base: 1, md: 2, lg: 3 }} gap="md">
-            {displayTraining.slice(0, 3).map((t) => (
+          <ResponsiveGrid cols={{ base: 1, md: 2 }} gap="md">
+            {homeTraining.map((t) => (
               <TrainingCard
                 key={t.id}
                 title={t.title}
@@ -488,7 +495,7 @@ export function HomePage() {
         </Section>
 
         {/* INTERNATIONAL + CONTACT */}
-        <Section size="sm" className="!pt-4 sm:!pt-5 !pb-6 sm:!pb-8">
+        <Section size="sm" className="!pt-4 sm:!pt-5 !pb-2 sm:!pb-3">
           <div className="space-y-4">
             <Card padding="lg" className="bg-forest-50 border-forest-200 text-forest-900">
               <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">

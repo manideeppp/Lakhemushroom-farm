@@ -5,48 +5,65 @@ interface AutoScrollGalleryProps {
   children: ReactNode;
   className?: string;
   speed?: number;
-  pauseOnHover?: boolean;
 }
 
-/** Horizontal auto-scrolling strip — duplicates children for seamless loop. */
+/** Auto-scrolls horizontally; swipe/drag to scroll manually too. */
 export function AutoScrollGallery({
   children,
   className,
-  speed = 0.45,
-  pauseOnHover = true,
+  speed = 0.6,
 }: AutoScrollGalleryProps) {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const offsetRef = useRef(0);
+  const scrollerRef = useRef<HTMLDivElement>(null);
   const pausedRef = useRef(false);
+  const userScrollRef = useRef(false);
+  const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
+    const el = scrollerRef.current;
+    if (!el) return;
 
     let raf = 0;
-    const step = () => {
-      if (!pausedRef.current) {
-        offsetRef.current += speed;
-        const half = track.scrollWidth / 2;
-        if (half > 0 && offsetRef.current >= half) {
-          offsetRef.current = 0;
+    const tick = () => {
+      if (!pausedRef.current && !userScrollRef.current) {
+        el.scrollLeft += speed;
+        const half = el.scrollWidth / 2;
+        if (half > 0 && el.scrollLeft >= half - 1) {
+          el.scrollLeft = 0;
         }
-        track.style.transform = `translateX(-${offsetRef.current}px)`;
       }
-      raf = requestAnimationFrame(step);
+      raf = requestAnimationFrame(tick);
     };
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(tick);
+
+    const onScroll = () => {
+      userScrollRef.current = true;
+      if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+      resumeTimerRef.current = setTimeout(() => {
+        userScrollRef.current = false;
+      }, 2500);
+    };
+
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      el.removeEventListener('scroll', onScroll);
+      if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+    };
   }, [speed, children]);
 
   return (
     <div
-      className={cn('relative overflow-hidden', className)}
+      ref={scrollerRef}
+      className={cn(
+        'flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory',
+        'touch-pan-x cursor-grab active:cursor-grabbing',
+        className
+      )}
       onMouseEnter={() => {
-        if (pauseOnHover) pausedRef.current = true;
+        pausedRef.current = true;
       }}
       onMouseLeave={() => {
-        if (pauseOnHover) pausedRef.current = false;
+        pausedRef.current = false;
       }}
       onTouchStart={() => {
         pausedRef.current = true;
@@ -55,15 +72,9 @@ export function AutoScrollGallery({
         pausedRef.current = false;
       }}
     >
-      <div
-        ref={trackRef}
-        className="flex gap-3 sm:gap-4 will-change-transform"
-        style={{ width: 'max-content' }}
-      >
-        <div className="flex gap-3 sm:gap-4 shrink-0">{children}</div>
-        <div className="flex gap-3 sm:gap-4 shrink-0" aria-hidden>
-          {children}
-        </div>
+      <div className="flex gap-3 sm:gap-4 shrink-0">{children}</div>
+      <div className="flex gap-3 sm:gap-4 shrink-0" aria-hidden>
+        {children}
       </div>
     </div>
   );

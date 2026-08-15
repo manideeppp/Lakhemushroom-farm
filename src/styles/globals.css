@@ -155,20 +155,4 @@
   .touch-icon {
     @apply inline-flex h-11 w-11 items-center justify-center rounded-md;
   }
-
-  .form-field-shell {
-    @apply rounded-2xl border border-ink-200/80 bg-gradient-to-b from-cream-50/90 to-surface p-1 shadow-sm;
-    @apply transition-all duration-200 ease-gentle;
-  }
-
-  .form-field-shell:focus-within {
-    @apply border-forest-400/70 from-forest-50/50 to-surface;
-    box-shadow:
-      0 0 0 3px rgba(45, 90, 61, 0.12),
-      inset 0 1px 0 rgba(255, 255, 255, 0.85);
-  }
-
-  .form-field-inner {
-    @apply rounded-xl bg-surface-raised shadow-[inset_0_1px_2px_rgba(15,23,42,0.05)];
-  }
 }

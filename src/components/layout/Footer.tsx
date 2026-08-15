@@ -6,10 +6,10 @@ import { config } from '../../lib/config';
 
 export function Footer() {
   return (
-    <footer className="mt-6 sm:mt-8 bg-forest-900 text-cream-100 print:hidden">
-      <PageContainer as="div" className="py-10 sm:py-14">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-          <div>
+    <footer className="mt-0 bg-forest-900 text-cream-100 print:hidden">
+      <PageContainer as="div" className="py-8 sm:py-12">
+        <div className="grid grid-cols-2 gap-8 sm:gap-10 lg:grid-cols-4">
+          <div className="col-span-2 lg:col-span-1">
             <LakheLogo size="md" tone="light" />
             <p className="mt-4 text-small text-cream-200/85 max-w-xs leading-relaxed">
               Premium mushroom products and expert training — grown with care,
@@ -36,7 +36,7 @@ export function Footer() {
             </ul>
           </div>
 
-          <div>
+          <div className="col-span-2 lg:col-span-1">
             <h4 className="font-serif text-body-lg text-cream-50">Reach us</h4>
             <ul className="mt-3 space-y-2 text-small text-cream-200/85">
               <li className="flex items-start gap-2">
@@ -63,7 +63,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-2 border-t border-cream-200/10 pt-5 text-caption text-cream-200/70 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-8 flex flex-col gap-2 border-t border-cream-200/10 pt-5 text-caption text-cream-200/70 sm:flex-row sm:items-center sm:justify-between">
           <span>
             © {new Date().getFullYear()} Lakhe Mushroom Farm. All rights reserved.
           </span>

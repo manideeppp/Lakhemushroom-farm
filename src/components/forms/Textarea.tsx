@@ -26,29 +26,22 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             {required && <span className="ml-0.5 text-danger">*</span>}
           </label>
         )}
-        <div
+        <textarea
+          ref={ref}
+          id={inputId}
+          required={required}
+          aria-invalid={!!error || undefined}
           className={cn(
-            'form-field-shell',
-            error && 'border-danger/50 focus-within:border-danger/60'
+            'w-full min-h-[120px] rounded-xl border bg-surface-raised px-3.5 py-3 shadow-sm',
+            'text-body text-ink-900 placeholder:text-ink-400 outline-none resize-y',
+            'transition-[border-color,box-shadow] duration-150 ease-gentle',
+            error
+              ? 'border-danger/60 focus:ring-2 focus:ring-danger/15'
+              : 'border-ink-200/90 focus:border-forest-500 focus:ring-2 focus:ring-forest-500/20',
+            className
           )}
-        >
-          <textarea
-            ref={ref}
-            id={inputId}
-            required={required}
-            aria-invalid={!!error || undefined}
-            className={cn(
-              'form-field-inner w-full min-h-[120px] px-3.5 py-3',
-              'text-body text-ink-900 placeholder:text-ink-400 outline-none resize-y',
-              'transition-shadow duration-150 ease-gentle',
-              error
-                ? 'focus:ring-2 focus:ring-danger/15'
-                : 'focus:ring-2 focus:ring-forest-500/15',
-              className
-            )}
-            {...rest}
-          />
-        </div>
+          {...rest}
+        />
         {hint && !error && (
           <p className="mt-1 text-caption text-ink-500">{hint}</p>
         )}

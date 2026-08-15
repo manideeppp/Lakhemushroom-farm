@@ -48,23 +48,16 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
       )}
       <div
         className={cn(
-          'form-field-shell',
-          error && 'border-danger/50 focus-within:border-danger/60',
-          success && !error && 'border-forest-300/80',
-          disabled && 'opacity-70 cursor-not-allowed'
+          'flex items-center gap-2 rounded-xl border bg-surface-raised px-3.5 h-12',
+          'shadow-sm transition-[border-color,box-shadow] duration-150 ease-gentle',
+          error
+            ? 'border-danger/60 focus-within:ring-2 focus-within:ring-danger/15'
+            : success
+              ? 'border-forest-300 focus-within:ring-2 focus-within:ring-forest-500/20'
+              : 'border-ink-200/90 focus-within:border-forest-500 focus-within:ring-2 focus-within:ring-forest-500/20',
+          disabled && 'bg-ink-50 opacity-70 cursor-not-allowed'
         )}
       >
-        <div
-          className={cn(
-            'form-field-inner group flex items-center gap-2 px-3.5 h-12',
-            'transition-[border-color,box-shadow] duration-150 ease-gentle',
-            error
-              ? 'focus-within:ring-2 focus-within:ring-danger/15'
-              : success
-                ? 'focus-within:ring-2 focus-within:ring-forest-500/20'
-                : 'focus-within:ring-2 focus-within:ring-forest-500/15'
-          )}
-        >
         {leftIcon && (
           <span className="text-ink-400 shrink-0">{leftIcon}</span>
         )}
@@ -76,7 +69,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
           aria-invalid={!!error || undefined}
           aria-describedby={describedBy.join(' ') || undefined}
           className={cn(
-            'flex-1 bg-transparent outline-none text-body text-ink-900 placeholder:text-ink-400',
+            'flex-1 min-w-0 bg-transparent outline-none text-body text-ink-900 placeholder:text-ink-400',
             'disabled:cursor-not-allowed',
             className
           )}
@@ -85,7 +78,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         {rightIcon && (
           <span className="text-ink-400 shrink-0">{rightIcon}</span>
         )}
-        </div>
       </div>
       {hint && !error && !success && (
         <p id={`${inputId}-hint`} className="mt-1 text-caption text-ink-500">
@@ -93,18 +85,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         </p>
       )}
       {error && (
-        <p
-          id={`${inputId}-error`}
-          className="mt-1 text-caption text-danger"
-        >
+        <p id={`${inputId}-error`} className="mt-1 text-caption text-danger">
           {error}
         </p>
       )}
       {success && (
-        <p
-          id={`${inputId}-success`}
-          className="mt-1 text-caption text-success"
-        >
+        <p id={`${inputId}-success`} className="mt-1 text-caption text-success">
           {success}
         </p>
       )}
