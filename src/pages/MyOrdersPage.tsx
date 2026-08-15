@@ -7,7 +7,8 @@ import { Section, SectionHeader } from '../components/layout/Section';
 import { Card } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
-import { EmptyState, LoadingState } from '../components/feedback/States';
+import { EmptyState } from '../components/feedback/States';
+import { OrderListSkeleton } from '../components/feedback/PageSkeletons';
 import { listOrdersForUser } from '../lib/data';
 import { useAuth } from '../context/AuthContext';
 import type { Order, OrderStatus } from '../types/order';
@@ -70,7 +71,7 @@ export function MyOrdersPage() {
 
         <Section size="sm">
           {!filtered ? (
-            <LoadingState />
+            <OrderListSkeleton />
           ) : filtered.length === 0 ? (
             <EmptyState
               title="No orders match"

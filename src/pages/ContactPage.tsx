@@ -4,14 +4,12 @@ import {
   Mail,
   MapPin,
   Phone,
-  Sparkles,
 } from 'lucide-react';
 import { AppShell } from '../components/layout/AppShell';
 import { PageContainer } from '../components/layout/PageContainer';
 import { Section, SectionHeader } from '../components/layout/Section';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
-import { Badge } from '../components/ui/Badge';
 import { Input } from '../components/forms/Input';
 import { WhatsAppIcon } from '../components/icons/WhatsAppIcon';
 import { Textarea } from '../components/forms/Textarea';
@@ -68,11 +66,6 @@ export function ContactPage() {
     <AppShell>
       <PageContainer>
         <Section size="sm">
-          <div className="mb-4">
-            <Badge variant="natural" className="w-fit">
-              <Sparkles className="h-3 w-3" /> Contact
-            </Badge>
-          </div>
           <SectionHeader
             eyebrow="Get in touch"
             title="We’d love to hear from you"

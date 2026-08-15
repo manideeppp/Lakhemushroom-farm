@@ -2,60 +2,52 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   ArrowRight,
-  ExternalLink,
-  Globe2,
+  Award,
+  Building2,
+  Compass,
+  GraduationCap,
   Leaf,
-  MapPin,
   Package,
   Play,
-  Sparkles,
   Sprout,
+  Users,
 } from 'lucide-react';
 import { AppShell } from '../components/layout/AppShell';
 import { PageContainer } from '../components/layout/PageContainer';
 import { Section, SectionHeader } from '../components/layout/Section';
-import {
-  ResponsiveGrid,
-} from '../components/layout/Layout';
+import { ResponsiveGrid } from '../components/layout/Layout';
 import { AutoScrollGallery } from '../components/gallery/AutoScrollGallery';
 import { Button } from '../components/ui/Button';
-import { Badge } from '../components/ui/Badge';
 import { Card } from '../components/ui/Card';
 import {
   FeatureCard,
   ProductCard,
-  StatCard,
   TrainingCard,
 } from '../components/cards/Cards';
 import { ResponsiveImage } from '../components/media/ResponsiveImage';
 import { ResponsiveVideo } from '../components/media/ResponsiveVideo';
 import type { BadgeVariant } from '../components/ui/Badge';
-import { TestimonialCarousel } from '../components/feedback/TestimonialCarousel';
-import { HomeQueryForm } from '../components/forms/HomeQueryForm';
-import { WhatsAppIcon } from '../components/icons/WhatsAppIcon';
+import { ProductGridSkeleton } from '../components/feedback/PageSkeletons';
 import {
   listGallery,
   listProducts,
-  listTestimonials,
   listTraining,
 } from '../lib/data';
 import { mergeSampleProducts, mergeSampleTraining } from '../lib/mediaResolve';
 import { SAMPLE_PRODUCTS } from '../data/products';
 import { SAMPLE_TRAINING } from '../data/training';
 import {
-  SAMPLE_TESTIMONIALS,
-} from '../data/gallery';
-import {
   HOME_FOUNDER_IMAGE,
+  HOME_HERO_IMAGE,
   HOME_STORY_IMAGE,
   HOME_FARM_SHOWCASE,
 } from '../data/home';
+import { trainingImages } from '../data/media';
 import type { Product } from '../types/product';
 import type { TrainingCourse, TrainingFormat } from '../types/training';
-import type { GalleryItem, Testimonial } from '../types/profile';
+import type { GalleryItem } from '../types/profile';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../components/feedback/ToastProvider';
-import { config } from '../lib/config';
 
 const formatLabel: Record<TrainingFormat, 'Online' | 'Offline'> = {
   online: 'Online',
@@ -63,10 +55,37 @@ const formatLabel: Record<TrainingFormat, 'Online' | 'Offline'> = {
   hybrid: 'Offline',
 };
 
+const WHAT_WE_DO = [
+  {
+    title: 'Products',
+    description: 'Fresh mushrooms, spawn, powders and ready-to-eat packs.',
+    icon: Package,
+    to: '/products',
+  },
+  {
+    title: 'Training',
+    description: 'Online and offline programs from a working farm.',
+    icon: GraduationCap,
+    to: '/training',
+  },
+  {
+    title: 'Farm Setup',
+    description: 'Design, build and launch your mushroom unit.',
+    icon: Building2,
+    to: '/consultancy',
+  },
+  {
+    title: 'Consultancy',
+    description: 'Expert guidance for growers and agri entrepreneurs.',
+    icon: Compass,
+    to: '/consultancy',
+  },
+];
+
 export function HomePage() {
+  const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<Product[]>([]);
   const [training, setTraining] = useState<TrainingCourse[]>([]);
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
   const { addItem } = useCart();
   const { toast } = useToast();
@@ -74,16 +93,18 @@ export function HomePage() {
 
   useEffect(() => {
     void (async () => {
-      const [p, t, ts, g] = await Promise.all([
-        listProducts(),
-        listTraining(),
-        listTestimonials(),
-        listGallery(),
-      ]);
-      setProducts(p);
-      setTraining(t);
-      setTestimonials(ts);
-      setGallery(g);
+      try {
+        const [p, t, g] = await Promise.all([
+          listProducts(),
+          listTraining(),
+          listGallery(),
+        ]);
+        setProducts(p);
+        setTraining(t);
+        setGallery(g);
+      } finally {
+        setLoading(false);
+      }
     })();
   }, []);
 
@@ -98,8 +119,6 @@ export function HomePage() {
     );
     return [online, offline].filter(Boolean) as TrainingCourse[];
   })();
-  const displayTestimonials =
-    testimonials.length > 0 ? testimonials : SAMPLE_TESTIMONIALS;
   const showcaseGallery =
     gallery.length > 0
       ? gallery
@@ -120,36 +139,36 @@ export function HomePage() {
         <div className="relative overflow-hidden rounded-2xl bg-forest-900 text-cream-50 shadow-card">
           <div className="absolute inset-0">
             <ResponsiveImage
-              src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=2000&q=70"
+              src={HOME_HERO_IMAGE}
               alt=""
               aspect="aspect-auto h-full"
               rounded="none"
               containerClassName="!h-full"
-              className="opacity-50"
+              className="opacity-55 object-cover"
             />
           </div>
           <span
             aria-hidden
-            className="absolute inset-0 bg-gradient-to-br from-forest-900/85 via-forest-900/60 to-forest-900/30"
+            className="absolute inset-0 bg-gradient-to-br from-forest-950/90 via-forest-900/75 to-forest-800/40"
           />
           <div className="relative flex flex-col gap-4 max-w-xl px-6 py-14 sm:px-10 sm:py-20 lg:px-14 lg:py-24">
-            <Badge variant="natural" className="w-fit">
-              <Sparkles className="h-3 w-3" /> Premium Mushroom Brand
-            </Badge>
+            <p className="text-label uppercase tracking-[0.2em] text-cream-200/90 font-medium">
+              Lakhe Mushroom Farm
+            </p>
             <h1 className="font-serif text-[2.25rem] leading-[1.05] sm:text-hero lg:text-[3.5rem] tracking-tight">
               Grow Mushrooms.
               <br />
-              <span className="text-cream-200">Grow Your Business.</span>
+              <span className="text-cream-100">Build Your Business.</span>
             </h1>
             <p className="text-body-lg text-cream-100/90 max-w-lg">
-              Quality mushroom products, complete farming training and end-to-end
-              farm setup — from a farm that treats mushrooms as a craft.
+              Quality mushroom products, hands-on training and end-to-end farm
+              setup — from a farm that treats mushrooms as a craft.
             </p>
             <div className="flex flex-wrap gap-2 pt-2">
               <Link to="/products">
                 <Button
                   size="lg"
-                  className="bg-cream-50 !text-forest-900 hover:bg-cream-100"
+                  className="bg-cream-50 !text-forest-900 hover:bg-white"
                   rightIcon={<ArrowRight className="h-4 w-4" />}
                 >
                   Explore Products
@@ -159,7 +178,7 @@ export function HomePage() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-cream-200 !text-cream-50 hover:bg-white/10"
+                  className="border-cream-200/80 !text-cream-50 hover:bg-white/10"
                 >
                   Start Training
                 </Button>
@@ -169,402 +188,397 @@ export function HomePage() {
         </div>
       </PageContainer>
 
-      {/* STORY QUICK LINKS — short clickable boxes */}
-      <PageContainer>
-        <Section size="sm">
-          <ResponsiveGrid cols={{ base: 1, sm: 2 }} gap="md">
-            <Link
-              to="/about"
-              aria-label="Read our story"
-              className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-forest-500 rounded-2xl"
-            >
-              <Card
-                padding="none"
-                elevated
-                className="h-full overflow-hidden transition-transform group-hover:-translate-y-0.5"
-              >
-                <div className="grid grid-cols-[7rem_1fr] sm:grid-cols-[9rem_1fr]">
-                  <ResponsiveImage
-                    src={HOME_STORY_IMAGE}
-                    alt="Lakhe mushroom farm landscape"
-                    aspect="aspect-square"
-                    rounded="none"
-                  />
-                  <div className="p-4 sm:p-5 flex flex-col justify-center gap-1">
-                    <span className="text-caption uppercase tracking-widest text-forest-600 font-medium">
-                      Our Story
-                    </span>
-                    <h3 className="font-serif text-h3 text-ink-900 leading-tight">
-                      A farm built on craft & patience
-                    </h3>
-                    <span className="mt-1 inline-flex items-center gap-1 text-small font-medium text-forest-800">
-                      Read the story
-                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                    </span>
-                  </div>
-                </div>
-              </Card>
-            </Link>
-            <Link
-              to="/founder"
-              aria-label="Meet the founder"
-              className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-forest-500 rounded-2xl"
-            >
-              <Card
-                padding="none"
-                elevated
-                className="h-full overflow-hidden transition-transform group-hover:-translate-y-0.5"
-              >
-                <div className="grid grid-cols-[7rem_1fr] sm:grid-cols-[9rem_1fr]">
-                  <ResponsiveImage
-                    src={HOME_FOUNDER_IMAGE}
-                    alt="Lakhe Mushroom Farm founder"
-                    aspect="aspect-square"
-                    rounded="none"
-                  />
-                  <div className="p-4 sm:p-5 flex flex-col justify-center gap-1">
-                    <span className="text-caption uppercase tracking-widest text-forest-600 font-medium">
-                      Founder's Story
-                    </span>
-                    <h3 className="font-serif text-h3 text-ink-900 leading-tight">
-                      The person behind Lakhe
-                    </h3>
-                    <span className="mt-1 inline-flex items-center gap-1 text-small font-medium text-forest-800">
-                      Meet the founder
-                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                    </span>
-                  </div>
-                </div>
-              </Card>
-            </Link>
-          </ResponsiveGrid>
-        </Section>
-
-        {/* GALLERY — photos & videos, horizontal scroll */}
-        <Section size="sm">
-          <SectionHeader
-            eyebrow="Photos & Videos"
-            title="Inside the farm"
-            action={
-              <Link to="/gallery">
-                <Button
-                  variant="primary"
-                  rightIcon={<ArrowRight className="h-4 w-4" />}
+      {/* WHAT WE DO */}
+      <section className="border-y border-ink-100 bg-white">
+        <PageContainer>
+          <Section size="md">
+            <SectionHeader
+              eyebrow="What we do"
+              title="Everything you need to grow with mushrooms"
+              description="From fresh produce to training, farm setup and consultancy — one trusted farm partner."
+            />
+            <ResponsiveGrid cols={{ base: 1, sm: 2, lg: 4 }} gap="md">
+              {WHAT_WE_DO.map((item) => (
+                <Link
+                  key={item.title}
+                  to={item.to}
+                  className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-forest-500 rounded-xl"
                 >
-                  Full gallery
-                </Button>
-              </Link>
-            }
-          />
-          <AutoScrollGallery className="py-1">
-            {showcaseGallery.slice(0, 12).map((g) => (
-              <div key={g.id} className="w-56 sm:w-72 shrink-0">
-                <Card padding="none" className="overflow-hidden">
-                  <div className="relative">
-                    {g.type === 'video' ? (
-                      <ResponsiveVideo
-                        src={g.media_url}
-                        poster={g.thumbnail_url}
-                        aspect="aspect-[3/4]"
-                        rounded="none"
-                        autoPlay
-                        muted
-                        loop
-                        playsInline
-                        controls={false}
-                      />
-                    ) : (
-                      <ResponsiveImage
-                        src={g.media_url}
-                        alt={g.caption ?? 'Farm photo'}
-                        aspect="aspect-[3/4]"
-                        rounded="none"
-                      />
-                    )}
-                    {g.type === 'video' && (
-                      <span className="absolute bottom-3 left-3 flex items-center gap-1 rounded-pill bg-forest-900/75 px-2 py-1 text-caption text-cream-50">
-                        <Play className="h-3 w-3" /> Video
-                      </span>
-                    )}
-                  </div>
-                  {g.caption && (
-                    <p className="px-3 py-2 text-caption text-ink-600">
-                      {g.caption}
-                    </p>
-                  )}
-                </Card>
-              </div>
-            ))}
-          </AutoScrollGallery>
-        </Section>
-      </PageContainer>
-
-      {/* VALUE PROPS */}
-      <PageContainer>
-        <Section size="md">
-          <SectionHeader
-            eyebrow="Why Lakhe"
-            title="A farm-to-shelf brand you can trust"
-            description="Every batch traces back to real soil, real people and a real farm — no white-label sourcing."
-          />
-          <ResponsiveGrid cols={{ base: 1, sm: 2, lg: 4 }} gap="md">
-            <FeatureCard
-              icon={<Leaf className="h-5 w-5" />}
-              title="Naturally grown"
-              description="Grown with care in controlled, chemical-free conditions."
-            />
-            <FeatureCard
-              icon={<Sprout className="h-5 w-5" />}
-              title="Expert training"
-              description="Online and offline programs built from years of farm practice."
-            />
-            <FeatureCard
-              icon={<Package className="h-5 w-5" />}
-              title="Reliable delivery"
-              description="Careful packing, tracked orders, honest updates."
-            />
-            <FeatureCard
-              icon={<Globe2 className="h-5 w-5" />}
-              title="Trusted globally"
-              description="Serving customers and cohorts across India and abroad."
-            />
-          </ResponsiveGrid>
-        </Section>
-
-        {/* PRODUCTS */}
-        <Section size="md">
-          <SectionHeader
-            eyebrow="Our Products"
-            title="Freshly grown, gently packaged"
-            action={
-              <Link to="/products">
-                <Button
-                  variant="primary"
-                  rightIcon={<ArrowRight className="h-4 w-4" />}
-                >
-                  View all
-                </Button>
-              </Link>
-            }
-          />
-          <ResponsiveGrid cols={{ base: 2, md: 3, lg: 4 }} gap="md">
-            {displayProducts.slice(0, 4).map((p) => (
-              <ProductCard
-                key={p.id}
-                name={p.name}
-                category={p.category}
-                price={p.price}
-                image={p.images[0]}
-                badges={p.badges.slice(0, 2) as BadgeVariant[]}
-                onAdd={() => {
-                  addItem(
-                    {
-                      id: p.id,
-                      type: 'product',
-                      name: p.name,
-                      price: p.price,
-                      image: p.images[0],
-                      slug: p.slug,
-                      unit: p.unit,
-                    },
-                    1
-                  );
-                  toast({
-                    tone: 'success',
-                    title: 'Added to cart',
-                    message: p.name,
-                  });
-                }}
-                onClick={() => navigate(`/products/${p.slug}`)}
-              />
-            ))}
-          </ResponsiveGrid>
-        </Section>
-
-        {/* TRAINING */}
-        <Section size="md">
-          <SectionHeader
-            eyebrow="Training"
-            title="Learn from a working farm"
-            description="Online and offline programs designed to take you from curious beginner to confident cultivator."
-            action={
-              <Link to="/training">
-                <Button
-                  variant="primary"
-                  rightIcon={<ArrowRight className="h-4 w-4" />}
-                >
-                  View all
-                </Button>
-              </Link>
-            }
-          />
-          <ResponsiveGrid cols={{ base: 1, md: 2 }} gap="md">
-            {homeTraining.map((t) => (
-              <TrainingCard
-                key={t.id}
-                title={t.title}
-                format={formatLabel[t.format]}
-                duration={t.duration}
-                price={t.price}
-                image={t.image}
-                features={t.features}
-                onClick={() => navigate(`/training/${t.slug}`)}
-              />
-            ))}
-          </ResponsiveGrid>
-        </Section>
-
-        {/* STATS */}
-        <Section size="md">
-          <ResponsiveGrid cols={{ base: 2, md: 4 }} gap="md">
-            <StatCard value="500+" label="Farmers trained" />
-            <StatCard value="12+" label="Product varieties" />
-            <StatCard value="8" label="Years of practice" />
-            <StatCard
-              value="4.9"
-              label="Avg. customer rating"
-              hint="Across products & training"
-            />
-          </ResponsiveGrid>
-        </Section>
-
-        {/* TESTIMONIALS */}
-        <Section size="md">
-          <SectionHeader
-            eyebrow="What people say"
-            title="Trusted by home cooks, farmers and cohorts abroad"
-          />
-          <TestimonialCarousel items={displayTestimonials} />
-        </Section>
-
-        {/* QUERY + MAP */}
-        <Section size="md" className="!pb-5 sm:!pb-6">
-          <ResponsiveGrid cols={{ base: 1, lg: 2 }} gap="lg">
-            <Card padding="lg" elevated className="space-y-4">
-              <div>
-                <span className="text-label uppercase tracking-widest text-forest-600 font-medium">
-                  Ask us anything
-                </span>
-                <h2 className="font-serif text-h2 text-ink-900 mt-1">
-                  Send a quick query
-                </h2>
-                <p className="text-small text-ink-600 mt-1">
-                  Products, training, orders — we usually reply within a day.
-                </p>
-              </div>
-              <HomeQueryForm />
-            </Card>
-
-            <Card padding="none" className="overflow-hidden flex flex-col">
-              <div className="p-5 sm:p-6 border-b border-ink-100">
-                <div className="flex items-start gap-3">
-                  <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-forest-50 text-forest-800">
-                    <MapPin className="h-5 w-5" />
-                  </span>
-                  <div>
-                    <h2 className="font-serif text-h2 text-ink-900">
-                      Visit the farm
-                    </h2>
-                    <p className="text-small text-ink-600 mt-1">
-                      {config.business.address}
-                    </p>
-                    <a
-                      href={config.business.mapsUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="mt-2 inline-flex items-center gap-1 text-small font-medium text-forest-800 hover:underline"
-                    >
-                      Open in Google Maps
-                      <ExternalLink className="h-3.5 w-3.5" />
-                    </a>
-                  </div>
-                </div>
-              </div>
-              <div className="relative min-h-[280px] flex-1 bg-ink-100">
-                <iframe
-                  title="Lakhe Mushroom Farm on Google Maps"
-                  src={config.business.mapsEmbedUrl}
-                  className="absolute inset-0 h-full w-full border-0"
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  allowFullScreen
-                />
-              </div>
-            </Card>
-          </ResponsiveGrid>
-        </Section>
-
-        {/* INTERNATIONAL + CONTACT */}
-        <Section size="sm" className="!pt-3 sm:!pt-4 !pb-0 !mb-0">
-          <div className="space-y-3">
-            <Card padding="lg" className="bg-forest-50 border-forest-200 text-forest-900">
-              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                <div className="flex items-start gap-3">
-                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-forest-900 text-cream-50">
-                    <Globe2 className="h-5 w-5" />
-                  </span>
-                  <div>
-                    <h3 className="font-serif text-h2 text-forest-900">
-                      Serving international clients
-                    </h3>
-                    <p className="text-small text-forest-800/80 max-w-md">
-                      From France to the Middle East, our products and training
-                      reach mushroom lovers and cultivators around the world.
-                    </p>
-                  </div>
-                </div>
-                <Link to="/gallery" className="shrink-0">
-                  <Button
-                    variant="primary"
-                    rightIcon={<ArrowRight className="h-4 w-4" />}
+                  <Card
+                    padding="lg"
+                    className="h-full border-ink-100 bg-white transition-shadow group-hover:shadow-md group-hover:border-forest-200"
                   >
-                    See client stories
+                    <span
+                      className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-forest-900 text-cream-50"
+                    >
+                      <item.icon className="h-5 w-5" />
+                    </span>
+                    <h3 className="mt-4 font-serif text-h3 text-ink-900">
+                      {item.title}
+                    </h3>
+                    <p className="mt-1 text-small text-ink-600 leading-relaxed">
+                      {item.description}
+                    </p>
+                    <span
+                      className="mt-3 inline-flex items-center gap-1 text-small font-medium text-forest-800"
+                    >
+                      Learn more
+                      <ArrowRight
+                        className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                      />
+                    </span>
+                  </Card>
+                </Link>
+              ))}
+            </ResponsiveGrid>
+          </Section>
+        </PageContainer>
+      </section>
+
+      {/* OUR PRODUCTS */}
+      <section className="bg-sage-50/40">
+        <PageContainer>
+          <Section size="md">
+            <SectionHeader
+              eyebrow="Our products"
+              title="Farm-grown, carefully packed"
+              action={
+                <Link to="/products">
+                  <Button variant="primary" rightIcon={<ArrowRight className="h-4 w-4" />}>
+                    View all
+                  </Button>
+                </Link>
+              }
+            />
+            {loading ? (
+              <ProductGridSkeleton count={5} />
+            ) : (
+              <ResponsiveGrid cols={{ base: 2, md: 3, lg: 5 }} gap="md">
+                {displayProducts.slice(0, 5).map((p) => (
+                  <ProductCard
+                    key={p.id}
+                    name={p.name}
+                    category={p.category}
+                    price={p.price}
+                    image={p.images[0]}
+                    badges={p.badges.slice(0, 2) as BadgeVariant[]}
+                    onAdd={() => {
+                      addItem(
+                        {
+                          id: p.id,
+                          type: 'product',
+                          name: p.name,
+                          price: p.price,
+                          image: p.images[0],
+                          slug: p.slug,
+                          unit: p.unit,
+                        },
+                        1
+                      );
+                      toast({
+                        tone: 'success',
+                        title: 'Added to cart',
+                        message: p.name,
+                      });
+                    }}
+                    onClick={() => navigate(`/products/${p.slug}`)}
+                  />
+                ))}
+              </ResponsiveGrid>
+            )}
+          </Section>
+        </PageContainer>
+      </section>
+
+      {/* OUR TRAINING */}
+      <section className="bg-white">
+        <PageContainer>
+          <Section size="md">
+            <SectionHeader
+              eyebrow="Our training"
+              title="Learn from a working farm"
+              description="Online, offline and farm setup programmes — pick the path that fits you."
+              action={
+                <Link to="/training">
+                  <Button variant="primary" rightIcon={<ArrowRight className="h-4 w-4" />}>
+                    View all
+                  </Button>
+                </Link>
+              }
+            />
+            <ResponsiveGrid cols={{ base: 1, md: 3 }} gap="md">
+              {homeTraining.map((t) => (
+                <TrainingCard
+                  key={t.id}
+                  title={t.title}
+                  format={formatLabel[t.format]}
+                  duration={t.duration}
+                  price={t.price}
+                  image={t.image}
+                  features={t.features}
+                  onClick={() => navigate(`/training/${t.slug}`)}
+                />
+              ))}
+              <TrainingCard
+                title="Farm Setup Programme"
+                format="Offline"
+                duration="Custom timeline"
+                price={undefined}
+                image={trainingImages.offline}
+                features={[
+                  'Site planning & unit design',
+                  'Equipment & workflow setup',
+                  '90-day post go-live support',
+                ]}
+                cta="Explore setup"
+                onClick={() => navigate('/consultancy')}
+              />
+            </ResponsiveGrid>
+          </Section>
+        </PageContainer>
+      </section>
+
+      {/* INSIDE LAKHE */}
+      <section className="bg-sage-50/40">
+        <PageContainer>
+          <Section size="md">
+            <SectionHeader
+              eyebrow="Inside Lakhe"
+              title="Photos & videos from the farm"
+              action={
+                <Link to="/gallery">
+                  <Button variant="primary" rightIcon={<ArrowRight className="h-4 w-4" />}>
+                    Full gallery
+                  </Button>
+                </Link>
+              }
+            />
+            <AutoScrollGallery className="py-1">
+              {showcaseGallery.slice(0, 12).map((g) => (
+                <div key={g.id} className="w-56 sm:w-72 shrink-0">
+                  <Card padding="none" className="overflow-hidden bg-white">
+                    <div className="relative">
+                      {g.type === 'video' ? (
+                        <ResponsiveVideo
+                          src={g.media_url}
+                          poster={g.thumbnail_url}
+                          aspect="aspect-[3/4]"
+                          rounded="none"
+                          autoPlay
+                          muted
+                          loop
+                          playsInline
+                          controls={false}
+                        />
+                      ) : (
+                        <ResponsiveImage
+                          src={g.media_url}
+                          alt={g.caption ?? 'Farm photo'}
+                          aspect="aspect-[3/4]"
+                          rounded="none"
+                        />
+                      )}
+                      {g.type === 'video' && (
+                        <span
+                          className="absolute bottom-3 left-3 flex items-center gap-1 rounded-pill bg-forest-900/75 px-2 py-1 text-caption text-cream-50"
+                        >
+                          <Play className="h-3 w-3" /> Video
+                        </span>
+                      )}
+                    </div>
+                    {g.caption && (
+                      <p className="px-3 py-2 text-caption text-ink-600">
+                        {g.caption}
+                      </p>
+                    )}
+                  </Card>
+                </div>
+              ))}
+            </AutoScrollGallery>
+          </Section>
+        </PageContainer>
+      </section>
+
+      {/* TRUST STATS */}
+      <section className="bg-forest-900 text-cream-50">
+        <PageContainer>
+          <Section size="md">
+            <ResponsiveGrid cols={{ base: 2, md: 4 }} gap="md">
+              {[
+                { value: '8+', label: 'Years of practice' },
+                { value: '5000+', label: 'Farmers trained' },
+                { value: '25+', label: 'Countries served' },
+                { value: '12+', label: 'Product varieties' },
+              ].map((stat) => (
+                <div
+                  key={stat.label}
+                  className="rounded-xl border border-white/10 bg-white/10 px-5 py-6 text-center"
+                >
+                  <p className="font-serif text-display text-cream-50 leading-none">
+                    {stat.value}
+                  </p>
+                  <p className="mt-2 text-small font-medium text-cream-200">
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
+            </ResponsiveGrid>
+          </Section>
+        </PageContainer>
+      </section>
+
+      {/* OUR STORY */}
+      <section className="bg-white">
+        <PageContainer>
+          <Section size="md">
+            <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
+              <ResponsiveImage
+                src={HOME_STORY_IMAGE}
+                alt="Lakhe mushroom farm"
+                aspect="aspect-[4/3]"
+                rounded="lg"
+                className="shadow-subtle"
+              />
+              <div>
+                <p className="text-label uppercase tracking-widest text-forest-700 font-medium">
+                  Our story
+                </p>
+                <h2 className="mt-2 font-serif text-h1 text-ink-900 leading-tight">
+                  A farm built on craft & patience
+                </h2>
+                <p className="mt-4 text-body text-ink-600 leading-relaxed">
+                  Lakhe Mushroom Farm grew from a small shed and a belief that
+                  mushrooms could change lives — through healthy food, honest
+                  business and hands-on learning. Today we grow, teach and
+                  support cultivators across India and abroad.
+                </p>
+                <Link to="/about" className="mt-6 inline-block">
+                  <Button variant="outline" rightIcon={<ArrowRight className="h-4 w-4" />}>
+                    Read our story
                   </Button>
                 </Link>
               </div>
-            </Card>
+            </div>
+          </Section>
+        </PageContainer>
+      </section>
 
+      {/* FOUNDER'S STORY */}
+      <section className="bg-sage-50/40">
+        <PageContainer>
+          <Section size="md">
+            <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
+              <div className="order-2 lg:order-1">
+                <p className="text-label uppercase tracking-widest text-forest-700 font-medium">
+                  Founder&apos;s story
+                </p>
+                <h2 className="mt-2 font-serif text-h1 text-ink-900 leading-tight">
+                  The person behind Lakhe
+                </h2>
+                <p className="mt-4 text-body text-ink-600 leading-relaxed">
+                  From experimenting in a backyard unit to training thousands of
+                  farmers, our founder built Lakhe on real soil, real failures and
+                  real harvests — and still walks the farm every day.
+                </p>
+                <Link to="/founder" className="mt-6 inline-block">
+                  <Button variant="outline" rightIcon={<ArrowRight className="h-4 w-4" />}>
+                    Meet the founder
+                  </Button>
+                </Link>
+              </div>
+              <ResponsiveImage
+                src={HOME_FOUNDER_IMAGE}
+                alt="Lakhe Mushroom Farm founder"
+                aspect="aspect-[4/3]"
+                rounded="lg"
+                className="order-1 lg:order-2 shadow-subtle"
+              />
+            </div>
+          </Section>
+        </PageContainer>
+      </section>
+
+      {/* WHY LAKHE */}
+      <section className="bg-white border-t border-ink-100">
+        <PageContainer>
+          <Section size="md">
+            <SectionHeader
+              eyebrow="Why Lakhe"
+              title="Premium quality, rooted in the farm"
+              description="Every batch traces back to real soil, real people and a real farm."
+            />
+            <ResponsiveGrid cols={{ base: 1, sm: 2, lg: 4 }} gap="md">
+              <FeatureCard
+                icon={<Award className="h-5 w-5" />}
+                title="Quality"
+                description="Clean, hygienic products grown with strict quality checks."
+              />
+              <FeatureCard
+                icon={<Sprout className="h-5 w-5" />}
+                title="Expertise"
+                description="Training built from years of on-farm practice, not theory alone."
+              />
+              <FeatureCard
+                icon={<Users className="h-5 w-5" />}
+                title="Support"
+                description="Guidance from first spawn to your first sale — we stay with you."
+              />
+              <FeatureCard
+                icon={<Leaf className="h-5 w-5" />}
+                title="Sustainable farming"
+                description="Naturally grown mushrooms with care for soil, water and people."
+              />
+            </ResponsiveGrid>
+          </Section>
+        </PageContainer>
+      </section>
+
+      {/* FINAL CTA */}
+      <section className="bg-forest-900">
+        <PageContainer>
+          <Section size="md" className="!pb-8 sm:!pb-10">
             <div
-              className="rounded-2xl border border-forest-800 bg-forest-900 p-5 sm:p-6 shadow-card"
+              className="rounded-2xl border border-forest-700 bg-forest-800/50 px-6 py-10 sm:px-10 sm:py-12 text-center"
             >
-              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                <div className="min-w-0">
-                  <h3 className="font-serif text-h2 text-cream-50">
-                    Have a question? Let&apos;s talk.
-                  </h3>
-                  <p className="mt-1 text-small text-cream-100/90 max-w-md leading-relaxed">
-                    Product enquiries, training queries and order help — we
-                    usually reply within a day.
-                  </p>
-                </div>
-                <div className="flex flex-wrap gap-2 shrink-0">
-                  <a
-                    href={`https://wa.me/${config.business.whatsapp}`}
-                    target="_blank"
-                    rel="noreferrer"
+              <h2 className="font-serif text-h1 text-cream-50 leading-tight">
+                Ready to grow with Lakhe?
+              </h2>
+              <p className="mt-3 text-body text-cream-100/85 max-w-lg mx-auto">
+                Whether you want fresh products, expert training or a full farm
+                setup — we&apos;re here to help you start and scale.
+              </p>
+              <div className="mt-6 flex flex-wrap justify-center gap-3">
+                <Link to="/products">
+                  <Button
+                    size="lg"
+                    className="bg-cream-50 !text-forest-900 hover:bg-white"
                   >
-                    <Button
-                      variant="secondary"
-                      className="!bg-cream-50 !text-forest-900 !border-cream-100 hover:!bg-cream-100"
-                      leftIcon={<WhatsAppIcon className="h-4 w-4" />}
-                    >
-                      Chat on WhatsApp
-                    </Button>
-                  </a>
-                  <Link to="/contact">
-                    <Button
-                      variant="outline"
-                      className="!border-cream-200/60 !text-cream-50 hover:!bg-white/10 hover:!text-cream-50"
-                    >
-                      Send a query
-                    </Button>
-                  </Link>
-                </div>
+                    Shop products
+                  </Button>
+                </Link>
+                <Link to="/training">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="!border-cream-200/60 !text-cream-50 hover:!bg-white/10"
+                  >
+                    Explore training
+                  </Button>
+                </Link>
+                <Link to="/contact">
+                  <Button
+                    size="lg"
+                    variant="ghost"
+                    className="!text-cream-100 hover:!bg-white/10"
+                  >
+                    Talk to us
+                  </Button>
+                </Link>
               </div>
             </div>
-          </div>
-        </Section>
-      </PageContainer>
+          </Section>
+        </PageContainer>
+      </section>
     </AppShell>
   );
 }

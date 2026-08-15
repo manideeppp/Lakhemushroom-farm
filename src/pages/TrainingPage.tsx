@@ -5,7 +5,8 @@ import { PageContainer } from '../components/layout/PageContainer';
 import { Section, SectionHeader } from '../components/layout/Section';
 import { ResponsiveGrid } from '../components/layout/Layout';
 import { TrainingCard } from '../components/cards/Cards';
-import { EmptyState, LoadingState } from '../components/feedback/States';
+import { EmptyState } from '../components/feedback/States';
+import { TrainingGridSkeleton } from '../components/feedback/PageSkeletons';
 import { listTraining } from '../lib/data';
 import type { TrainingCourse, TrainingFormat } from '../types/training';
 import { cn } from '../utils/cn';
@@ -73,7 +74,7 @@ export function TrainingPage() {
 
         <Section size="sm">
           {!filtered ? (
-            <LoadingState message="Loading training programs…" />
+            <TrainingGridSkeleton count={3} />
           ) : filtered.length === 0 ? (
             <EmptyState title="No matching programs" />
           ) : (

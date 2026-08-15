@@ -5,7 +5,8 @@ import { PageContainer } from '../components/layout/PageContainer';
 import { Section, SectionHeader } from '../components/layout/Section';
 import { ResponsiveImage } from '../components/media/ResponsiveImage';
 import { ResponsiveVideo } from '../components/media/ResponsiveVideo';
-import { LoadingState, EmptyState } from '../components/feedback/States';
+import { EmptyState } from '../components/feedback/States';
+import { GalleryGridSkeleton } from '../components/feedback/PageSkeletons';
 import { listGallery } from '../lib/data';
 import type { GalleryItem } from '../types/profile';
 import { cn } from '../utils/cn';
@@ -66,7 +67,7 @@ export function GalleryPage() {
 
         <Section size="sm">
           {!filtered ? (
-            <LoadingState message="Loading gallery…" />
+            <GalleryGridSkeleton />
           ) : filtered.length === 0 ? (
             <EmptyState
               title="No media yet"

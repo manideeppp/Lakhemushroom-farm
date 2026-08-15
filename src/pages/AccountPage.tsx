@@ -20,7 +20,8 @@ import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/forms/Input';
 import { Textarea } from '../components/forms/Textarea';
-import { EmptyState, LoadingState } from '../components/feedback/States';
+import { EmptyState } from '../components/feedback/States';
+import { ProfilePageSkeleton, OrderListSkeleton } from '../components/feedback/PageSkeletons';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../components/feedback/ToastProvider';
 import {
@@ -47,7 +48,7 @@ const TABS: { key: Tab; label: string }[] = [
 ];
 
 export function AccountPage() {
-  const { user, profile, isAdmin, signOut, refreshProfile } = useAuth();
+  const { user, profile, isAdmin, signOut, refreshProfile, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>('overview');
@@ -114,7 +115,17 @@ export function AccountPage() {
     }
   }
 
-  if (!user) return <LoadingState message="Loading account…" />;
+  if (authLoading || !user) {
+    return (
+      <AppShell>
+        <PageContainer>
+          <Section size="sm">
+            <ProfilePageSkeleton />
+          </Section>
+        </PageContainer>
+      </AppShell>
+    );
+  }
 
   const initials = (profile?.full_name ?? user.email)
     .slice(0, 2)
@@ -251,7 +262,7 @@ export function AccountPage() {
           {tab === 'orders' && (
             <div className="space-y-3">
               {!orders ? (
-                <LoadingState />
+                <OrderListSkeleton />
               ) : orders.length === 0 ? (
                 <EmptyState
                   title="No orders yet"
@@ -314,7 +325,7 @@ export function AccountPage() {
           {tab === 'bookings' && (
             <div className="space-y-3">
               {!bookings ? (
-                <LoadingState />
+                <OrderListSkeleton count={3} />
               ) : bookings.length === 0 ? (
                 <EmptyState
                   title="No offline bookings"
@@ -367,7 +378,7 @@ export function AccountPage() {
           {tab === 'training' && (
             <div className="space-y-3">
               {!orders ? (
-                <LoadingState />
+                <OrderListSkeleton count={2} />
               ) : trainingItems.length === 0 ? (
                 <EmptyState
                   title="No training yet"

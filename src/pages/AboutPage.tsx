@@ -4,7 +4,6 @@ import {
   Award,
   HeartHandshake,
   Leaf,
-  Sparkles,
   Sprout,
   Target,
 } from 'lucide-react';
@@ -14,7 +13,6 @@ import { Section, SectionHeader } from '../components/layout/Section';
 import { ResponsiveGrid } from '../components/layout/Layout';
 import { ResponsiveImage } from '../components/media/ResponsiveImage';
 import { Card } from '../components/ui/Card';
-import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 import { FeatureCard, StatCard } from '../components/cards/Cards';
 
@@ -39,9 +37,9 @@ export function AboutPage() {
             className="absolute inset-0 bg-gradient-to-br from-forest-900/90 via-forest-900/60 to-forest-900/30"
           />
           <div className="relative flex flex-col gap-4 max-w-2xl px-6 py-14 sm:px-10 sm:py-20">
-            <Badge variant="natural" className="w-fit">
-              <Sparkles className="h-3 w-3" /> Our Story
-            </Badge>
+            <p className="text-label uppercase tracking-[0.2em] text-cream-200/90 font-medium">
+              Our story
+            </p>
             <h1 className="font-serif text-hero leading-[1.05] tracking-tight">
               A farm built on <span className="text-cream-200">patience</span>,
               craft, and community.
@@ -72,7 +70,7 @@ export function AboutPage() {
             </Card>
             <Card padding="lg" className="bg-cream-100 border-cream-200">
               <span className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-cream-200 text-clay-500">
-                <Sparkles className="h-5 w-5" />
+                <Target className="h-5 w-5" />
               </span>
               <h2 className="mt-3 font-serif text-h2 text-ink-900">Vision</h2>
               <p className="mt-2 text-body text-ink-700 leading-relaxed">

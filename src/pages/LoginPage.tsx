@@ -140,7 +140,7 @@ export function LoginPage() {
   return (
     <AppShell hideBottomNav hideFooter>
       <div
-        className="flex min-h-[calc(100dvh-var(--header-h))] items-center justify-center bg-[#f3f4f2] px-4 py-10 sm:px-6"
+        className="flex min-h-[calc(100dvh-var(--header-h))] items-center justify-center bg-surface px-4 py-10 sm:px-6"
       >
         <div className="w-full max-w-[22rem] sm:max-w-[24rem]">
           <Link

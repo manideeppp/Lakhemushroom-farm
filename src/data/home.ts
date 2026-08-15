@@ -1,5 +1,8 @@
 /** Open-source media URLs for the home page (Unsplash / Pexels / Coverr). */
 
+export const HOME_HERO_IMAGE =
+  'https://images.unsplash.com/photo-1611574474461-46f3f36fbb90?auto=format&fit=crop&w=2000&q=80';
+
 export const HOME_STORY_IMAGE =
   'https://images.unsplash.com/photo-1500382017468-90403fed7ef7?auto=format&fit=crop&w=800&q=80';
 
