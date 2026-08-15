@@ -42,7 +42,6 @@ export function PaymentPage() {
     phone: profile?.phone ?? '',
     address: profile?.address ?? '',
   });
-  const [txnId, setTxnId] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -59,8 +58,7 @@ export function PaymentPage() {
     customer.name.trim() &&
     customer.phone.trim() &&
     (!hasProducts || customer.address.trim()) &&
-    file &&
-    txnId.trim();
+    file;
 
   useEffect(() => {
     setCustomer((c) => ({
@@ -106,10 +104,6 @@ export function PaymentPage() {
       toast({ tone: 'warning', message: 'Please upload your UPI payment screenshot.' });
       return;
     }
-    if (!txnId) {
-      toast({ tone: 'warning', message: 'Please enter the UPI transaction reference.' });
-      return;
-    }
     const {
       data: { session },
       error: sessionError,
@@ -141,7 +135,6 @@ export function PaymentPage() {
         subtotal,
         shipping,
         total,
-        upi_txn_id: txnId,
         payment_screenshot_url: url,
         coupon_code: appliedCoupon?.code,
         discount,
@@ -205,7 +198,7 @@ export function PaymentPage() {
             </p>
             <CheckoutStepper
               steps={['Pay via UPI', 'Your details', 'Confirm']}
-              current={txnId || file ? 2 : customer.name && customer.phone ? 1 : 0}
+              current={file ? 2 : customer.name && customer.phone ? 1 : 0}
             />
           </div>
 
@@ -384,14 +377,7 @@ export function PaymentPage() {
                   Upload a clear screenshot of your successful UPI payment below.
                   We verify every order manually within one working day.
                 </p>
-                <div className="mt-4 space-y-3">
-                  <Input
-                    label="UPI transaction reference"
-                    required
-                    placeholder="e.g. 41253896721"
-                    value={txnId}
-                    onChange={(e) => setTxnId(e.target.value)}
-                  />
+                <div className="mt-4">
                   <FileUpload
                     label="Payment screenshot"
                     accept="image/*"

@@ -25,10 +25,12 @@ export function AutoScrollGallery({
     let raf = 0;
     const tick = () => {
       if (!pausedRef.current && !userScrollRef.current) {
-        el.scrollLeft += speed;
-        const half = el.scrollWidth / 2;
-        if (half > 0 && el.scrollLeft >= half - 1) {
-          el.scrollLeft = 0;
+        const maxScroll = el.scrollWidth - el.clientWidth;
+        if (maxScroll > 0) {
+          el.scrollLeft += speed;
+          if (el.scrollLeft >= maxScroll - 1) {
+            el.scrollLeft = 0;
+          }
         }
       }
       raf = requestAnimationFrame(tick);
@@ -72,10 +74,7 @@ export function AutoScrollGallery({
         pausedRef.current = false;
       }}
     >
-      <div className="flex gap-3 sm:gap-4 shrink-0">{children}</div>
-      <div className="flex gap-3 sm:gap-4 shrink-0" aria-hidden>
-        {children}
-      </div>
+      {children}
     </div>
   );
 }

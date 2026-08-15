@@ -143,11 +143,6 @@ export function ReceiptPage() {
                     {isApproved ? 'Approved' : 'Pending verification'}
                   </span>
                 </p>
-                {order.upi_txn_id && (
-                  <p className="text-small text-ink-700">
-                    UPI ref: <span className="font-mono">{order.upi_txn_id}</span>
-                  </p>
-                )}
               </div>
             </div>
 

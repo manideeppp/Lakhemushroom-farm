@@ -3,7 +3,6 @@ import { useLocation } from 'react-router-dom';
 import { Header } from './Header';
 import { MobileBottomNav } from '../navigation/MobileBottomNav';
 import { Footer } from './Footer';
-import { WhatsAppFloat } from '../navigation/WhatsAppFloat';
 import { AddedToCartBar } from '../cart/AddedToCartBar';
 import { cn } from '../../utils/cn';
 import { useCart } from '../../context/CartContext';
@@ -63,7 +62,6 @@ export function AppShell({
       </main>
       {!hideFooter && showFooter && <Footer />}
       {!hideBottomNav && <MobileBottomNav cartCount={cartCount} />}
-      <WhatsAppFloat withBottomNav={!hideBottomNav} />
     </div>
   );
 }

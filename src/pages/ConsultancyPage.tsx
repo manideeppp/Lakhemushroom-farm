@@ -7,7 +7,6 @@ import {
   Compass,
   HandCoins,
   Layers,
-  MessageCircle,
   ShieldCheck,
   Sprout,
   TrendingUp,
@@ -20,6 +19,7 @@ import { ResponsiveImage } from '../components/media/ResponsiveImage';
 import { Card } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
+import { WhatsAppIcon } from '../components/icons/WhatsAppIcon';
 import { Input } from '../components/forms/Input';
 import { Textarea } from '../components/forms/Textarea';
 import { Select } from '../components/forms/Select';
@@ -170,7 +170,7 @@ export function ConsultancyPage() {
                   size="lg"
                   variant="outline"
                   className="border-cream-200 !text-cream-50 hover:bg-white/10"
-                  leftIcon={<MessageCircle className="h-4 w-4" />}
+                  leftIcon={<WhatsAppIcon className="h-4 w-4" />}
                 >
                   WhatsApp
                 </Button>
@@ -352,7 +352,7 @@ export function ConsultancyPage() {
                 >
                   <Button
                     variant="outline"
-                    leftIcon={<MessageCircle className="h-4 w-4" />}
+                    leftIcon={<WhatsAppIcon className="h-4 w-4" />}
                   >
                     Chat on WhatsApp
                   </Button>

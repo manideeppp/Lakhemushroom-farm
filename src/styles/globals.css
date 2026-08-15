@@ -47,11 +47,21 @@
     color: #1e3520;
   }
 
-  /* Focus ring for keyboard users */
-  :focus-visible {
+  /* Focus ring for keyboard users (not on native form controls) */
+  :focus-visible:not(input):not(textarea):not(select) {
     outline: none;
     box-shadow: 0 0 0 3px rgba(74, 125, 77, 0.35);
     border-radius: 6px;
+  }
+
+  input:focus,
+  input:focus-visible,
+  textarea:focus,
+  textarea:focus-visible,
+  select:focus,
+  select:focus-visible {
+    outline: none;
+    box-shadow: none;
   }
 
   /* Reduced motion */

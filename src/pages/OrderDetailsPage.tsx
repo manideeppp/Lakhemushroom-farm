@@ -277,12 +277,6 @@ export function OrderDetailsPage() {
                     </p>
                   </div>
                 )}
-                {order.upi_txn_id && (
-                  <div className="border-t border-ink-100 pt-3 text-small">
-                    <p className="text-caption text-ink-500">UPI reference</p>
-                    <p className="text-ink-900 font-mono">{order.upi_txn_id}</p>
-                  </div>
-                )}
               </Card>
             </div>
           </div>

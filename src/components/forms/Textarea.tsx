@@ -20,7 +20,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="mb-1.5 block text-label font-medium text-ink-800"
+            className="mb-2 block text-label font-medium text-ink-800"
           >
             {label}
             {required && <span className="ml-0.5 text-danger">*</span>}
@@ -32,20 +32,20 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           required={required}
           aria-invalid={!!error || undefined}
           className={cn(
-            'w-full min-h-[120px] rounded-xl border bg-surface-raised px-3.5 py-3 shadow-sm',
-            'text-body text-ink-900 placeholder:text-ink-400 outline-none resize-y',
-            'transition-[border-color,box-shadow] duration-150 ease-gentle',
+            'w-full min-h-[120px] rounded-xl border bg-surface-raised px-3.5 py-3',
+            'text-body text-ink-900 placeholder:text-ink-400 outline-none ring-0 shadow-none resize-y',
+            'transition-[border-color] duration-150 ease-gentle',
             error
-              ? 'border-danger/60 focus:ring-2 focus:ring-danger/15'
-              : 'border-ink-200/90 focus:border-forest-500 focus:ring-2 focus:ring-forest-500/20',
+              ? 'border-danger/55 focus:border-danger'
+              : 'border-ink-200/80 focus:border-forest-600',
             className
           )}
           {...rest}
         />
         {hint && !error && (
-          <p className="mt-1 text-caption text-ink-500">{hint}</p>
+          <p className="mt-1.5 text-caption text-ink-500">{hint}</p>
         )}
-        {error && <p className="mt-1 text-caption text-danger">{error}</p>}
+        {error && <p className="mt-1.5 text-caption text-danger">{error}</p>}
       </div>
     );
   }

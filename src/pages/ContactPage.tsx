@@ -3,7 +3,6 @@ import {
   ArrowRight,
   Mail,
   MapPin,
-  MessageCircle,
   Phone,
   Sparkles,
 } from 'lucide-react';
@@ -14,6 +13,7 @@ import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { Input } from '../components/forms/Input';
+import { WhatsAppIcon } from '../components/icons/WhatsAppIcon';
 import { Textarea } from '../components/forms/Textarea';
 import { useToast } from '../components/feedback/ToastProvider';
 import { createQuery } from '../lib/data';
@@ -179,7 +179,7 @@ export function ContactPage() {
                   className="mt-4 inline-block"
                 >
                   <Button
-                    leftIcon={<MessageCircle className="h-4 w-4" />}
+                    leftIcon={<WhatsAppIcon className="h-4 w-4" />}
                   >
                     Chat on WhatsApp
                   </Button>

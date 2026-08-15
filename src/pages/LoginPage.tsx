@@ -117,103 +117,110 @@ export function LoginPage() {
 
   return (
     <AppShell hideBottomNav hideFooter>
-      <div className="flex min-h-[calc(100dvh-4rem)] items-center justify-center bg-cream-50 px-4 py-8 sm:px-6">
-        <div className="w-full max-w-sm">
+      <div
+        className="flex min-h-[calc(100dvh-var(--header-h))] items-center justify-center bg-gradient-to-b from-cream-100 via-cream-50 to-surface px-4 py-10 sm:px-6 sm:py-12"
+      >
+        <div className="w-full max-w-[26rem]">
           <Link
             to="/"
-            className="mb-5 inline-flex items-center gap-1.5 text-small text-ink-500 hover:text-forest-800 transition-colors"
+            className="mb-6 inline-flex items-center gap-1.5 text-small text-ink-500 hover:text-forest-800 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to home
           </Link>
 
           <div
-            className="rounded-2xl border border-ink-200/80 bg-surface-raised p-6 sm:p-7 shadow-sm"
+            className="rounded-2xl border border-forest-900/8 bg-surface-raised px-6 py-8 sm:px-8 sm:py-9 shadow-[0_8px_32px_rgba(30,53,32,0.06)]"
           >
-            <div className="mb-6 text-center">
+            <div className="text-center">
               <LakheLogo size="md" className="mx-auto" />
-              <h1 className="mt-4 font-serif text-h2 text-ink-900">
-                {step === 'email' ? 'Sign in' : 'Enter code'}
+              <p className="mt-5 text-label uppercase tracking-[0.14em] text-forest-700 font-medium">
+                Lakhe Mushroom Farm
+              </p>
+              <h1 className="mt-2 font-serif text-h1 text-ink-900 leading-tight">
+                {step === 'email' ? 'Sign in' : 'Enter your code'}
               </h1>
-              <p className="mt-1.5 text-small text-ink-500">
+              <p className="mt-2 text-small text-ink-500 leading-relaxed max-w-xs mx-auto">
                 {step === 'email'
-                  ? `We’ll email you a ${OTP_LENGTH}-digit code. No password needed.`
-                  : `Paste the ${OTP_LENGTH}-digit code sent to ${email}.`}
+                  ? `A ${OTP_LENGTH}-digit code by email — no password needed.`
+                  : `Paste the code we sent to ${email}.`}
               </p>
             </div>
 
-            {step === 'email' ? (
-              <form onSubmit={handleRequest} className="space-y-4">
-                <Input
-                  label="Email address"
-                  type="email"
-                  required
-                  autoFocus
-                  leftIcon={<Mail className="h-4 w-4" />}
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <Button type="submit" fullWidth size="lg" loading={sending}>
-                  Send code
-                </Button>
-                {sendError && (
-                  <p className="text-caption text-danger text-center">
-                    {sendError}
-                  </p>
-                )}
-              </form>
-            ) : (
-              <div className="space-y-4">
-                <Input
-                  label="Verification code"
-                  type="text"
-                  inputMode="numeric"
-                  autoComplete="one-time-code"
-                  autoFocus
-                  placeholder={`${OTP_LENGTH}-digit code`}
-                  value={code}
-                  onChange={(e) => onCodeChange(e.target.value)}
-                  onPaste={(e) => {
-                    e.preventDefault();
-                    onCodeChange(e.clipboardData.getData('text'));
-                  }}
-                  hint="Paste from email — verifies automatically."
-                  className="text-center font-mono text-lg tracking-[0.3em]"
-                />
-                <Button
-                  fullWidth
-                  size="lg"
-                  loading={verifying}
-                  disabled={!isCompleteOtp(code)}
-                  onClick={() => handleVerify(code)}
-                >
-                  Verify & continue
-                </Button>
-                <div className="flex items-center justify-between text-caption text-ink-500">
-                  <button
-                    type="button"
-                    className="hover:text-forest-800 transition-colors"
-                    onClick={() => setStep('email')}
+            <div className="mt-7">
+              {step === 'email' ? (
+                <form onSubmit={handleRequest} className="space-y-5">
+                  <Input
+                    label="Email address"
+                    type="email"
+                    required
+                    autoFocus
+                    leftIcon={<Mail className="h-4 w-4" />}
+                    placeholder="you@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                  <Button type="submit" fullWidth size="lg" loading={sending}>
+                    Send code
+                  </Button>
+                  {sendError && (
+                    <p className="text-caption text-danger text-center">
+                      {sendError}
+                    </p>
+                  )}
+                </form>
+              ) : (
+                <div className="space-y-5">
+                  <Input
+                    label="Verification code"
+                    type="text"
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                    autoFocus
+                    placeholder={`${OTP_LENGTH}-digit code`}
+                    value={code}
+                    onChange={(e) => onCodeChange(e.target.value)}
+                    onPaste={(e) => {
+                      e.preventDefault();
+                      onCodeChange(e.clipboardData.getData('text'));
+                    }}
+                    hint="Paste from email — verifies automatically."
+                    className="text-center font-mono text-lg tracking-[0.28em]"
+                  />
+                  <Button
+                    fullWidth
+                    size="lg"
+                    loading={verifying}
+                    disabled={!isCompleteOtp(code)}
+                    onClick={() => handleVerify(code)}
                   >
-                    Change email
-                  </button>
-                  <button
-                    type="button"
-                    className="hover:text-forest-800 transition-colors disabled:opacity-50"
-                    disabled={sending}
-                    onClick={() => void handleResend()}
-                  >
-                    Resend code
-                  </button>
+                    Verify & continue
+                  </Button>
+                  <div className="flex items-center justify-between text-caption text-ink-500">
+                    <button
+                      type="button"
+                      className="hover:text-forest-800 transition-colors"
+                      onClick={() => setStep('email')}
+                    >
+                      Change email
+                    </button>
+                    <button
+                      type="button"
+                      className="hover:text-forest-800 transition-colors disabled:opacity-50"
+                      disabled={sending}
+                      onClick={() => void handleResend()}
+                    >
+                      Resend code
+                    </button>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
             {!isSupabaseConfigured() && (
-              <div className="mt-5 flex items-start gap-2 rounded-xl border border-clay-200 bg-cream-100 px-3 py-2.5">
+              <div className="mt-6 flex items-start gap-2 rounded-xl border border-clay-200/80 bg-cream-50 px-3.5 py-3">
                 <Info className="h-4 w-4 mt-0.5 text-clay-600 shrink-0" />
-                <p className="text-caption text-ink-600">
+                <p className="text-caption text-ink-600 leading-relaxed">
                   Demo mode — use code{' '}
                   <span className="font-mono font-semibold text-ink-900">
                     {DEMO_OTP}
@@ -222,8 +229,8 @@ export function LoginPage() {
               </div>
             )}
 
-            <p className="mt-5 flex items-center justify-center gap-1.5 text-caption text-ink-400">
-              <ShieldCheck className="h-3.5 w-3.5 shrink-0" />
+            <p className="mt-6 flex items-center justify-center gap-1.5 text-caption text-ink-400">
+              <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-forest-600" />
               Your email is only used to secure your orders.
             </p>
           </div>

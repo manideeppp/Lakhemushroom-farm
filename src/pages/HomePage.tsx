@@ -6,7 +6,6 @@ import {
   Globe2,
   Leaf,
   MapPin,
-  MessageCircle,
   Package,
   Play,
   Sparkles,
@@ -33,6 +32,7 @@ import { ResponsiveVideo } from '../components/media/ResponsiveVideo';
 import type { BadgeVariant } from '../components/ui/Badge';
 import { TestimonialCarousel } from '../components/feedback/TestimonialCarousel';
 import { HomeQueryForm } from '../components/forms/HomeQueryForm';
+import { WhatsAppIcon } from '../components/icons/WhatsAppIcon';
 import {
   listGallery,
   listProducts,
@@ -495,7 +495,7 @@ export function HomePage() {
         </Section>
 
         {/* INTERNATIONAL + CONTACT */}
-        <Section size="sm" className="!pt-4 sm:!pt-5 !pb-2 sm:!pb-3">
+        <Section size="sm" className="!pt-4 sm:!pt-5 !pb-0">
           <div className="space-y-4">
             <Card padding="lg" className="bg-forest-50 border-forest-200 text-forest-900">
               <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -546,7 +546,7 @@ export function HomePage() {
                     <Button
                       variant="secondary"
                       className="!bg-cream-50 !text-forest-900 !border-cream-100 hover:!bg-cream-100"
-                      leftIcon={<MessageCircle className="h-4 w-4" />}
+                      leftIcon={<WhatsAppIcon className="h-4 w-4" />}
                     >
                       Chat on WhatsApp
                     </Button>

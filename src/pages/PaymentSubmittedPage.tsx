@@ -98,12 +98,6 @@ export function PaymentSubmittedPage() {
                   {formatDateTime(order.created_at)}
                 </p>
               </div>
-              <div className="rounded-md border border-ink-100 bg-cream-50 p-3">
-                <p className="text-caption text-ink-500">UPI reference</p>
-                <p className="mt-0.5 text-body text-ink-900 font-mono">
-                  {order.upi_txn_id ?? '—'}
-                </p>
-              </div>
             </div>
 
             <div className="mt-6 flex flex-wrap justify-center gap-2">
