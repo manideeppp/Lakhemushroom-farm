@@ -125,9 +125,21 @@ declare
 begin
   perform public.assert_portal_secret(portal_secret);
 
-  cid := (coupon->>'id')::uuid;
+  cid := nullif(trim(coupon->>'id'), '')::uuid;
 
-  if cid is null then
+  if cid is not null and exists (select 1 from public.coupons c where c.id = cid) then
+    update public.coupons set
+      code = upper(trim(coupon->>'code')),
+      description = coupon->>'description',
+      discount_type = coupon->>'discount_type',
+      discount_value = (coupon->>'discount_value')::numeric,
+      min_subtotal = coalesce((coupon->>'min_subtotal')::numeric, 0),
+      max_uses = nullif(coupon->>'max_uses', '')::integer,
+      is_active = coalesce((coupon->>'is_active')::boolean, true),
+      expires_at = nullif(coupon->>'expires_at', '')::timestamptz
+    where id = cid
+    returning * into row;
+  else
     insert into public.coupons (
       code, description, discount_type, discount_value, min_subtotal,
       max_uses, is_active, expires_at
@@ -142,18 +154,6 @@ begin
       coalesce((coupon->>'is_active')::boolean, true),
       nullif(coupon->>'expires_at', '')::timestamptz
     )
-    returning * into row;
-  else
-    update public.coupons set
-      code = upper(trim(coupon->>'code')),
-      description = coupon->>'description',
-      discount_type = coupon->>'discount_type',
-      discount_value = (coupon->>'discount_value')::numeric,
-      min_subtotal = coalesce((coupon->>'min_subtotal')::numeric, 0),
-      max_uses = nullif(coupon->>'max_uses', '')::integer,
-      is_active = coalesce((coupon->>'is_active')::boolean, true),
-      expires_at = nullif(coupon->>'expires_at', '')::timestamptz
-    where id = cid
     returning * into row;
   end if;
 
@@ -191,3 +191,17 @@ grant execute on function public.admin_list_coupons(text) to anon, authenticated
 grant execute on function public.admin_upsert_coupon(text, jsonb) to anon, authenticated;
 grant execute on function public.admin_delete_coupon(text, uuid) to anon, authenticated;
 grant execute on function public.admin_delete_order(text, text) to anon, authenticated;
+
+-- Sample coupon (safe to re-run)
+insert into public.coupons (
+  code, description, discount_type, discount_value, min_subtotal, is_active
+)
+values (
+  'WELCOME10',
+  '10% off your order',
+  'percent',
+  10,
+  100,
+  true
+)
+on conflict (code) do nothing;

@@ -691,7 +691,18 @@ export async function validateCouponCode(
     p_code: trimmed,
     p_subtotal: subtotal,
   });
-  if (error) throw error;
+  if (error) {
+    const msg = error.message ?? '';
+    if (
+      msg.includes('Could not find the function') ||
+      msg.includes('schema cache')
+    ) {
+      throw new Error(
+        'Coupon validation is not set up. Run supabase/patches/coupons_and_delete_order.sql in Supabase.'
+      );
+    }
+    throw error;
+  }
   const row = data as Record<string, unknown>;
   if (!row?.valid) {
     return {
@@ -706,6 +717,13 @@ export async function validateCouponCode(
     discount_type: row.discount_type as CouponDiscountType,
     discount_value: Number(row.discount_value),
   };
+}
+
+const COUPON_UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+function isExistingCouponId(id: string, coupons: Coupon[]): boolean {
+  return COUPON_UUID_RE.test(id) && coupons.some((c) => c.id === id);
 }
 
 export async function listCoupons(): Promise<Coupon[]> {
@@ -732,12 +750,18 @@ export async function upsertCoupon(coupon: Coupon): Promise<Coupon> {
   if (!isAdminPortalActive()) {
     throw new Error('Admin session expired. Sign in again at /admin.');
   }
+  const existing = await listCoupons();
+  const isNew = !isExistingCouponId(coupon.id, existing);
   const data = await adminRpc<unknown>('admin_upsert_coupon', {
     coupon: {
       ...coupon,
       code: coupon.code.toUpperCase(),
+      id: isNew ? null : coupon.id,
     },
   });
+  if (!data) {
+    throw new Error('Coupon was not saved. Run coupons SQL patch in Supabase.');
+  }
   return data as Coupon;
 }
 

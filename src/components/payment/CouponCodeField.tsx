@@ -5,6 +5,7 @@ import { Input } from '../forms/Input';
 import { useCart } from '../../context/CartContext';
 import { useToast } from '../feedback/ToastProvider';
 import { formatINR } from '../../utils/format';
+import { getErrorMessage } from '../../utils/errors';
 
 export function CouponCodeField({ className }: { className?: string }) {
   const { appliedCoupon, applyCoupon, clearCoupon } = useCart();
@@ -26,7 +27,7 @@ export function CouponCodeField({ className }: { className?: string }) {
     } catch (e) {
       toast({
         tone: 'danger',
-        message: e instanceof Error ? e.message : 'Could not apply coupon.',
+        message: getErrorMessage(e, 'Could not apply coupon. Try again.'),
       });
     } finally {
       setLoading(false);
