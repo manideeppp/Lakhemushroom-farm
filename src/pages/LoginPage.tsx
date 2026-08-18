@@ -184,7 +184,7 @@ export function LoginPage() {
                     Send code
                   </Button>
                   {sendError && (
-                    <p className="text-caption text-danger text-center">
+                    <p className="text-caption text-danger text-left leading-relaxed break-words">
                       {sendError}
                     </p>
                   )}

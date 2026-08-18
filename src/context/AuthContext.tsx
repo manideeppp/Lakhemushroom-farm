@@ -15,6 +15,7 @@ import {
   normalizeOtpCode,
   OTP_LENGTH,
 } from '../lib/auth';
+import { getErrorMessage } from '../utils/errors';
 import type { Profile } from '../types/profile';
 
 interface SessionUser {
@@ -131,18 +132,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const requestOtp = useCallback(async (email: string) => {
     const trimmed = email.trim().toLowerCase();
     if (isSupabaseConfigured()) {
-      const redirectTo =
-        typeof window !== 'undefined'
-          ? `${window.location.origin}/login`
-          : undefined;
       const { error } = await supabase.auth.signInWithOtp({
         email: trimmed,
         options: {
           shouldCreateUser: true,
-          emailRedirectTo: redirectTo,
         },
       });
-      if (error) throw error;
+      if (error) throw new Error(getErrorMessage(error));
     } else {
       // Demo mode: pretend we sent an OTP.
       await new Promise((r) => setTimeout(r, 400));

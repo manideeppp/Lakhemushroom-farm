@@ -27,6 +27,12 @@ Click **Save**, then **Send test email** to confirm delivery.
 > Use an address on your verified domain (`lakhemushroom.com`). Do not use
 > `onboarding@resend.dev` in production — that only delivers to your Resend signup email.
 
+If login shows **“Error sending confirmation email”**, SMTP is misconfigured or
+**Confirm email** is still ON (see step 3). Fix SMTP first, then send a test email
+from this screen before trying `/login` again.
+
+**If port 465 fails**, try port **587** (same host and credentials).
+
 ---
 
 ## 2. Email template (show the code)

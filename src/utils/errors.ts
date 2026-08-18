@@ -11,11 +11,13 @@ type ErrorLike = {
   originalError?: unknown;
 };
 
+const SMTP_SETUP_HINT =
+  'Supabase could not send the email. In Supabase → Authentication → SMTP: host smtp.resend.com, port 465, user resend, password = Resend API key, sender no-reply@lakhemushroom.com. Turn OFF “Confirm email” under Sign In / Providers → Email. See supabase/RESEND_OTP_LAKHEMUSHROOM.md.';
+
 const ERROR_CODE_MESSAGES: Record<string, string> = {
   over_email_send_rate_limit:
     'Too many code requests. Wait about a minute, then try again.',
-  unexpected_failure:
-    'Could not send the sign-in email. Check Supabase SMTP: sender must be onboarding@resend.dev (testing) or a verified domain. On Resend’s free tier you can only send to your Resend account email until you verify a domain.',
+  unexpected_failure: SMTP_SETUP_HINT,
   email_not_confirmed:
     'Please confirm your email first, or turn off "Confirm email" in Supabase Auth settings.',
   invalid_credentials: 'That code did not work. Check the code and try again.',
@@ -24,6 +26,13 @@ const ERROR_CODE_MESSAGES: Record<string, string> = {
     'Database policy error. Run supabase/patches/fix_profiles_rls_recursion.sql in Supabase SQL Editor, then retry.',
   '42501': 'Permission denied. Sign in again and retry checkout.',
 };
+
+function authErrorCode(err: ErrorLike): string | undefined {
+  const code = err.code ?? err.error_code;
+  if (typeof code === 'string' && code && !/^\d+$/.test(code)) return code;
+  if (typeof err.error_code === 'string' && err.error_code) return err.error_code;
+  return undefined;
+}
 
 function extractRawMessage(err: ErrorLike): string {
   const candidates = [
@@ -51,13 +60,17 @@ export function getErrorMessage(
   if (err && typeof err === 'object') {
     const e = err as ErrorLike;
 
-    const code = e.code ?? e.error_code;
-    if (code && ERROR_CODE_MESSAGES[code]) {
-      return ERROR_CODE_MESSAGES[code];
+    const authCode = authErrorCode(e);
+    if (authCode && ERROR_CODE_MESSAGES[authCode]) {
+      return ERROR_CODE_MESSAGES[authCode];
     }
 
     const raw = extractRawMessage(e);
     if (raw) return mapAuthMessage(raw);
+
+    if (e.status === 500) {
+      return SMTP_SETUP_HINT;
+    }
 
     if (e.originalError) {
       const nested = getErrorMessage(e.originalError, '');
@@ -80,9 +93,10 @@ function mapAuthMessage(message: string): string {
     lower.includes('magic link email') ||
     lower.includes('confirmation email') ||
     lower.includes('error sending') ||
-    lower.includes('smtp')
+    lower.includes('smtp') ||
+    lower.includes('unexpected_failure')
   ) {
-    return 'Could not send the sign-in email. Check Supabase SMTP sender (onboarding@resend.dev for testing). On Resend’s free tier, emails only go to your Resend account address until you verify a domain.';
+    return SMTP_SETUP_HINT;
   }
 
   if (lower.includes('rate limit') || lower.includes('too many') || lower.includes('only request this after')) {
