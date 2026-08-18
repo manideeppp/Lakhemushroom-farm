@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin
+Disallow: /admin/
+Disallow: /payment
+Disallow: /payment-submitted/
+Disallow: /account
+Disallow: /orders
+Disallow: /login
+Disallow: /cart
+Disallow: /ui-preview
+
+Sitemap: https://lakhemushroom.com/sitemap.xml

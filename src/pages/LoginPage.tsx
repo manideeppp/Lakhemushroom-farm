@@ -10,7 +10,6 @@ import { isSupabaseConfigured } from '../lib/supabase';
 import {
   OTP_LENGTH,
   isCompleteOtp,
-  isValidOtpFormat,
   normalizeOtpCode,
 } from '../lib/auth';
 import { getErrorMessage } from '../utils/errors';
@@ -130,9 +129,9 @@ export function LoginPage() {
   }
 
   function onCodeChange(raw: string) {
-    const digits = normalizeOtpCode(raw).slice(0, 10);
+    const digits = normalizeOtpCode(raw).slice(0, OTP_LENGTH);
     setCode(digits);
-    if (isValidOtpFormat(digits) && digits.length >= OTP_LENGTH) {
+    if (isCompleteOtp(digits)) {
       void handleVerify(digits);
     }
   }

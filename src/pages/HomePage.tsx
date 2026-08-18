@@ -139,20 +139,20 @@ export function HomePage() {
     <AppShell>
       {/* HERO */}
       <PageContainer as="section" className="pt-4 sm:pt-8">
-        <div className="relative overflow-hidden rounded-2xl bg-forest-900 text-cream-50 shadow-card">
-          <div className="absolute inset-0">
-            <ResponsiveImage
-              src={HOME_HERO_IMAGE}
-              alt=""
-              aspect="aspect-auto h-full"
-              rounded="none"
-              containerClassName="!h-full"
-              className="opacity-55 object-cover"
-            />
-          </div>
+        <div
+          className="relative overflow-hidden rounded-2xl bg-forest-900 text-cream-50 shadow-card min-h-[min(72vh,540px)] sm:min-h-[480px]"
+        >
+          <img
+            src={HOME_HERO_IMAGE}
+            alt=""
+            aria-hidden
+            className="absolute inset-0 h-full w-full object-cover object-center opacity-50"
+            loading="eager"
+            decoding="async"
+          />
           <span
             aria-hidden
-            className="absolute inset-0 bg-gradient-to-br from-forest-950/90 via-forest-900/75 to-forest-800/40"
+            className="absolute inset-0 bg-gradient-to-br from-forest-950/92 via-forest-900/78 to-forest-800/45"
           />
           <div className="relative flex flex-col gap-4 max-w-xl px-6 py-14 sm:px-10 sm:py-20 lg:px-14 lg:py-24">
             <p className="text-label uppercase tracking-[0.2em] text-cream-200/90 font-medium">

@@ -1,7 +1,7 @@
 # Email OTP via Resend — lakhemushroom.com
 
 Your domain **lakhemushroom.com** is verified on Resend. Follow these steps in the
-**Supabase dashboard** so `/login` sends 8-digit codes to **any** email address.
+**Supabase dashboard** so `/login` sends 6-digit codes to **any** email address.
 
 Project: `https://irqwbfegiflwuulhntkk.supabase.co`
 
@@ -52,7 +52,7 @@ Your Lakhe sign-in code
       Sign in to Lakhe Mushroom Farm
     </h1>
     <p style="color:#4A4A4A;font-size:14px;line-height:1.55;margin:0 0 24px;">
-      Use the 8-digit code below. It expires in about 10 minutes.
+      Use the 6-digit code below. It expires in about 10 minutes.
     </p>
     <div style="background:#F0EBDD;border:1px solid #E5DEC9;border-radius:12px;padding:20px;text-align:center;">
       <p style="font-family:'Courier New',monospace;font-size:28px;letter-spacing:8px;font-weight:700;color:#1B3A2A;margin:0;">
@@ -78,7 +78,7 @@ Save the template. The app reads `{{ .Token }}` on the login page.
 | ------- | ----- |
 | Enable email provider | **ON** |
 | Confirm email | **OFF** (OTP-only sign-in) |
-| Email OTP length | **8** (matches `OTP_LENGTH` in the app) |
+| Email OTP length | **6** (matches `OTP_LENGTH` in the app) |
 
 ---
 
@@ -105,7 +105,7 @@ After updating Vercel env vars, **Redeploy** (Vite bakes env at build time).
 1. Visit `/login` on production.
 2. Enter any email (e.g. a friend's Gmail).
 3. Check inbox + spam for code from `no-reply@lakhemushroom.com`.
-4. Enter the 8-digit code on the login page.
+4. Enter the 6-digit code on the login page.
 
 If it fails, check **Supabase → Logs → Auth** for SMTP or domain errors.
 
@@ -118,5 +118,5 @@ If it fails, check **Supabase → Logs → Auth** for SMTP or domain errors.
 | No email | Wrong SMTP password; sender not on verified domain |
 | Only your Resend email works | Still using `onboarding@resend.dev` as sender |
 | "Demo mode" on login | Fix anon key (`eyJ…`) in env and redeploy |
-| Code doesn't verify | OTP length in Supabase must be **8** |
+| Code doesn't verify | OTP length in Supabase must be **6** |
 | Email has link, no code | Update Magic Link template with `{{ .Token }}` |

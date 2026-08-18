@@ -182,7 +182,7 @@ export function ContactPage() {
               <Card padding="none" className="overflow-hidden">
                 <iframe
                   title="Lakhe Mushroom Farm map"
-                  src="https://www.google.com/maps?q=mushroom+farm&output=embed"
+                  src={config.business.mapsEmbedUrl}
                   loading="lazy"
                   className="w-full h-[260px] border-0"
                 />

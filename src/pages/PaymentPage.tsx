@@ -397,18 +397,23 @@ export function PaymentPage() {
 
       {/* Mobile sticky submit bar */}
       <div
-        className="fixed inset-x-0 bottom-0 z-50 border-t border-ink-100 bg-surface-raised/95 backdrop-blur-md px-4 py-3 pb-safe shadow-raised lg:hidden"
+        className="fixed inset-x-0 bottom-0 z-50 border-t border-forest-800 bg-forest-900/98 backdrop-blur-md px-4 py-3.5 pb-safe shadow-raised lg:hidden"
       >
         <div className="mx-auto flex max-w-content items-center gap-3">
           <div className="min-w-0 flex-1">
-            <p className="text-caption text-ink-500">Total</p>
-            <p className="text-price font-semibold text-ink-900 leading-tight">
+            <p className="text-caption text-cream-200/80">Order total</p>
+            <p className="text-price font-semibold text-cream-50 leading-tight">
               {formatINR(total)}
             </p>
+            {!canSubmit && (
+              <p className="text-caption text-cream-200/60 mt-0.5 truncate">
+                Complete details & upload screenshot
+              </p>
+            )}
           </div>
           <Button
             size="lg"
-            className="shrink-0 min-w-[140px]"
+            className="shrink-0 min-w-[148px] !bg-cream-50 !text-forest-900 hover:!bg-white shadow-md"
             loading={submitting || uploading}
             disabled={!canSubmit}
             onClick={submitOrder}

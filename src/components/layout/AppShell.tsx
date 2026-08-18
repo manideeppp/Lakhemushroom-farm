@@ -46,7 +46,7 @@ export function AppShell({
     location.pathname === '/cart' || location.pathname === '/payment';
 
   return (
-    <div className="min-h-dvh flex flex-col bg-white text-ink-800">
+    <div className="min-h-dvh flex flex-col bg-surface text-ink-800">
       <Header
         cartCount={cartCount}
         isLoggedIn={isLoggedIn}

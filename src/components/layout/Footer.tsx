@@ -7,6 +7,7 @@ import { config } from '../../lib/config';
 const exploreLinks = [
   { to: '/products', label: 'Products' },
   { to: '/training', label: 'Training' },
+  { to: '/consultancy', label: 'Farm setup' },
   { to: '/gallery', label: 'Gallery' },
 ];
 

@@ -27,7 +27,7 @@ export interface OTPInputProps {
  * Uncontrolled by default; supply `value` to control externally.
  */
 export function OTPInput({
-  length = 8,
+  length = 6,
   value,
   onChange,
   onComplete,

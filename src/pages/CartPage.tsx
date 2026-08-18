@@ -224,28 +224,28 @@ export function CartPage() {
 
       {items.length > 0 && (
         <div
-          className="fixed inset-x-0 bottom-[var(--bottom-nav-h)] z-30 px-4 pb-safe lg:hidden"
+        className="fixed inset-x-0 bottom-[var(--bottom-nav-h)] z-30 px-4 pb-safe lg:hidden"
+      >
+        <div
+          className="mx-auto max-w-content rounded-2xl border border-forest-700/40 bg-forest-900 shadow-raised px-4 py-3.5"
         >
-          <div
-            className="mx-auto max-w-content rounded-2xl border border-forest-200/60 bg-surface-raised/98 backdrop-blur-md shadow-raised px-4 py-3"
-          >
-            <div className="flex items-center gap-3">
-              <div className="min-w-0 flex-1">
-                <p className="text-caption text-ink-500">
-                  {itemCount} items · Total
-                </p>
-                <p className="text-price font-semibold text-ink-900 leading-tight">
-                  {formatINR(total)}
-                </p>
-              </div>
-              <Button
-                size="lg"
-                className="shrink-0 min-w-[130px] shadow-md"
-                onClick={proceed}
-                rightIcon={<ArrowRight className="h-5 w-5" />}
-              >
-                Checkout
-              </Button>
+          <div className="flex items-center gap-3">
+            <div className="min-w-0 flex-1">
+              <p className="text-caption text-cream-200/80">
+                {itemCount} items · Total
+              </p>
+              <p className="text-price font-semibold text-cream-50 leading-tight">
+                {formatINR(total)}
+              </p>
+            </div>
+            <Button
+              size="lg"
+              className="shrink-0 min-w-[132px] !bg-cream-50 !text-forest-900 hover:!bg-white shadow-md"
+              onClick={proceed}
+              rightIcon={<ArrowRight className="h-5 w-5" />}
+            >
+              Checkout
+            </Button>
             </div>
           </div>
         </div>

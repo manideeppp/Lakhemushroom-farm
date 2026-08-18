@@ -1,5 +1,5 @@
-/** Must match Supabase Auth → Sign In → Email → Email OTP length (yours: 8). */
-export const OTP_LENGTH = 8;
+/** Must match Supabase Auth → Sign In → Email → Email OTP length (set to 6). */
+export const OTP_LENGTH = 6;
 
 export function normalizeOtpCode(input: string): string {
   return input.replace(/\D/g, '');
@@ -7,10 +7,9 @@ export function normalizeOtpCode(input: string): string {
 
 export function isValidOtpFormat(code: string): boolean {
   const clean = normalizeOtpCode(code);
-  // Loose range so a future dashboard change doesn't brick the client.
-  return clean.length >= 6 && clean.length <= 10;
+  return clean.length >= OTP_LENGTH && clean.length <= 10;
 }
 
 export function isCompleteOtp(code: string): boolean {
-  return isValidOtpFormat(code);
+  return normalizeOtpCode(code).length === OTP_LENGTH;
 }
