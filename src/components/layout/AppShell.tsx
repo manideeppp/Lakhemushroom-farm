@@ -8,6 +8,7 @@ import { CheckoutTopBar } from '../cart/CheckoutTopBar';
 import { cn } from '../../utils/cn';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
+import { isCartBarRoute } from '../../lib/cartBar';
 
 export interface AppShellProps {
   children: ReactNode;
@@ -45,6 +46,9 @@ export function AppShell({
   const onCheckoutPath =
     location.pathname === '/cart' || location.pathname === '/payment';
 
+  const showCartBar =
+    recentAdd && !onCheckoutPath && isCartBarRoute(location.pathname);
+
   return (
     <div className="min-h-dvh flex flex-col bg-surface text-ink-800">
       <Header
@@ -52,12 +56,12 @@ export function AppShell({
         isLoggedIn={isLoggedIn}
         userName={userName}
       />
-      {recentAdd && !onCheckoutPath && <AddedToCartBar />}
+      {showCartBar && <AddedToCartBar />}
       {onCheckoutPath && itemCount > 0 && <CheckoutTopBar />}
       <main
         className={cn(
           'flex-1 w-full',
-          (recentAdd && !onCheckoutPath) || (onCheckoutPath && itemCount > 0)
+          showCartBar || (onCheckoutPath && itemCount > 0)
             ? 'pt-12 sm:pt-[3.25rem]'
             : undefined,
           !hideBottomNav &&

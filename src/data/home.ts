@@ -1,8 +1,8 @@
 import homeStoryFarm from '../assets/home-story-farm.png';
 import founderPortrait from '../assets/founder-portrait.png';
-import heroMushroom from '../assets/fresh oyester mushroom.png';
+import heroMushroomBasket from '../assets/hero-mushroom-basket.png';
 
-export const HOME_HERO_IMAGE = heroMushroom;
+export const HOME_HERO_IMAGE = heroMushroomBasket;
 
 export const HOME_STORY_IMAGE = homeStoryFarm;
 

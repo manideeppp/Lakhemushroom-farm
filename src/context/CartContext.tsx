@@ -29,6 +29,11 @@ interface RecentAdd {
   name: string;
 }
 
+interface AddItemOptions {
+  /** When false, item is added silently (e.g. home → navigate to detail page). */
+  announce?: boolean;
+}
+
 interface CartContextValue {
   items: CartItem[];
   itemCount: number;
@@ -36,7 +41,12 @@ interface CartContextValue {
   appliedCoupon: AppliedCoupon | null;
   discount: number;
   recentAdd: RecentAdd | null;
-  addItem: (item: Omit<CartItem, 'qty'>, qty?: number) => void;
+  addItem: (
+    item: Omit<CartItem, 'qty'>,
+    qty?: number,
+    options?: AddItemOptions
+  ) => void;
+  announceRecentAdd: (name: string) => void;
   updateQty: (id: string, type: CartItemType, qty: number) => void;
   removeItem: (id: string, type: CartItemType) => void;
   clear: () => void;
@@ -86,8 +96,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const discount = appliedCoupon?.discount ?? 0;
 
+  const announceRecentAdd = useCallback((name: string) => {
+    setRecentAdd({ name });
+    if (dismissTimerRef.current) clearTimeout(dismissTimerRef.current);
+    dismissTimerRef.current = setTimeout(() => setRecentAdd(null), 5000);
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, []);
+
   const addItem = useCallback(
-    (item: Omit<CartItem, 'qty'>, qty = 1) => {
+    (item: Omit<CartItem, 'qty'>, qty = 1, options?: AddItemOptions) => {
       setItems((prev) => {
         const idx = prev.findIndex(
           (x) => x.id === item.id && x.type === item.type
@@ -104,15 +123,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
         return [...prev, { ...item, qty: item.type === 'training' ? 1 : qty }];
       });
 
-      setRecentAdd({ name: item.name });
-      if (dismissTimerRef.current) clearTimeout(dismissTimerRef.current);
-      dismissTimerRef.current = setTimeout(() => setRecentAdd(null), 5000);
-
-      if (typeof window !== 'undefined' && window.innerWidth < 1024) {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+      const announce = options?.announce ?? true;
+      if (announce) {
+        announceRecentAdd(item.name);
       }
     },
-    []
+    [announceRecentAdd]
   );
 
   const updateQty = useCallback(
@@ -168,6 +184,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       discount,
       recentAdd,
       addItem,
+      announceRecentAdd,
       updateQty,
       removeItem,
       clear,
@@ -182,6 +199,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     discount,
     recentAdd,
     addItem,
+    announceRecentAdd,
     updateQty,
     removeItem,
     clear,

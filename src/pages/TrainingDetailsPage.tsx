@@ -14,6 +14,7 @@ import { getTrainingBySlug } from '../lib/data';
 import type { TrainingCourse, TrainingFormat } from '../types/training';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../components/feedback/ToastProvider';
+import { useCartAddedFromNavigation } from '../hooks/useCartAddedFromNavigation';
 
 const formatLabel: Record<TrainingFormat, string> = {
   online: 'Online',
@@ -26,9 +27,11 @@ export function TrainingDetailsPage() {
   const [course, setCourse] = useState<TrainingCourse | null>(null);
   const [loading, setLoading] = useState(true);
   const [qty, setQty] = useState(1);
-  const { addItem } = useCart();
+  const { addItem, announceRecentAdd } = useCart();
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  useCartAddedFromNavigation(announceRecentAdd);
 
   useEffect(() => {
     if (!slug) return;

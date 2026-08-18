@@ -14,6 +14,7 @@ import { getProductBySlug } from '../lib/data';
 import type { Product } from '../types/product';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../components/feedback/ToastProvider';
+import { useCartAddedFromNavigation } from '../hooks/useCartAddedFromNavigation';
 
 export function ProductDetailsPage() {
   const { slug } = useParams();
@@ -21,9 +22,11 @@ export function ProductDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [qty, setQty] = useState(1);
   const [imgIdx, setImgIdx] = useState(0);
-  const { addItem } = useCart();
+  const { addItem, announceRecentAdd } = useCart();
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  useCartAddedFromNavigation(announceRecentAdd);
 
   useEffect(() => {
     if (!slug) return;

@@ -48,7 +48,6 @@ import type { Product } from '../types/product';
 import type { TrainingCourse, TrainingFormat } from '../types/training';
 import type { GalleryItem } from '../types/profile';
 import { useCart } from '../context/CartContext';
-import { useToast } from '../components/feedback/ToastProvider';
 import { config } from '../lib/config';
 import { WhatsAppIcon } from '../components/icons/WhatsAppIcon';
 
@@ -91,7 +90,6 @@ export function HomePage() {
   const [training, setTraining] = useState<TrainingCourse[]>([]);
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
   const { addItem } = useCart();
-  const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -140,60 +138,108 @@ export function HomePage() {
       {/* HERO */}
       <PageContainer as="section" className="pt-4 sm:pt-8">
         <div
-          className="relative overflow-hidden rounded-2xl bg-forest-950 text-cream-50 shadow-card min-h-[min(72vh,540px)] sm:min-h-[480px]"
+          className="relative overflow-hidden rounded-2xl bg-forest-950 text-cream-50 shadow-card min-h-[min(78vh,620px)] sm:min-h-[540px]"
         >
           <img
             src={HOME_HERO_IMAGE}
             alt=""
             aria-hidden
-            className="absolute inset-0 h-full w-full object-cover object-center opacity-35 sm:opacity-40"
+            className="absolute inset-0 h-full w-full object-cover object-[70%_center] sm:object-[65%_center]"
             loading="eager"
             decoding="async"
           />
-          <span
-            aria-hidden
-            className="absolute inset-0 bg-gradient-to-r from-forest-950/96 via-forest-950/88 to-forest-900/55 sm:to-forest-900/35"
-          />
-          <span
-            aria-hidden
-            className="absolute inset-0 bg-gradient-to-t from-forest-950/80 via-transparent to-forest-950/30"
-          />
+          {/* Blurred + darkened zone behind left text (reference mockup) */}
           <div
-            className="relative z-10 flex flex-col gap-4 max-w-xl m-4 sm:m-6 lg:m-8 rounded-2xl border border-cream-200/15 bg-forest-950/50 backdrop-blur-md px-6 py-10 sm:px-10 sm:py-12 lg:px-12 lg:py-14 shadow-raised"
-          >
-            <p className="text-label uppercase tracking-[0.2em] text-cream-100 font-semibold">
-              Lakhe Mushroom Farm
-            </p>
-            <h1
-              className="font-serif text-[2.25rem] leading-[1.08] sm:text-hero lg:text-[3.5rem] tracking-tight text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.45)]"
+            aria-hidden
+            className="absolute inset-y-0 left-0 w-full sm:w-[58%] lg:w-[52%] bg-forest-950/35 backdrop-blur-[10px] sm:backdrop-blur-[14px]"
+          />
+          <span
+            aria-hidden
+            className="absolute inset-0 bg-gradient-to-r from-forest-950/75 via-forest-950/25 to-transparent"
+          />
+          <span
+            aria-hidden
+            className="absolute inset-0 bg-gradient-to-t from-forest-950/85 via-transparent to-forest-950/20"
+          />
+
+          <div className="relative z-10 flex min-h-[min(78vh,620px)] sm:min-h-[540px] flex-col justify-between">
+            <div className="flex flex-col gap-4 max-w-xl px-6 py-12 sm:px-10 sm:py-16 lg:px-12 lg:py-20">
+              <p className="text-label uppercase tracking-[0.22em] text-cream-100/95 font-semibold">
+                Lakhe Mushroom Farm
+              </p>
+              <h1
+                className="font-serif text-[2.15rem] leading-[1.08] sm:text-hero lg:text-[3.25rem] tracking-tight text-white"
+              >
+                Grow Mushrooms.
+                <br />
+                <span className="text-cream-50">Build Your Business.</span>
+              </h1>
+              <p className="text-body-lg text-cream-100/95 max-w-md leading-relaxed">
+                Quality mushroom products, hands-on training and end-to-end farm
+                setup — from a farm that treats mushrooms as a craft.
+              </p>
+              <div className="flex flex-wrap gap-3 pt-2">
+                <Link to="/products">
+                  <Button
+                    size="lg"
+                    className="bg-cream-50 !text-forest-900 hover:bg-white shadow-md min-h-12 px-6"
+                    rightIcon={<ArrowRight className="h-4 w-4" />}
+                  >
+                    Explore Products
+                  </Button>
+                </Link>
+                <Link to="/training">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-cream-200/50 !text-cream-50 bg-forest-900/40 backdrop-blur-sm hover:bg-forest-900/55 min-h-12 px-6"
+                  >
+                    Start Training
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            {/* Bottom features strip */}
+            <div
+              className="border-t border-cream-200/15 bg-forest-950/55 backdrop-blur-md px-4 py-4 sm:px-8 sm:py-5"
             >
-              Grow Mushrooms.
-              <br />
-              <span className="text-cream-50">Build Your Business.</span>
-            </h1>
-            <p className="text-body-lg text-cream-100 max-w-lg leading-relaxed [text-shadow:0_1px_12px_rgba(0,0,0,0.35)]">
-              Quality mushroom products, hands-on training and end-to-end farm
-              setup — from a farm that treats mushrooms as a craft.
-            </p>
-            <div className="flex flex-wrap gap-2 pt-2">
-              <Link to="/products">
-                <Button
-                  size="lg"
-                  className="bg-cream-50 !text-forest-900 hover:bg-white"
-                  rightIcon={<ArrowRight className="h-4 w-4" />}
-                >
-                  Explore Products
-                </Button>
-              </Link>
-              <Link to="/training">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-cream-200/80 !text-cream-50 hover:bg-white/10"
-                >
-                  Start Training
-                </Button>
-              </Link>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-6">
+                {[
+                  {
+                    icon: Leaf,
+                    title: '100% Natural',
+                    sub: 'Healthy & Safe',
+                  },
+                  {
+                    icon: GraduationCap,
+                    title: 'Expert Training',
+                    sub: 'Learn from Pros',
+                  },
+                  {
+                    icon: Sprout,
+                    title: 'Complete Support',
+                    sub: 'End-to-end Guidance',
+                  },
+                ].map((f) => (
+                  <div
+                    key={f.title}
+                    className="flex items-center gap-3 sm:justify-center"
+                  >
+                    <span
+                      className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-cream-200/35 bg-white/10 text-cream-50"
+                    >
+                      <f.icon className="h-5 w-5" />
+                    </span>
+                    <div>
+                      <p className="text-small font-semibold text-cream-50">
+                        {f.title}
+                      </p>
+                      <p className="text-caption text-cream-200/80">{f.sub}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -284,12 +330,11 @@ export function HomePage() {
                           slug: p.slug,
                           unit: p.unit,
                         },
-                        1
+                        1,
+                        { announce: false }
                       );
-                      toast({
-                        tone: 'success',
-                        title: 'Added to cart',
-                        message: p.name,
+                      navigate(`/products/${p.slug}`, {
+                        state: { cartAdded: true, itemName: p.name },
                       });
                     }}
                     onClick={() => navigate(`/products/${p.slug}`)}
