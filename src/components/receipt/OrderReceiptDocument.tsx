@@ -3,18 +3,7 @@ import { formatDate } from '../../utils/ids';
 import { formatINR } from '../../utils/format';
 import { config } from '../../lib/config';
 import { LakheLogo } from '../navigation/LakheLogo';
-import { productImages } from '../../data/media';
-import { WhatsAppIcon } from '../icons/WhatsAppIcon';
 import { cn } from '../../utils/cn';
-import {
-  Headphones,
-  Instagram,
-  Leaf,
-  MapPin,
-  Mail,
-  Phone,
-  ShieldCheck,
-} from 'lucide-react';
 
 function formatOrderTime(iso: string): string {
   try {
@@ -34,22 +23,27 @@ function ReceiptBarcode({ value }: { value: string }) {
     .slice(0, 48);
 
   return (
-    <div className="mt-2 flex h-10 items-end justify-center gap-[2px] px-2" aria-hidden>
+    <div className="mt-3 flex h-9 items-end justify-end gap-[2px]" aria-hidden>
       {bars.map((w, i) => (
         <span
           key={i}
           className="bg-ink-800"
-          style={{ width: `${w}px`, height: `${12 + (i % 4) * 4}px` }}
+          style={{ width: `${w}px`, height: `${10 + (i % 4) * 3}px` }}
         />
       ))}
     </div>
   );
 }
 
+function documentTitle(status: Order['status']): string {
+  if (status === 'approved') return 'Official Receipt';
+  return 'Payment Acknowledgement';
+}
+
 function statusLabel(status: Order['status']): string {
   switch (status) {
     case 'approved':
-      return 'Approved';
+      return 'Payment verified';
     case 'rejected':
       return 'Rejected';
     case 'cancelled':
@@ -71,95 +65,97 @@ export function OrderReceiptDocument({
   return (
     <div
       className={cn(
-        'relative mx-auto max-w-3xl overflow-hidden rounded-2xl border border-ink-100 bg-[#faf8f4] shadow-subtle print:rounded-none print:border-0 print:shadow-none',
+        'relative mx-auto max-w-3xl overflow-hidden rounded-xl border border-ink-200 bg-white shadow-card print:rounded-none print:border print:border-ink-300 print:shadow-none',
         className
       )}
     >
-      {/* Decorative leaf accent */}
+      {/* Status ribbon */}
       <div
-        className="pointer-events-none absolute right-0 top-0 h-32 w-32 opacity-20 print:opacity-10"
-        aria-hidden
+        className={cn(
+          'px-6 py-2.5 text-center text-caption font-semibold uppercase tracking-[0.14em]',
+          isApproved
+            ? 'bg-forest-900 text-cream-50'
+            : 'bg-clay-600 text-cream-50'
+        )}
       >
-        <svg viewBox="0 0 120 120" className="h-full w-full text-forest-600">
-          <path
-            fill="currentColor"
-            d="M100 20c-30 10-50 35-55 65 25-5 45-20 55-45C95 35 100 20 100 20zM40 90c15-25 35-45 60-55-5 30-25 50-60 55z"
-          />
-        </svg>
+        {documentTitle(order.status)}
+        {!isApproved && ' · Subject to payment verification'}
       </div>
 
-      <div className="relative p-6 sm:p-8 print:p-6">
-        {/* Header */}
-        <header className="flex flex-wrap items-start justify-between gap-6 border-b border-ink-200/60 pb-6">
-          <div className="min-w-0 flex-1">
-            <div className="flex items-start gap-3">
+      <div className="p-6 sm:p-8 print:p-6">
+        {/* Letterhead */}
+        <header className="border-b-2 border-forest-900 pb-6">
+          <div className="flex flex-wrap items-start justify-between gap-6">
+            <div className="min-w-0">
               <LakheLogo size="lg" />
+              <p className="mt-2 text-small font-medium text-forest-800">
+                Lakhe Mushroom Farm
+              </p>
+              <p className="text-caption text-ink-600 mt-0.5">
+                Fresh · Natural · Farm-grown
+              </p>
+              <address className="mt-4 not-italic text-caption text-ink-600 space-y-1 leading-relaxed">
+                <p>{config.business.address}</p>
+                <p>{config.business.phone}</p>
+                <p>{config.business.email}</p>
+              </address>
             </div>
-            <p className="mt-1 text-caption italic text-forest-700">
-              Fresh. Natural. Healthy.
-            </p>
-            <ul className="mt-4 space-y-2 text-caption text-ink-600">
-              <li className="flex items-start gap-2">
-                <MapPin className="h-3.5 w-3.5 mt-0.5 shrink-0 text-forest-700" />
-                <span>{config.business.address}</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <Phone className="h-3.5 w-3.5 mt-0.5 shrink-0 text-forest-700" />
-                <span>{config.business.phone}</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <Mail className="h-3.5 w-3.5 mt-0.5 shrink-0 text-forest-700" />
-                <span>{config.business.email}</span>
-              </li>
-            </ul>
-          </div>
 
-          <div className="text-right shrink-0">
-            <p className="font-serif text-3xl tracking-[0.2em] text-ink-900">
-              RECEIPT
-            </p>
-            <div className="mx-auto mt-2 h-px w-24 bg-ink-300" />
-            <dl className="mt-4 space-y-1.5 text-caption text-ink-600">
-              <div className="flex justify-between gap-4">
-                <dt>Receipt No.</dt>
-                <dd className="font-medium text-ink-900">{order.order_ref}</dd>
-              </div>
-              <div className="flex justify-between gap-4">
-                <dt>Order Date</dt>
-                <dd className="font-medium text-ink-900">
-                  {formatDate(order.created_at)}
-                </dd>
-              </div>
-              <div className="flex justify-between gap-4">
-                <dt>Order Time</dt>
-                <dd className="font-medium text-ink-900">
-                  {formatOrderTime(order.created_at)}
-                </dd>
-              </div>
-              <div className="flex justify-between gap-4 items-center">
-                <dt>Order Status</dt>
-                <dd>
-                  <span
-                    className={cn(
-                      'inline-flex rounded-full px-2.5 py-0.5 text-caption font-medium',
-                      isApproved
-                        ? 'bg-forest-100 text-forest-800'
-                        : 'bg-clay-100 text-clay-700'
-                    )}
-                  >
-                    {statusLabel(order.status)}
-                  </span>
-                </dd>
-              </div>
-            </dl>
+            <div className="text-right shrink-0 min-w-[200px]">
+              <p className="font-serif text-2xl tracking-[0.12em] text-ink-900">
+                RECEIPT
+              </p>
+              <p className="mt-1 text-caption text-ink-500 uppercase tracking-widest">
+                Tax invoice summary
+              </p>
+              <dl className="mt-4 space-y-2 text-caption border-t border-ink-200 pt-4">
+                <div className="flex justify-between gap-4">
+                  <dt className="text-ink-500">Receipt no.</dt>
+                  <dd className="font-mono font-semibold text-ink-900">
+                    {order.order_ref}
+                  </dd>
+                </div>
+                <div className="flex justify-between gap-4">
+                  <dt className="text-ink-500">Date</dt>
+                  <dd className="font-medium text-ink-900">
+                    {formatDate(order.created_at)}
+                  </dd>
+                </div>
+                <div className="flex justify-between gap-4">
+                  <dt className="text-ink-500">Time</dt>
+                  <dd className="font-medium text-ink-900">
+                    {formatOrderTime(order.created_at)}
+                  </dd>
+                </div>
+                <div className="flex justify-between gap-4 items-center">
+                  <dt className="text-ink-500">Status</dt>
+                  <dd>
+                    <span
+                      className={cn(
+                        'inline-flex rounded px-2 py-0.5 text-caption font-semibold uppercase tracking-wide',
+                        isApproved
+                          ? 'bg-forest-100 text-forest-900'
+                          : 'bg-clay-100 text-clay-800'
+                      )}
+                    >
+                      {statusLabel(order.status)}
+                    </span>
+                  </dd>
+                </div>
+                <div className="flex justify-between gap-4">
+                  <dt className="text-ink-500">Payment</dt>
+                  <dd className="font-medium text-ink-900">UPI</dd>
+                </div>
+              </dl>
+            </div>
           </div>
         </header>
 
-        {/* Billed to + reference */}
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 rounded-xl bg-cream-100/90 border border-cream-200/80 p-4 sm:p-5">
-          <div>
-            <p className="text-caption font-semibold uppercase tracking-widest text-ink-500">
-              Billed to
+        {/* Bill to */}
+        <div className="mt-6 grid gap-4 sm:grid-cols-2">
+          <div className="rounded-lg border border-ink-200 bg-cream-50/50 p-4">
+            <p className="text-caption font-bold uppercase tracking-widest text-ink-500">
+              Bill to
             </p>
             <p className="mt-2 font-serif text-h3 text-ink-900">
               {order.customer_name}
@@ -169,61 +165,57 @@ export function OrderReceiptDocument({
               <p className="text-small text-ink-600">{order.customer_phone}</p>
             )}
             {order.delivery_address && (
-              <p className="mt-2 text-small text-ink-700 leading-relaxed">
+              <p className="mt-2 text-small text-ink-700 leading-relaxed border-t border-ink-200/80 pt-2">
                 {order.delivery_address}
               </p>
             )}
           </div>
-          <div className="sm:text-right">
-            <p className="text-caption font-semibold uppercase tracking-widest text-ink-500">
+          <div className="rounded-lg border border-ink-200 bg-white p-4 sm:text-right">
+            <p className="text-caption font-bold uppercase tracking-widest text-ink-500">
               Order reference
             </p>
-            <p className="mt-2 font-serif text-h3 text-ink-900">
+            <p className="mt-2 font-mono text-h3 text-ink-900 tracking-wide">
               {order.order_ref}
             </p>
             <ReceiptBarcode value={order.order_ref} />
           </div>
         </div>
 
-        {/* Items table */}
-        <div className="mt-6 overflow-hidden rounded-xl border border-ink-200/80">
+        {/* Line items */}
+        <div className="mt-6 overflow-hidden rounded-lg border border-ink-200">
           <table className="w-full text-small">
             <thead>
-              <tr className="bg-forest-900 text-cream-50 text-caption uppercase tracking-wide">
-                <th className="px-3 py-2.5 text-left font-medium w-8">#</th>
-                <th className="px-3 py-2.5 text-left font-medium">Item</th>
-                <th className="px-3 py-2.5 text-left font-medium">Type</th>
-                <th className="px-3 py-2.5 text-center font-medium">Qty</th>
-                <th className="px-3 py-2.5 text-right font-medium">Unit price</th>
-                <th className="px-3 py-2.5 text-right font-medium">Total</th>
+              <tr className="border-b border-ink-200 bg-ink-50 text-caption uppercase tracking-wide text-ink-600">
+                <th className="px-4 py-3 text-left font-semibold w-10">#</th>
+                <th className="px-4 py-3 text-left font-semibold">Description</th>
+                <th className="px-4 py-3 text-center font-semibold w-16">Qty</th>
+                <th className="px-4 py-3 text-right font-semibold w-28">
+                  Rate (₹)
+                </th>
+                <th className="px-4 py-3 text-right font-semibold w-28">
+                  Amount (₹)
+                </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-ink-100 bg-white/60">
+            <tbody className="divide-y divide-ink-100">
               {order.items.map((it, idx) => (
-                <tr key={it.id} className="text-ink-900">
-                  <td className="px-3 py-3 text-ink-500">{idx + 1}</td>
-                  <td className="px-3 py-3">
-                    <div className="flex items-center gap-3 min-w-0">
-                      {it.image ? (
-                        <img
-                          src={it.image}
-                          alt=""
-                          className="h-10 w-10 shrink-0 rounded-lg object-cover border border-ink-100"
-                        />
-                      ) : (
-                        <div className="h-10 w-10 shrink-0 rounded-lg bg-cream-100 border border-ink-100" />
-                      )}
-                      <span className="font-medium leading-snug">{it.name}</span>
-                    </div>
+                <tr key={it.id} className="text-ink-900 bg-white">
+                  <td className="px-4 py-3.5 text-ink-500 tabular-nums">
+                    {idx + 1}
                   </td>
-                  <td className="px-3 py-3 capitalize text-ink-600">
-                    {it.item_type}
+                  <td className="px-4 py-3.5">
+                    <p className="font-medium leading-snug">{it.name}</p>
+                    <p className="text-caption text-ink-500 capitalize mt-0.5">
+                      {it.item_type}
+                    </p>
                   </td>
-                  <td className="px-3 py-3 text-center">{it.qty}</td>
-                  <td className="px-3 py-3 text-right">
+                  <td className="px-4 py-3.5 text-center tabular-nums">
+                    {it.qty}
+                  </td>
+                  <td className="px-4 py-3.5 text-right tabular-nums">
                     {formatINR(it.unit_price)}
                   </td>
-                  <td className="px-3 py-3 text-right font-medium">
+                  <td className="px-4 py-3.5 text-right font-semibold tabular-nums">
                     {formatINR(it.unit_price * it.qty)}
                   </td>
                 </tr>
@@ -233,130 +225,82 @@ export function OrderReceiptDocument({
         </div>
 
         {/* Totals */}
-        <div className="mt-4 flex justify-end">
-          <div className="w-full max-w-xs space-y-2 text-small">
+        <div className="mt-6 flex flex-col sm:flex-row sm:justify-between gap-6">
+          <div className="text-caption text-ink-500 max-w-xs leading-relaxed">
+            <p>
+              {isApproved
+                ? 'This receipt confirms payment received for the order listed above.'
+                : 'This document acknowledges your payment submission. Final confirmation will be issued upon verification.'}
+            </p>
+            <p className="mt-2 text-ink-400">All amounts in Indian Rupees (INR).</p>
+          </div>
+          <div className="w-full sm:w-72 rounded-lg border border-ink-200 bg-cream-50/40 p-4 space-y-2 text-small">
             <div className="flex justify-between text-ink-600">
               <span>Subtotal</span>
-              <span className="text-ink-900">{formatINR(order.subtotal)}</span>
+              <span className="tabular-nums text-ink-900">
+                {formatINR(order.subtotal)}
+              </span>
             </div>
             <div className="flex justify-between text-ink-600">
               <span>Shipping</span>
-              <span className="text-ink-900">
+              <span className="tabular-nums text-ink-900">
                 {order.shipping === 0 ? 'Free' : formatINR(order.shipping)}
               </span>
             </div>
             {(order.discount ?? 0) > 0 && (
               <div className="flex justify-between text-forest-800">
                 <span>
-                  Coupon{order.coupon_code ? ` (${order.coupon_code})` : ''}
+                  Discount
+                  {order.coupon_code ? ` (${order.coupon_code})` : ''}
                 </span>
-                <span>−{formatINR(order.discount!)}</span>
+                <span className="tabular-nums">−{formatINR(order.discount!)}</span>
               </div>
             )}
-            <div className="border-t border-dashed border-ink-300 pt-3 mt-2">
+            <div className="border-t-2 border-forest-900 pt-3 mt-2">
               <div className="flex justify-between items-baseline">
-                <span className="font-serif text-body-lg text-ink-900">
-                  Total paid
+                <span className="font-serif text-body-lg font-semibold text-ink-900">
+                  Grand total
                 </span>
-                <span className="font-serif text-h2 text-ink-900">
+                <span className="font-serif text-h2 text-forest-900 tabular-nums">
                   {formatINR(order.total)}
                 </span>
               </div>
-              <p className="mt-1 text-caption text-ink-500 text-right">
-                (All amounts are in INR)
-              </p>
             </div>
           </div>
         </div>
 
-        {/* Note + mushroom art */}
-        <div className="mt-8 grid gap-6 sm:grid-cols-[1fr_auto] items-end">
-          <div className="rounded-xl border border-cream-200 bg-cream-50/80 p-4 max-w-sm">
-            <div className="flex items-start gap-2">
-              <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-forest-100 text-forest-800">
-                <Leaf className="h-4 w-4" />
-              </span>
-              <div>
-                <p className="text-caption font-semibold uppercase tracking-widest text-ink-500">
-                  Note
-                </p>
-                <p className="mt-1 text-small text-ink-700 leading-relaxed">
-                  {isApproved
-                    ? 'Thank you for your order. This receipt confirms your payment.'
-                    : 'We have received your payment and are verifying it. This is your submission proof.'}
-                </p>
-                <p className="mt-4 font-serif italic text-ink-800">
-                  Lakhe Mushroom Farm
-                </p>
-                <p className="text-caption text-ink-500">For Lakhe Mushroom Farm</p>
-              </div>
-            </div>
-          </div>
-          <img
-            src={productImages.freshOyster}
-            alt=""
-            className="hidden sm:block h-28 w-auto object-contain opacity-90 print:h-24"
-            aria-hidden
-          />
-        </div>
-      </div>
-
-      {/* Trust bar */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-forest-900 px-6 py-5 text-cream-50 sm:px-8">
-        <div className="flex gap-3">
-          <Leaf className="h-5 w-5 shrink-0 text-cream-200" />
+        {/* Signature block */}
+        <div className="mt-10 grid gap-8 sm:grid-cols-2 border-t border-dashed border-ink-300 pt-8">
           <div>
-            <p className="font-serif text-body font-medium">Fresh & naturally grown</p>
-            <p className="mt-0.5 text-caption text-cream-200/85">
-              High-quality mushrooms directly from our farm.
+            <p className="text-caption text-ink-500 uppercase tracking-widest">
+              Customer
+            </p>
+            <p className="mt-6 border-b border-ink-300 pb-1 text-small text-ink-700">
+              {order.customer_name}
             </p>
           </div>
-        </div>
-        <div className="flex gap-3">
-          <ShieldCheck className="h-5 w-5 shrink-0 text-cream-200" />
-          <div>
-            <p className="font-serif text-body font-medium">100% quality assured</p>
-            <p className="mt-0.5 text-caption text-cream-200/85">
-              Clean, healthy & hygienically packed products.
+          <div className="sm:text-right">
+            <p className="text-caption text-ink-500 uppercase tracking-widest">
+              For Lakhe Mushroom Farm
             </p>
-          </div>
-        </div>
-        <div className="flex gap-3">
-          <Headphones className="h-5 w-5 shrink-0 text-cream-200" />
-          <div>
-            <p className="font-serif text-body font-medium">Need help?</p>
-            <p className="mt-0.5 text-caption text-cream-200/85">
-              We&apos;re here for you. {config.business.phone}
+            <p className="mt-6 border-b border-ink-300 pb-1 text-small text-ink-700 sm:max-w-[200px] sm:ml-auto">
+              Authorized signatory
             </p>
           </div>
         </div>
       </div>
 
-      {/* Thank you strip */}
-      <div className="flex flex-col items-center gap-3 border-t border-forest-800 bg-cream-100 px-6 py-4 text-center">
-        <p className="text-caption font-semibold uppercase tracking-[0.12em] text-forest-900">
-          Thank you for choosing Lakhe Mushroom Farm!
+      {/* Footer */}
+      <div className="border-t border-ink-200 bg-ink-50 px-6 py-4 text-center text-caption text-ink-500">
+        <p className="font-medium text-ink-700">
+          Thank you for choosing Lakhe Mushroom Farm
         </p>
-        <div className="flex items-center gap-4 text-forest-800">
-          <a
-            href="https://www.instagram.com/lakhemushroomfarm"
-            target="_blank"
-            rel="noreferrer"
-            className="hover:text-forest-600"
-            aria-label="Instagram"
-          >
-            <Instagram className="h-4 w-4" />
-          </a>
-          <a
-            href={`https://wa.me/${config.business.whatsapp}`}
-            target="_blank"
-            rel="noreferrer"
-            className="hover:text-forest-600"
-            aria-label="WhatsApp"
-          >
-            <WhatsAppIcon className="h-4 w-4" />
-          </a>
-        </div>
+        <p className="mt-1">
+          Questions? {config.business.phone} · {config.business.email}
+        </p>
+        <p className="mt-2 text-ink-400">
+          Computer-generated receipt · {order.order_ref}
+        </p>
       </div>
     </div>
   );

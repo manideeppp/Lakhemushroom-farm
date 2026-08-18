@@ -15,6 +15,7 @@ import { PageContainer } from '../components/layout/PageContainer';
 import { Button } from '../components/ui/Button';
 import { LoadingState } from '../components/feedback/States';
 import { PaymentTrustFeatures } from '../components/payment/PaymentTrustFeatures';
+import { OrderReceiptDocument } from '../components/receipt/OrderReceiptDocument';
 import { getOrderByRef } from '../lib/data';
 import type { Order } from '../types/order';
 import { formatINR } from '../utils/format';
@@ -63,7 +64,8 @@ export function PaymentSubmittedPage() {
     <AppShell hideBottomNav>
       <div className="min-h-[calc(100dvh-var(--header-h))] bg-cream-50">
         <PageContainer className="py-8 sm:py-10">
-          <div className="mx-auto max-w-lg">
+          <div className="mx-auto max-w-3xl">
+            <div className="mx-auto max-w-lg">
             {/* Success icon */}
             <div className="flex flex-col items-center text-center">
               <div className="relative flex h-20 w-20 items-center justify-center">
@@ -144,7 +146,17 @@ export function PaymentSubmittedPage() {
                 </li>
               </ul>
             </div>
+            </div>
 
+            {/* Business receipt */}
+            <div className="mt-10">
+              <p className="text-caption font-semibold uppercase tracking-widest text-ink-500 mb-4 text-center">
+                Your receipt
+              </p>
+              <OrderReceiptDocument order={order} />
+            </div>
+
+            <div className="mx-auto max-w-lg">
             {/* Actions */}
             <div className="mt-6 space-y-3">
               <Link to={`/orders/${order.order_ref}/receipt`} className="block">
@@ -181,6 +193,7 @@ export function PaymentSubmittedPage() {
             </div>
 
             <PaymentTrustFeatures className="mt-8" />
+            </div>
           </div>
         </PageContainer>
       </div>

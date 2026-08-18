@@ -140,30 +140,38 @@ export function HomePage() {
       {/* HERO */}
       <PageContainer as="section" className="pt-4 sm:pt-8">
         <div
-          className="relative overflow-hidden rounded-2xl bg-forest-900 text-cream-50 shadow-card min-h-[min(72vh,540px)] sm:min-h-[480px]"
+          className="relative overflow-hidden rounded-2xl bg-forest-950 text-cream-50 shadow-card min-h-[min(72vh,540px)] sm:min-h-[480px]"
         >
           <img
             src={HOME_HERO_IMAGE}
             alt=""
             aria-hidden
-            className="absolute inset-0 h-full w-full object-cover object-center opacity-50"
+            className="absolute inset-0 h-full w-full object-cover object-center opacity-35 sm:opacity-40"
             loading="eager"
             decoding="async"
           />
           <span
             aria-hidden
-            className="absolute inset-0 bg-gradient-to-br from-forest-950/92 via-forest-900/78 to-forest-800/45"
+            className="absolute inset-0 bg-gradient-to-r from-forest-950/96 via-forest-950/88 to-forest-900/55 sm:to-forest-900/35"
           />
-          <div className="relative flex flex-col gap-4 max-w-xl px-6 py-14 sm:px-10 sm:py-20 lg:px-14 lg:py-24">
-            <p className="text-label uppercase tracking-[0.2em] text-cream-200/90 font-medium">
+          <span
+            aria-hidden
+            className="absolute inset-0 bg-gradient-to-t from-forest-950/80 via-transparent to-forest-950/30"
+          />
+          <div
+            className="relative z-10 flex flex-col gap-4 max-w-xl m-4 sm:m-6 lg:m-8 rounded-2xl border border-cream-200/15 bg-forest-950/50 backdrop-blur-md px-6 py-10 sm:px-10 sm:py-12 lg:px-12 lg:py-14 shadow-raised"
+          >
+            <p className="text-label uppercase tracking-[0.2em] text-cream-100 font-semibold">
               Lakhe Mushroom Farm
             </p>
-            <h1 className="font-serif text-[2.25rem] leading-[1.05] sm:text-hero lg:text-[3.5rem] tracking-tight">
+            <h1
+              className="font-serif text-[2.25rem] leading-[1.08] sm:text-hero lg:text-[3.5rem] tracking-tight text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.45)]"
+            >
               Grow Mushrooms.
               <br />
-              <span className="text-cream-100">Build Your Business.</span>
+              <span className="text-cream-50">Build Your Business.</span>
             </h1>
-            <p className="text-body-lg text-cream-100/90 max-w-lg">
+            <p className="text-body-lg text-cream-100 max-w-lg leading-relaxed [text-shadow:0_1px_12px_rgba(0,0,0,0.35)]">
               Quality mushroom products, hands-on training and end-to-end farm
               setup — from a farm that treats mushrooms as a craft.
             </p>

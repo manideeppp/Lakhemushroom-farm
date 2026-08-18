@@ -27,6 +27,7 @@ import { getErrorMessage } from '../utils/errors';
 import { supabase } from '../lib/supabase';
 import type { OrderItemType } from '../types/order';
 import { formatINR } from '../utils/format';
+import { cn } from '../utils/cn';
 import { config } from '../lib/config';
 
 const SHIPPING_FLAT = 60;
@@ -229,13 +230,17 @@ export function PaymentPage() {
                 <Button
                   fullWidth
                   size="lg"
+                  variant="outline"
                   loading={submitting || uploading}
                   disabled={!canSubmit}
                   onClick={submitOrder}
                   leftIcon={<CheckCircle2 className="h-4 w-4" />}
                 >
-                  Submit order
+                  Quick submit
                 </Button>
+                <p className="mt-2 text-center text-caption text-ink-500">
+                  Or use the submit panel below
+                </p>
               </div>
             </div>
 
@@ -366,7 +371,7 @@ export function PaymentPage() {
                 )}
               </Card>
 
-              <Card padding="lg">
+              <Card padding="lg" className="border-forest-200">
                 <p className="text-caption uppercase tracking-widest text-forest-600 font-medium">
                   Step 3
                 </p>
@@ -385,10 +390,71 @@ export function PaymentPage() {
                     onFileSelected={setFile}
                   />
                 </div>
-                <p className="mt-3 flex items-center justify-center gap-1.5 text-caption text-ink-500">
+                <p className="mt-3 flex items-center gap-1.5 text-caption text-ink-500">
                   <ShieldCheck className="h-4 w-4 text-forest-600 shrink-0" />
                   We never store your UPI PIN or bank login.
                 </p>
+              </Card>
+
+              {/* Desktop submit panel */}
+              <Card
+                padding="lg"
+                className="hidden lg:block border-forest-200 bg-gradient-to-br from-cream-50 via-white to-sage-50/40 shadow-card"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-caption font-semibold uppercase tracking-widest text-forest-700">
+                      Final step
+                    </p>
+                    <h2 className="mt-1 font-serif text-h2 text-ink-900">
+                      Submit your order
+                    </h2>
+                    <ul className="mt-3 space-y-1.5 text-small text-ink-600">
+                      <li className="flex items-center gap-2">
+                        <span
+                          className={cn(
+                            'h-1.5 w-1.5 rounded-full',
+                            customer.name && customer.phone
+                              ? 'bg-success'
+                              : 'bg-ink-300'
+                          )}
+                        />
+                        Contact & delivery details
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span
+                          className={cn(
+                            'h-1.5 w-1.5 rounded-full',
+                            file ? 'bg-success' : 'bg-ink-300'
+                          )}
+                        />
+                        Payment screenshot uploaded
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <p className="text-caption text-ink-500">Amount due</p>
+                    <p className="font-serif text-display text-forest-900 leading-none">
+                      {formatINR(total)}
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  fullWidth
+                  size="lg"
+                  className="mt-5 h-14 text-body font-semibold shadow-md"
+                  loading={submitting || uploading}
+                  disabled={!canSubmit}
+                  onClick={submitOrder}
+                  leftIcon={<CheckCircle2 className="h-5 w-5" />}
+                >
+                  Submit order · {formatINR(total)}
+                </Button>
+                {!canSubmit && (
+                  <p className="mt-2 text-center text-caption text-ink-500">
+                    Complete all steps above to submit.
+                  </p>
+                )}
               </Card>
             </div>
           </div>
@@ -397,30 +463,51 @@ export function PaymentPage() {
 
       {/* Mobile sticky submit bar */}
       <div
-        className="fixed inset-x-0 bottom-0 z-50 border-t border-forest-800 bg-forest-900/98 backdrop-blur-md px-4 py-3.5 pb-safe shadow-raised lg:hidden"
+        className="fixed inset-x-0 bottom-0 z-50 lg:hidden border-t border-forest-800 bg-forest-950 shadow-raised"
       >
-        <div className="mx-auto flex max-w-content items-center gap-3">
-          <div className="min-w-0 flex-1">
-            <p className="text-caption text-cream-200/80">Order total</p>
-            <p className="text-price font-semibold text-cream-50 leading-tight">
-              {formatINR(total)}
-            </p>
-            {!canSubmit && (
-              <p className="text-caption text-cream-200/60 mt-0.5 truncate">
-                Complete details & upload screenshot
+        <div className="mx-auto max-w-content px-4 pt-3 pb-safe">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="min-w-0 flex-1">
+              <p className="text-caption text-cream-200/80 uppercase tracking-wide">
+                Ready to submit
               </p>
-            )}
+              <p className="text-price font-semibold text-cream-50 leading-tight tabular-nums">
+                {formatINR(total)}
+              </p>
+            </div>
+            <div className="flex gap-1.5 shrink-0">
+              <span
+                className={cn(
+                  'h-2 w-2 rounded-full',
+                  customer.name && customer.phone ? 'bg-success' : 'bg-cream-200/30'
+                )}
+                title="Details"
+              />
+              <span
+                className={cn(
+                  'h-2 w-2 rounded-full',
+                  file ? 'bg-success' : 'bg-cream-200/30'
+                )}
+                title="Screenshot"
+              />
+            </div>
           </div>
           <Button
+            fullWidth
             size="lg"
-            className="shrink-0 min-w-[148px] !bg-cream-50 !text-forest-900 hover:!bg-white shadow-md"
+            className="h-12 !bg-cream-50 !text-forest-900 hover:!bg-white font-semibold shadow-md"
             loading={submitting || uploading}
             disabled={!canSubmit}
             onClick={submitOrder}
-            leftIcon={<CheckCircle2 className="h-4 w-4" />}
+            leftIcon={<CheckCircle2 className="h-5 w-5" />}
           >
             Submit order
           </Button>
+          {!canSubmit && (
+            <p className="mt-2 text-center text-caption text-cream-200/70">
+              Add your details and payment screenshot to continue
+            </p>
+          )}
         </div>
       </div>
     </AppShell>

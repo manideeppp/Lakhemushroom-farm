@@ -147,7 +147,7 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
   .pb-checkout-bar {
-    padding-bottom: calc(env(safe-area-inset-bottom) + 6.25rem);
+    padding-bottom: calc(env(safe-area-inset-bottom) + 7.5rem);
   }
   @media (min-width: 1024px) {
     .pb-checkout-bar {

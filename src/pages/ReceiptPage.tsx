@@ -51,23 +51,25 @@ export function ReceiptPage() {
     <AppShell hideBottomNav hideFooter>
       <div className="min-h-[calc(100dvh-var(--header-h))] bg-cream-50 print:bg-white">
         <PageContainer className="py-6 sm:py-8 print:py-0">
-          <div className="mb-5 flex items-center justify-between print:hidden">
-            <button
-              type="button"
-              onClick={() => navigate(-1)}
-              className="inline-flex items-center gap-1.5 text-small text-ink-600 hover:text-forest-800 transition-colors"
-            >
-              <ArrowLeft className="h-4 w-4" /> Back
-            </button>
-            <Button
-              leftIcon={<Printer className="h-4 w-4" />}
-              onClick={() => window.print()}
-            >
-              Print / Save as PDF
-            </Button>
-          </div>
+          <div className="mx-auto max-w-3xl">
+            <div className="mb-5 flex items-center justify-between print:hidden">
+              <button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="inline-flex items-center gap-1.5 text-small text-ink-600 hover:text-forest-800 transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4" /> Back
+              </button>
+              <Button
+                leftIcon={<Printer className="h-4 w-4" />}
+                onClick={() => window.print()}
+              >
+                Print / Save as PDF
+              </Button>
+            </div>
 
-          <OrderReceiptDocument order={order} />
+            <OrderReceiptDocument order={order} />
+          </div>
         </PageContainer>
       </div>
     </AppShell>

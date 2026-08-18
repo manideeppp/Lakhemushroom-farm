@@ -28,6 +28,7 @@ import type { Product } from '../../types/product';
 import type { TrainingCourse } from '../../types/training';
 import { formatDateTime } from '../../utils/ids';
 import { formatINR } from '../../utils/format';
+import { cn } from '../../utils/cn';
 
 export function AdminDashboardPage() {
   const [orders, setOrders] = useState<Order[] | null>(null);
@@ -81,22 +82,26 @@ export function AdminDashboardPage() {
       {/* Stats */}
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Stat
+          to="/admin/orders"
           icon={<ShoppingBag className="h-5 w-5" />}
           label="Total orders"
           value={orders.length}
         />
         <Stat
+          to="/admin/orders"
           icon={<Layers className="h-5 w-5" />}
           label="Pending verifications"
           value={pending.length}
           tone={pending.length > 0 ? 'warn' : undefined}
         />
         <Stat
+          to="/admin/customers"
           icon={<Users2 className="h-5 w-5" />}
           label="Customers"
           value={customers.length}
         />
         <Stat
+          to="/admin/orders"
           icon={<Package className="h-5 w-5" />}
           label="Revenue (approved)"
           value={formatINR(revenue)}
@@ -106,22 +111,26 @@ export function AdminDashboardPage() {
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Stat
+          to="/admin/products"
           icon={<BookOpen className="h-5 w-5" />}
           label="Products"
           value={products.length}
         />
         <Stat
+          to="/admin/training"
           icon={<BookOpen className="h-5 w-5" />}
           label="Training courses"
           value={training.length}
         />
         <Stat
+          to="/admin/bookings"
           icon={<CalendarClock className="h-5 w-5" />}
           label="Pending bookings"
           value={pendingBookings.length}
           tone={pendingBookings.length > 0 ? 'warn' : undefined}
         />
         <Stat
+          to="/admin/queries"
           icon={<MailQuestion className="h-5 w-5" />}
           label="New queries"
           value={newQueries.length}
@@ -238,25 +247,33 @@ function Stat({
   value,
   tone,
   isString,
+  to,
 }: {
   icon: React.ReactNode;
   label: string;
   value: number | string;
   tone?: 'warn';
   isString?: boolean;
+  to?: string;
 }) {
-  return (
-    <Card padding="lg" className="flex items-start gap-3">
+  const inner = (
+    <Card
+      padding="lg"
+      className={cn(
+        'flex items-start gap-3 transition-colors',
+        to && 'hover:border-forest-300 hover:shadow-md cursor-pointer group'
+      )}
+    >
       <span
         className={
           tone === 'warn'
-            ? 'inline-flex h-10 w-10 items-center justify-center rounded-md bg-gold-50 text-gold-600'
-            : 'inline-flex h-10 w-10 items-center justify-center rounded-md bg-forest-50 text-forest-700'
+            ? 'inline-flex h-10 w-10 items-center justify-center rounded-md bg-gold-50 text-gold-600 shrink-0'
+            : 'inline-flex h-10 w-10 items-center justify-center rounded-md bg-forest-50 text-forest-700 shrink-0'
         }
       >
         {icon}
       </span>
-      <div>
+      <div className="min-w-0">
         <p className="text-caption text-ink-500">{label}</p>
         <p
           className={
@@ -267,7 +284,22 @@ function Stat({
         >
           {value}
         </p>
+        {to && (
+          <p className="mt-1.5 text-caption text-forest-700 group-hover:underline">
+            View →
+          </p>
+        )}
       </div>
     </Card>
   );
+
+  if (to) {
+    return (
+      <Link to={to} className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-forest-500 rounded-xl">
+        {inner}
+      </Link>
+    );
+  }
+
+  return inner;
 }
