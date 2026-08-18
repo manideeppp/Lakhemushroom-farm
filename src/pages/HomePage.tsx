@@ -139,23 +139,21 @@ export function HomePage() {
         <div
           className="relative z-10 mx-auto flex min-h-[min(88vh,720px)] sm:min-h-[680px] max-w-[1320px] flex-col items-center justify-center px-4 sm:px-6 lg:px-8 pb-16 sm:pb-20 pt-20 sm:pt-24"
         >
-          <div
-            className="w-full max-w-2xl text-center rounded-3xl border border-cream-200/15 bg-forest-950/55 px-6 py-10 sm:px-12 sm:py-14 backdrop-blur-lg shadow-[0_24px_64px_rgba(15,28,17,0.5)]"
-          >
+          <div className="w-full max-w-2xl text-center">
             <p
-              className="text-label uppercase tracking-[0.28em] text-cream-100 font-semibold"
+              className="text-label uppercase tracking-[0.28em] text-cream-100 font-semibold [text-shadow:0_1px_12px_rgba(0,0,0,0.4)]"
             >
               Lakhe Mushroom Farm
             </p>
             <h1
-              className="mt-4 font-serif text-[2.15rem] leading-[1.08] sm:text-[2.85rem] lg:text-[3.5rem] tracking-tight text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.35)]"
+              className="mt-4 font-serif text-[2.15rem] leading-[1.08] sm:text-[2.85rem] lg:text-[3.5rem] tracking-tight text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.45)]"
             >
               Grow Mushrooms.
               <br />
               Build Your Business.
             </h1>
             <p
-              className="mt-5 text-body-lg sm:text-[1.0625rem] text-cream-50/95 max-w-lg mx-auto leading-relaxed [text-shadow:0_1px_12px_rgba(0,0,0,0.3)]"
+              className="mt-5 text-body-lg sm:text-[1.0625rem] text-cream-50/95 max-w-lg mx-auto leading-relaxed [text-shadow:0_1px_12px_rgba(0,0,0,0.4)]"
             >
               Quality mushrooms, expert training, and complete farm setup — all
               from one place.
@@ -184,10 +182,7 @@ export function HomePage() {
               className="mt-8 flex flex-wrap items-center justify-center gap-x-7 gap-y-3 text-small font-medium text-cream-100"
             >
               {HERO_TRUST_BADGES.map((badge) => (
-                <span
-                  key={badge.label}
-                  className="inline-flex items-center gap-2 rounded-full bg-forest-900/35 px-3 py-1.5 backdrop-blur-sm"
-                >
+                <span key={badge.label} className="inline-flex items-center gap-2">
                   <badge.icon className="h-4 w-4 text-cream-200" strokeWidth={2} />
                   {badge.label}
                 </span>
@@ -227,7 +222,7 @@ export function HomePage() {
                 grow with confidence.
               </p>
             </div>
-            <div className="mx-auto mt-12 sm:mt-14 flex max-w-3xl flex-col gap-6 sm:gap-8">
+            <div className="mx-auto mt-12 sm:mt-14 flex max-w-lg sm:max-w-xl flex-col gap-6 sm:gap-7">
               {HOME_GROW_OFFERINGS.map((offering) => (
                 <HomeGrowOfferingCard
                   key={offering.title}

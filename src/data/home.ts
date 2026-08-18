@@ -35,7 +35,7 @@ export const HOME_GROW_OFFERINGS: HomeGrowOffering[] = [
   {
     title: 'Mushroom Training',
     description:
-      'Practical training and guidance to start and grow successfully.',
+      'Practical training and expert guidance to start and grow successfully.',
     image: HOME_GROW_TRAINING_IMAGE,
     imageAlt: 'Mushroom cultivation training materials',
     icon: GraduationCap,
