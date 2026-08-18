@@ -3,11 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   ArrowRight,
   Award,
-  Building2,
-  Compass,
   GraduationCap,
   Leaf,
-  Package,
   Play,
   Sprout,
   Users,
@@ -24,6 +21,8 @@ import {
   ProductCard,
   TrainingCard,
 } from '../components/cards/Cards';
+import { GrowSectionEmblem } from '../components/home/GrowSectionEmblem';
+import { HomeGrowOfferingCard } from '../components/home/HomeGrowOfferingCard';
 import { ResponsiveImage } from '../components/media/ResponsiveImage';
 import { ResponsiveVideo } from '../components/media/ResponsiveVideo';
 import type { BadgeVariant } from '../components/ui/Badge';
@@ -40,6 +39,7 @@ import { SAMPLE_TRAINING } from '../data/training';
 import {
   HOME_FOUNDER_IMAGE,
   HOME_HERO_IMAGE,
+  HOME_GROW_OFFERINGS,
   HOME_STORY_IMAGE,
   HOME_FARM_SHOWCASE,
 } from '../data/home';
@@ -57,31 +57,10 @@ const formatLabel: Record<TrainingFormat, 'Online' | 'Offline'> = {
   hybrid: 'Offline',
 };
 
-const WHAT_WE_DO = [
-  {
-    title: 'Products',
-    description: 'Fresh mushrooms, spawn, powders and ready-to-eat packs.',
-    icon: Package,
-    to: '/products',
-  },
-  {
-    title: 'Training',
-    description: 'Online and offline programs from a working farm.',
-    icon: GraduationCap,
-    to: '/training',
-  },
-  {
-    title: 'Farm Setup',
-    description: 'Design, build and launch your mushroom unit.',
-    icon: Building2,
-    to: '/consultancy',
-  },
-  {
-    title: 'Consultancy',
-    description: 'Expert guidance for growers and agri entrepreneurs.',
-    icon: Compass,
-    to: '/consultancy',
-  },
+const HERO_TRUST_BADGES = [
+  { label: 'Farm-grown', icon: Leaf },
+  { label: 'Expert-led', icon: GraduationCap },
+  { label: 'End-to-end', icon: Sprout },
 ];
 
 export function HomePage() {
@@ -136,116 +115,117 @@ export function HomePage() {
   return (
     <AppShell>
       {/* HERO */}
-      <PageContainer as="section" className="pt-4 sm:pt-8">
+      <section
+        className="relative overflow-hidden bg-forest-950 text-cream-50 min-h-[min(88vh,720px)] sm:min-h-[640px]"
+      >
+        <img
+          src={HOME_HERO_IMAGE}
+          alt=""
+          aria-hidden
+          className="absolute inset-0 h-full w-full object-cover object-[center_22%] sm:object-[65%_28%]"
+          loading="eager"
+          decoding="async"
+        />
         <div
-          className="relative overflow-hidden rounded-2xl bg-forest-950 text-cream-50 shadow-card min-h-[min(78vh,620px)] sm:min-h-[540px]"
-        >
-          <img
-            src={HOME_HERO_IMAGE}
-            alt=""
-            aria-hidden
-            className="absolute inset-0 h-full w-full object-cover object-[70%_center] sm:object-[65%_center]"
-            loading="eager"
-            decoding="async"
-          />
-          {/* Blurred + darkened zone behind left text (reference mockup) */}
-          <div
-            aria-hidden
-            className="absolute inset-y-0 left-0 w-full sm:w-[58%] lg:w-[52%] bg-forest-950/20 backdrop-blur-[3px] sm:backdrop-blur-[4px]"
-          />
-          <span
-            aria-hidden
-            className="absolute inset-0 bg-gradient-to-r from-forest-950/75 via-forest-950/25 to-transparent"
-          />
-          <span
-            aria-hidden
-            className="absolute inset-0 bg-gradient-to-t from-forest-950/85 via-transparent to-forest-950/20"
-          />
+          aria-hidden
+          className="absolute inset-x-0 bottom-0 h-[58%] sm:h-[52%] bg-gradient-to-t from-forest-950/95 via-forest-900/62 to-transparent"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-y-0 left-0 hidden sm:block w-[48%] bg-gradient-to-r from-forest-950/45 to-transparent"
+        />
 
-          <div className="relative z-10 flex min-h-[min(78vh,620px)] sm:min-h-[540px] flex-col">
-            <div className="flex flex-col gap-4 max-w-xl px-6 py-12 sm:px-10 sm:py-16 lg:px-12 lg:py-20">
-              <p className="text-label uppercase tracking-[0.22em] text-cream-100/95 font-semibold">
-                Lakhe Mushroom Farm
-              </p>
-              <h1
-                className="font-serif text-[2.15rem] leading-[1.08] sm:text-hero lg:text-[3.25rem] tracking-tight text-white"
-              >
-                Grow Mushrooms.
-                <br />
-                <span className="text-cream-50">Build Your Business.</span>
-              </h1>
-              <p className="text-body-lg text-cream-100/95 max-w-md leading-relaxed">
-                Quality mushroom products, hands-on training and end-to-end farm
-                setup — from a farm that treats mushrooms as a craft.
-              </p>
-              <div className="flex flex-wrap gap-3 pt-2">
-                <Link to="/products">
-                  <Button
-                    size="lg"
-                    className="bg-cream-50 !text-forest-900 hover:bg-white shadow-md min-h-12 px-6"
-                    rightIcon={<ArrowRight className="h-4 w-4" />}
-                  >
-                    Explore Products
-                  </Button>
-                </Link>
-                <Link to="/training">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="border-cream-200/50 !text-cream-50 bg-forest-900/40 backdrop-blur-sm hover:bg-forest-900/55 min-h-12 px-6"
-                  >
-                    Start Training
-                  </Button>
-                </Link>
-              </div>
+        <div className="relative z-10 mx-auto flex min-h-[min(88vh,720px)] sm:min-h-[640px] max-w-[1320px] flex-col justify-end px-4 sm:px-6 lg:px-8">
+          <div className="pb-20 sm:pb-24 pt-24 sm:pt-28 text-center sm:text-left max-w-xl sm:max-w-2xl">
+            <p
+              className="text-label uppercase tracking-[0.24em] text-cream-100/90 font-semibold"
+            >
+              Lakhe Mushroom Farm
+            </p>
+            <h1
+              className="mt-3 font-serif text-[2.05rem] leading-[1.1] sm:text-[2.75rem] lg:text-[3.35rem] tracking-tight text-white"
+            >
+              Grow Mushrooms.
+              <br />
+              Build Your Business.
+            </h1>
+            <p className="mt-4 text-body-lg text-cream-100/92 max-w-lg mx-auto sm:mx-0 leading-relaxed">
+              Quality mushrooms, expert training, and complete farm setup — all
+              from one place.
+            </p>
+            <div className="mt-6 flex flex-wrap justify-center sm:justify-start gap-3">
+              <Link to="/products">
+                <Button
+                  size="lg"
+                  className="bg-cream-50 !text-forest-900 hover:bg-white shadow-md min-h-12 px-6 rounded-full"
+                  rightIcon={<ArrowRight className="h-4 w-4" />}
+                >
+                  Explore Products
+                </Button>
+              </Link>
+              <Link to="/training">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-cream-200/55 !text-cream-50 bg-forest-900/35 hover:bg-forest-900/50 min-h-12 px-6 rounded-full"
+                >
+                  Start Training
+                </Button>
+              </Link>
+            </div>
+            <div
+              className="mt-8 flex flex-wrap items-center justify-center sm:justify-start gap-x-6 gap-y-3 text-small text-cream-100/90"
+            >
+              {HERO_TRUST_BADGES.map((badge) => (
+                <span key={badge.label} className="inline-flex items-center gap-2">
+                  <badge.icon className="h-4 w-4 text-cream-200/80" strokeWidth={2} />
+                  {badge.label}
+                </span>
+              ))}
             </div>
           </div>
         </div>
-      </PageContainer>
 
-      {/* WHAT WE DO */}
-      <section className="border-y border-ink-100 bg-white">
+        <svg
+          viewBox="0 0 1440 88"
+          preserveAspectRatio="none"
+          aria-hidden
+          className="absolute bottom-0 left-0 w-full h-14 sm:h-[4.5rem] text-cream-100"
+        >
+          <path
+            fill="currentColor"
+            d="M0,56 C240,88 480,24 720,48 C960,72 1200,16 1440,44 L1440,88 L0,88 Z"
+          />
+        </svg>
+      </section>
+
+      {/* EVERYTHING YOU NEED TO GROW */}
+      <section className="bg-cream-100 -mt-px">
         <PageContainer>
-          <Section size="md">
-            <SectionHeader
-              eyebrow="What we do"
-              title="Everything you need to grow with mushrooms"
-              description="From fresh produce to training, farm setup and consultancy — one trusted farm partner."
-            />
-            <ResponsiveGrid cols={{ base: 1, sm: 2, lg: 4 }} gap="md">
-              {WHAT_WE_DO.map((item) => (
-                <Link
-                  key={item.title}
-                  to={item.to}
-                  className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-forest-500 rounded-xl"
-                >
-                  <Card
-                    padding="lg"
-                    className="h-full border-ink-100 bg-white transition-shadow group-hover:shadow-md group-hover:border-forest-200"
-                  >
-                    <span
-                      className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-forest-900 text-cream-50"
-                    >
-                      <item.icon className="h-5 w-5" />
-                    </span>
-                    <h3 className="mt-4 font-serif text-h3 text-ink-900">
-                      {item.title}
-                    </h3>
-                    <p className="mt-1 text-small text-ink-600 leading-relaxed">
-                      {item.description}
-                    </p>
-                    <span
-                      className="mt-3 inline-flex items-center gap-1 text-small font-medium text-forest-800"
-                    >
-                      Learn more
-                      <ArrowRight
-                        className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
-                      />
-                    </span>
-                  </Card>
-                </Link>
+          <Section size="md" className="!pt-10 sm:!pt-14">
+            <div className="mx-auto max-w-2xl text-center">
+              <GrowSectionEmblem className="mb-5" />
+              <h2 className="font-serif text-h1 sm:text-display text-forest-900 leading-[1.12]">
+                Everything You Need to Grow
+              </h2>
+              <p className="mt-4 text-body-lg text-forest-700/90 leading-relaxed">
+                From fresh mushrooms to complete farm solutions, we help you
+                grow with confidence.
+              </p>
+            </div>
+            <div className="mx-auto mt-10 sm:mt-12 flex max-w-xl flex-col gap-5 sm:gap-6">
+              {HOME_GROW_OFFERINGS.map((offering) => (
+                <HomeGrowOfferingCard
+                  key={offering.title}
+                  title={offering.title}
+                  description={offering.description}
+                  image={offering.image}
+                  imageAlt={offering.imageAlt}
+                  icon={offering.icon}
+                  to={offering.to}
+                />
               ))}
-            </ResponsiveGrid>
+            </div>
           </Section>
         </PageContainer>
       </section>

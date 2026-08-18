@@ -1,8 +1,55 @@
+import type { ComponentType } from 'react';
+import type { LucideIcon } from 'lucide-react';
+import { Building2, GraduationCap } from 'lucide-react';
+import { MushroomIcon } from '../components/icons/MushroomIcon';
 import homeStoryFarm from '../assets/home-story-farm.png';
 import founderPortrait from '../assets/founder-portrait.png';
 import heroMushroomBasket from '../assets/hero-mushroom-basket.png';
+import homeGrowTraining from '../assets/home-grow-training.png';
+import homeGrowFarmSetup from '../assets/home-grow-farm-setup.png';
 
 export const HOME_HERO_IMAGE = heroMushroomBasket;
+
+export const HOME_GROW_PRODUCTS_IMAGE = heroMushroomBasket;
+export const HOME_GROW_TRAINING_IMAGE = homeGrowTraining;
+export const HOME_GROW_FARM_SETUP_IMAGE = homeGrowFarmSetup;
+
+export interface HomeGrowOffering {
+  title: string;
+  description: string;
+  image: string;
+  imageAlt: string;
+  icon: LucideIcon | ComponentType<{ className?: string }>;
+  to: string;
+}
+
+export const HOME_GROW_OFFERINGS: HomeGrowOffering[] = [
+  {
+    title: 'Fresh Mushroom Products',
+    description: 'High-quality, fresh mushrooms grown with care.',
+    image: HOME_GROW_PRODUCTS_IMAGE,
+    imageAlt: 'Fresh mushrooms in a wicker basket',
+    icon: MushroomIcon,
+    to: '/products',
+  },
+  {
+    title: 'Mushroom Training',
+    description:
+      'Practical training and guidance to start and grow successfully.',
+    image: HOME_GROW_TRAINING_IMAGE,
+    imageAlt: 'Mushroom cultivation training materials',
+    icon: GraduationCap,
+    to: '/training',
+  },
+  {
+    title: 'Complete Farm Setup',
+    description: 'End-to-end solutions for your mushroom farm setup.',
+    image: HOME_GROW_FARM_SETUP_IMAGE,
+    imageAlt: 'Complete mushroom farm growing facility',
+    icon: Building2,
+    to: '/consultancy',
+  },
+];
 
 export const HOME_STORY_IMAGE = homeStoryFarm;
 
