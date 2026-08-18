@@ -116,48 +116,55 @@ export function HomePage() {
     <AppShell>
       {/* HERO */}
       <section
-        className="relative overflow-hidden bg-forest-950 text-cream-50 min-h-[min(88vh,720px)] sm:min-h-[640px]"
+        className="relative overflow-hidden bg-forest-950 text-cream-50 min-h-[min(88vh,720px)] sm:min-h-[680px]"
       >
-        <img
-          src={HOME_HERO_IMAGE}
-          alt=""
+        <div className="absolute inset-0" aria-hidden>
+          <img
+            src={HOME_HERO_IMAGE}
+            alt=""
+            className="h-full w-full object-cover object-center scale-105 blur-[3px] sm:blur-[4px]"
+            loading="eager"
+            decoding="async"
+          />
+        </div>
+        <div
           aria-hidden
-          className="absolute inset-0 h-full w-full object-cover object-[center_22%] sm:object-[65%_28%]"
-          loading="eager"
-          decoding="async"
+          className="absolute inset-0 bg-forest-950/40"
         />
         <div
           aria-hidden
-          className="absolute inset-x-0 bottom-0 h-[58%] sm:h-[52%] bg-gradient-to-t from-forest-950/95 via-forest-900/62 to-transparent"
-        />
-        <div
-          aria-hidden
-          className="absolute inset-y-0 left-0 hidden sm:block w-[48%] bg-gradient-to-r from-forest-950/45 to-transparent"
+          className="absolute inset-0 bg-gradient-to-b from-forest-950/55 via-forest-950/25 to-forest-950/65"
         />
 
-        <div className="relative z-10 mx-auto flex min-h-[min(88vh,720px)] sm:min-h-[640px] max-w-[1320px] flex-col justify-end px-4 sm:px-6 lg:px-8">
-          <div className="pb-20 sm:pb-24 pt-24 sm:pt-28 text-center sm:text-left max-w-xl sm:max-w-2xl">
+        <div
+          className="relative z-10 mx-auto flex min-h-[min(88vh,720px)] sm:min-h-[680px] max-w-[1320px] flex-col items-center justify-center px-4 sm:px-6 lg:px-8 pb-16 sm:pb-20 pt-20 sm:pt-24"
+        >
+          <div
+            className="w-full max-w-2xl text-center rounded-3xl border border-cream-200/15 bg-forest-950/55 px-6 py-10 sm:px-12 sm:py-14 backdrop-blur-lg shadow-[0_24px_64px_rgba(15,28,17,0.5)]"
+          >
             <p
-              className="text-label uppercase tracking-[0.24em] text-cream-100/90 font-semibold"
+              className="text-label uppercase tracking-[0.28em] text-cream-100 font-semibold"
             >
               Lakhe Mushroom Farm
             </p>
             <h1
-              className="mt-3 font-serif text-[2.05rem] leading-[1.1] sm:text-[2.75rem] lg:text-[3.35rem] tracking-tight text-white"
+              className="mt-4 font-serif text-[2.15rem] leading-[1.08] sm:text-[2.85rem] lg:text-[3.5rem] tracking-tight text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.35)]"
             >
               Grow Mushrooms.
               <br />
               Build Your Business.
             </h1>
-            <p className="mt-4 text-body-lg text-cream-100/92 max-w-lg mx-auto sm:mx-0 leading-relaxed">
+            <p
+              className="mt-5 text-body-lg sm:text-[1.0625rem] text-cream-50/95 max-w-lg mx-auto leading-relaxed [text-shadow:0_1px_12px_rgba(0,0,0,0.3)]"
+            >
               Quality mushrooms, expert training, and complete farm setup — all
               from one place.
             </p>
-            <div className="mt-6 flex flex-wrap justify-center sm:justify-start gap-3">
+            <div className="mt-7 flex flex-wrap justify-center gap-3">
               <Link to="/products">
                 <Button
                   size="lg"
-                  className="bg-cream-50 !text-forest-900 hover:bg-white shadow-md min-h-12 px-6 rounded-full"
+                  className="bg-cream-50 !text-forest-900 hover:bg-white shadow-lg min-h-12 px-7 rounded-full"
                   rightIcon={<ArrowRight className="h-4 w-4" />}
                 >
                   Explore Products
@@ -167,18 +174,21 @@ export function HomePage() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-cream-200/55 !text-cream-50 bg-forest-900/35 hover:bg-forest-900/50 min-h-12 px-6 rounded-full"
+                  className="border-cream-200/60 !text-cream-50 bg-forest-900/50 hover:bg-forest-900/65 min-h-12 px-7 rounded-full backdrop-blur-sm"
                 >
                   Start Training
                 </Button>
               </Link>
             </div>
             <div
-              className="mt-8 flex flex-wrap items-center justify-center sm:justify-start gap-x-6 gap-y-3 text-small text-cream-100/90"
+              className="mt-8 flex flex-wrap items-center justify-center gap-x-7 gap-y-3 text-small font-medium text-cream-100"
             >
               {HERO_TRUST_BADGES.map((badge) => (
-                <span key={badge.label} className="inline-flex items-center gap-2">
-                  <badge.icon className="h-4 w-4 text-cream-200/80" strokeWidth={2} />
+                <span
+                  key={badge.label}
+                  className="inline-flex items-center gap-2 rounded-full bg-forest-900/35 px-3 py-1.5 backdrop-blur-sm"
+                >
+                  <badge.icon className="h-4 w-4 text-cream-200" strokeWidth={2} />
                   {badge.label}
                 </span>
               ))}
@@ -200,20 +210,24 @@ export function HomePage() {
       </section>
 
       {/* EVERYTHING YOU NEED TO GROW */}
-      <section className="bg-cream-100 -mt-px">
+      <section className="relative -mt-px bg-gradient-to-b from-cream-100 via-cream-50 to-cream-100">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(47,82,50,0.07),transparent_58%)]"
+        />
         <PageContainer>
-          <Section size="md" className="!pt-10 sm:!pt-14">
-            <div className="mx-auto max-w-2xl text-center">
-              <GrowSectionEmblem className="mb-5" />
-              <h2 className="font-serif text-h1 sm:text-display text-forest-900 leading-[1.12]">
+          <Section size="md" className="!pt-12 sm:!pt-16">
+            <div className="mx-auto max-w-3xl text-center">
+              <GrowSectionEmblem className="mb-6" />
+              <h2 className="font-serif text-h1 sm:text-display text-forest-900 leading-[1.1]">
                 Everything You Need to Grow
               </h2>
-              <p className="mt-4 text-body-lg text-forest-700/90 leading-relaxed">
+              <p className="mt-5 text-body-lg sm:text-[1.0625rem] text-forest-700/90 leading-relaxed max-w-2xl mx-auto">
                 From fresh mushrooms to complete farm solutions, we help you
                 grow with confidence.
               </p>
             </div>
-            <div className="mx-auto mt-10 sm:mt-12 flex max-w-xl flex-col gap-5 sm:gap-6">
+            <div className="mx-auto mt-12 sm:mt-14 flex max-w-3xl flex-col gap-6 sm:gap-8">
               {HOME_GROW_OFFERINGS.map((offering) => (
                 <HomeGrowOfferingCard
                   key={offering.title}
