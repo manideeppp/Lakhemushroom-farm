@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Input } from './Input';
 import { Textarea } from './Textarea';
 import { Button } from '../ui/Button';
@@ -18,6 +18,15 @@ export function HomeQueryForm() {
     message: '',
   });
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    setForm((f) => ({
+      ...f,
+      name: profile?.full_name ?? f.name,
+      email: user?.email ?? f.email,
+      phone: profile?.phone ?? f.phone,
+    }));
+  }, [user?.email, profile?.full_name, profile?.phone]);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();

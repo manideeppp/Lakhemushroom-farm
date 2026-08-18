@@ -24,7 +24,7 @@ export const config = {
       return readRuntimeEnv('VITE_WHATSAPP_NUMBER') || '919921480466';
     },
     get email() {
-      return readRuntimeEnv('VITE_CONTACT_EMAIL') || 'hello@lakhemushroomfarm.com';
+      return readRuntimeEnv('VITE_CONTACT_EMAIL') || 'hello@lakhemushroom.com';
     },
     get phone() {
       return readRuntimeEnv('VITE_CONTACT_PHONE') || '+91 99214 80466';
@@ -53,7 +53,7 @@ export const config = {
       return (
         readRuntimeEnv('VITE_ADMIN_EMAILS') ||
         import.meta.env.VITE_ADMIN_EMAILS ||
-        'admin@lakhemushroomfarm.com'
+        'admin@lakhemushroom.com'
       )
         .split(',')
         .map((s) => s.trim().toLowerCase())

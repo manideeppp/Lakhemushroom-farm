@@ -28,6 +28,7 @@ import { ResponsiveImage } from '../components/media/ResponsiveImage';
 import { ResponsiveVideo } from '../components/media/ResponsiveVideo';
 import type { BadgeVariant } from '../components/ui/Badge';
 import { ProductGridSkeleton } from '../components/feedback/PageSkeletons';
+import { HomeQueryForm } from '../components/forms/HomeQueryForm';
 import {
   listGallery,
   listProducts,
@@ -535,6 +536,42 @@ export function HomePage() {
                 description="Naturally grown mushrooms with care for soil, water and people."
               />
             </ResponsiveGrid>
+          </Section>
+        </PageContainer>
+      </section>
+
+      {/* ASK US */}
+      <section className="bg-sage-50/40 border-t border-ink-100">
+        <PageContainer>
+          <Section size="md">
+            <div className="grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:items-start">
+              <div>
+                <p className="text-label uppercase tracking-widest text-forest-700 font-medium">
+                  Ask us
+                </p>
+                <h2 className="mt-2 font-serif text-h1 text-ink-900 leading-tight">
+                  Have a question?
+                </h2>
+                <p className="mt-4 text-body text-ink-600 leading-relaxed max-w-md">
+                  Products, training, farm setup or orders — send us a quick note
+                  and we&apos;ll get back to you.
+                </p>
+                <a
+                  href={`https://wa.me/${config.business.whatsapp}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-5 inline-flex items-center gap-2 text-small font-medium text-forest-800 hover:text-forest-900"
+                >
+                  <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#25D366] text-white">
+                    <WhatsAppIcon className="h-3.5 w-3.5" />
+                  </span>
+                  Or chat on WhatsApp
+                </a>
+              </div>
+              <Card padding="lg" className="border-ink-100 shadow-subtle">
+                <HomeQueryForm />
+              </Card>
+            </div>
           </Section>
         </PageContainer>
       </section>
