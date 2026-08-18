@@ -151,7 +151,7 @@ export function HomePage() {
           {/* Blurred + darkened zone behind left text (reference mockup) */}
           <div
             aria-hidden
-            className="absolute inset-y-0 left-0 w-full sm:w-[58%] lg:w-[52%] bg-forest-950/35 backdrop-blur-[10px] sm:backdrop-blur-[14px]"
+            className="absolute inset-y-0 left-0 w-full sm:w-[58%] lg:w-[52%] bg-forest-950/20 backdrop-blur-[3px] sm:backdrop-blur-[4px]"
           />
           <span
             aria-hidden
@@ -162,7 +162,7 @@ export function HomePage() {
             className="absolute inset-0 bg-gradient-to-t from-forest-950/85 via-transparent to-forest-950/20"
           />
 
-          <div className="relative z-10 flex min-h-[min(78vh,620px)] sm:min-h-[540px] flex-col justify-between">
+          <div className="relative z-10 flex min-h-[min(78vh,620px)] sm:min-h-[540px] flex-col">
             <div className="flex flex-col gap-4 max-w-xl px-6 py-12 sm:px-10 sm:py-16 lg:px-12 lg:py-20">
               <p className="text-label uppercase tracking-[0.22em] text-cream-100/95 font-semibold">
                 Lakhe Mushroom Farm
@@ -197,48 +197,6 @@ export function HomePage() {
                     Start Training
                   </Button>
                 </Link>
-              </div>
-            </div>
-
-            {/* Bottom features strip */}
-            <div
-              className="border-t border-cream-200/15 bg-forest-950/55 backdrop-blur-md px-4 py-4 sm:px-8 sm:py-5"
-            >
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-6">
-                {[
-                  {
-                    icon: Leaf,
-                    title: '100% Natural',
-                    sub: 'Healthy & Safe',
-                  },
-                  {
-                    icon: GraduationCap,
-                    title: 'Expert Training',
-                    sub: 'Learn from Pros',
-                  },
-                  {
-                    icon: Sprout,
-                    title: 'Complete Support',
-                    sub: 'End-to-end Guidance',
-                  },
-                ].map((f) => (
-                  <div
-                    key={f.title}
-                    className="flex items-center gap-3 sm:justify-center"
-                  >
-                    <span
-                      className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-cream-200/35 bg-white/10 text-cream-50"
-                    >
-                      <f.icon className="h-5 w-5" />
-                    </span>
-                    <div>
-                      <p className="text-small font-semibold text-cream-50">
-                        {f.title}
-                      </p>
-                      <p className="text-caption text-cream-200/80">{f.sub}</p>
-                    </div>
-                  </div>
-                ))}
               </div>
             </div>
           </div>
