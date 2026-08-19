@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   ArrowRight,
   Award,
-  GraduationCap,
   Leaf,
   Play,
   Sprout,
@@ -62,12 +61,6 @@ const formatLabel: Record<TrainingFormat, 'Online' | 'Offline'> = {
   hybrid: 'Offline',
 };
 
-const HERO_TRUST_BADGES = [
-  { label: 'Farm-grown', icon: Leaf },
-  { label: 'Expert-led', icon: GraduationCap },
-  { label: 'End-to-end', icon: Sprout },
-];
-
 export function HomePage() {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<Product[]>([]);
@@ -107,7 +100,7 @@ export function HomePage() {
   })();
   const showcaseGallery =
     gallery.length > 0
-      ? gallery
+      ? gallery.sort((a, b) => a.order - b.order)
       : HOME_FARM_SHOWCASE.map((item, i) => ({
           id: item.id,
           type: item.type,
@@ -128,47 +121,40 @@ export function HomePage() {
           <img
             src={HOME_HERO_IMAGE}
             alt=""
-            className="h-full w-full object-cover object-center scale-105 blur-[3px] sm:blur-[4px]"
+            className="h-full w-full object-cover object-[center_42%]"
             loading="eager"
             decoding="async"
           />
         </div>
         <div
           aria-hidden
-          className="absolute inset-0 bg-forest-950/40"
-        />
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-gradient-to-b from-forest-950/55 via-forest-950/25 to-forest-950/65"
+          className="absolute inset-0 bg-gradient-to-r from-forest-950/75 via-forest-950/35 to-forest-950/10"
         />
 
         <div
-          className="relative z-10 mx-auto flex min-h-[min(88vh,720px)] sm:min-h-[680px] max-w-[1320px] flex-col items-center justify-center px-4 sm:px-6 lg:px-8 pb-16 sm:pb-20 pt-20 sm:pt-24"
+          className="relative z-10 mx-auto flex min-h-[min(88vh,720px)] sm:min-h-[680px] max-w-[1320px] items-center px-4 sm:px-6 lg:px-8 pb-20 sm:pb-24 pt-20 sm:pt-24"
         >
-          <div className="w-full max-w-2xl text-center">
-            <p
-              className="text-label uppercase tracking-[0.28em] text-cream-100 font-semibold [text-shadow:0_1px_12px_rgba(0,0,0,0.4)]"
-            >
+          <div
+            className="max-w-xl rounded-2xl border border-white/10 bg-forest-950/55 px-6 py-7 sm:px-8 sm:py-9 backdrop-blur-md shadow-[0_8px_40px_rgba(0,0,0,0.25)]"
+          >
+            <p className="text-[0.6875rem] sm:text-xs uppercase tracking-[0.22em] text-cream-100/90 font-semibold">
               Lakhe Mushroom Farm
             </p>
             <h1
-              className="mt-4 font-serif text-[2.15rem] leading-[1.08] sm:text-[2.85rem] lg:text-[3.5rem] tracking-tight text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.45)]"
+              className="mt-3 font-serif text-[2rem] leading-[1.12] sm:text-[2.5rem] lg:text-[2.75rem] tracking-tight text-white"
             >
-              Grow Mushrooms.
+              Fresh Mushrooms.
               <br />
-              Build Your Business.
+              Grown with Care.
             </h1>
-            <p
-              className="mt-5 text-body-lg sm:text-[1.0625rem] text-cream-50/95 max-w-lg mx-auto leading-relaxed [text-shadow:0_1px_12px_rgba(0,0,0,0.4)]"
-            >
-              Quality mushrooms, expert training, and complete farm setup — all
-              from one place.
+            <p className="mt-4 text-[0.9375rem] sm:text-body-lg text-cream-50/95 leading-relaxed max-w-md">
+              Farm-fresh mushrooms, expert training, and complete farm solutions.
             </p>
-            <div className="mt-7 flex flex-wrap justify-center gap-3">
+            <div className="mt-6 flex flex-wrap gap-3">
               <Link to="/products">
                 <Button
                   size="lg"
-                  className="bg-cream-50 !text-forest-900 hover:bg-white shadow-lg min-h-12 px-7 rounded-full"
+                  className="bg-forest-800 !text-cream-50 hover:bg-forest-900 shadow-md min-h-11 px-6 rounded-lg"
                   rightIcon={<ArrowRight className="h-4 w-4" />}
                 >
                   Explore Products
@@ -178,21 +164,11 @@ export function HomePage() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-cream-200/60 !text-cream-50 bg-forest-900/50 hover:bg-forest-900/65 min-h-12 px-7 rounded-full backdrop-blur-sm"
+                  className="border-cream-200/70 !text-cream-50 bg-transparent hover:bg-white/10 min-h-11 px-6 rounded-lg"
                 >
-                  Start Training
+                  Mushroom Training
                 </Button>
               </Link>
-            </div>
-            <div
-              className="mt-8 flex flex-wrap items-center justify-center gap-x-7 gap-y-3 text-small font-medium text-cream-100"
-            >
-              {HERO_TRUST_BADGES.map((badge) => (
-                <span key={badge.label} className="inline-flex items-center gap-2">
-                  <badge.icon className="h-4 w-4 text-cream-200" strokeWidth={2} />
-                  {badge.label}
-                </span>
-              ))}
             </div>
           </div>
         </div>
@@ -201,7 +177,7 @@ export function HomePage() {
           viewBox="0 0 1440 88"
           preserveAspectRatio="none"
           aria-hidden
-          className="absolute bottom-0 left-0 w-full h-14 sm:h-[4.5rem] text-cream-100"
+          className="absolute bottom-0 left-0 z-20 w-full h-12 sm:h-16 text-cream-100 pointer-events-none"
         >
           <path
             fill="currentColor"
@@ -211,13 +187,13 @@ export function HomePage() {
       </section>
 
       {/* EVERYTHING YOU NEED TO GROW */}
-      <section className="relative -mt-px bg-gradient-to-b from-cream-100 via-cream-50 to-cream-100">
+      <section className="relative z-10 -mt-12 sm:-mt-16 bg-cream-100">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(47,82,50,0.07),transparent_58%)]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(47,82,50,0.06),transparent_55%)]"
         />
         <PageContainer>
-          <Section size="md" className="!pt-12 sm:!pt-16">
+          <Section size="md" className="!pt-14 sm:!pt-20">
             <div className="mx-auto max-w-3xl text-center">
               <GrowSectionEmblem className="mb-6" />
               <h2 className="font-serif text-h1 sm:text-display text-forest-900 leading-[1.1]">

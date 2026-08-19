@@ -42,7 +42,7 @@ import {
   withProductImages,
   withTrainingImage,
 } from './mediaResolve';
-import { SAMPLE_GALLERY, SAMPLE_TESTIMONIALS } from '../data/gallery';
+import { SAMPLE_GALLERY, SAMPLE_TESTIMONIALS, mergeSampleGallery } from '../data/gallery';
 
 // ---------------------------------------------------------------------------
 // Demo-mode local stores
@@ -1013,13 +1013,18 @@ export async function updateQueryStatus(
 // ---------------------------------------------------------------------------
 
 export async function listGallery(): Promise<GalleryItem[]> {
-  if (!isSupabaseConfigured()) return localGet<GalleryItem[]>(K.gallery, []);
-  const { data, error } = await supabase
-    .from('gallery_items')
-    .select('*')
-    .order('order', { ascending: true });
-  if (error) throw error;
-  return (data ?? []) as GalleryItem[];
+  if (!isSupabaseConfigured()) return SAMPLE_GALLERY;
+  try {
+    const { data, error } = await supabase
+      .from('gallery_items')
+      .select('*')
+      .order('order', { ascending: true });
+    if (error) throw error;
+    return mergeSampleGallery((data ?? []) as GalleryItem[]);
+  } catch (err) {
+    console.warn('listGallery failed — using sample photos', err);
+    return SAMPLE_GALLERY;
+  }
 }
 
 export async function upsertGalleryItem(item: GalleryItem): Promise<GalleryItem> {

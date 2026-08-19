@@ -1,121 +1,63 @@
 import type { GalleryItem, Testimonial } from '../types/profile';
+import photo1 from '../assets/photo1.jpg';
+import photo2 from '../assets/photo2.jpg';
+import photo3 from '../assets/photo3.jpg';
+import photo4 from '../assets/photo4.jpg';
+import photo5 from '../assets/photo5.jpg';
+import photo6 from '../assets/photo6.jpg';
+import photo7 from '../assets/photo7.jpg';
+import photo8 from '../assets/photo8.jpg';
+import photo9 from '../assets/photo9.jpg';
+import photo10 from '../assets/photo10.jpg';
+import photo11 from '../assets/photo11.jpg';
+import photo12 from '../assets/photo12.jpg';
 
-export const SAMPLE_GALLERY: GalleryItem[] = [
-  {
-    id: 'g1',
-    type: 'image',
-    category: 'farm',
-    media_url:
-      'https://images.unsplash.com/photo-1602867741746-6df80f40b3f6?auto=format&fit=crop&w=1600&q=70',
-    caption: 'Our main growing shed',
-    order: 1,
-  },
-  {
-    id: 'g2',
-    type: 'image',
-    category: 'cultivation',
-    media_url:
-      'https://images.unsplash.com/photo-1568900122085-3c05f8bd57e5?auto=format&fit=crop&w=1600&q=70',
-    caption: 'Oyster mushrooms at peak fruiting',
-    order: 2,
-  },
-  {
-    id: 'g3',
-    type: 'image',
-    category: 'cultivation',
-    media_url:
-      'https://images.unsplash.com/photo-1611574474461-46f3f36fbb90?auto=format&fit=crop&w=1600&q=70',
-    caption: 'Freshly harvested clusters',
-    order: 3,
-  },
-  {
-    id: 'g4',
-    type: 'image',
-    category: 'training',
-    media_url:
-      'https://images.unsplash.com/photo-1524178232363-1ba1f8b83d0b?auto=format&fit=crop&w=1600&q=70',
-    caption: 'Weekend immersion in session',
-    order: 4,
-  },
-  {
-    id: 'g5',
-    type: 'image',
-    category: 'team',
-    media_url:
-      'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1600&q=70',
-    caption: 'Our farm team',
-    order: 5,
-  },
-  {
-    id: 'g6',
-    type: 'image',
-    category: 'clients',
-    media_url:
-      'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1600&q=70',
-    caption: 'International cohort visit',
-    order: 6,
-  },
-  {
-    id: 'g7',
-    type: 'image',
-    category: 'farm',
-    media_url:
-      'https://images.unsplash.com/photo-1615398265937-71bc7a9c8dfe?auto=format&fit=crop&w=1600&q=70',
-    caption: 'Substrate preparation area',
-    order: 7,
-  },
-  {
-    id: 'g8',
-    type: 'image',
-    category: 'cultivation',
-    media_url:
-      'https://images.unsplash.com/photo-1607301405390-d831c242f59b?auto=format&fit=crop&w=1600&q=70',
-    caption: 'Spawn bags in incubation',
-    order: 8,
-  },
-  {
-    id: 'g9',
-    type: 'video',
-    category: 'farm',
-    media_url:
-      'https://videos.pexels.com/video-files/6963395/6963395-uhd_2560_1440_25fps.mp4',
-    thumbnail_url:
-      'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=1600&q=80',
-    caption: 'Walking through the farm',
-    order: 9,
-  },
-  {
-    id: 'g10',
-    type: 'video',
-    category: 'cultivation',
-    media_url:
-      'https://videos.pexels.com/video-files/4508067/4508067-uhd_2560_1440_25fps.mp4',
-    thumbnail_url:
-      'https://images.unsplash.com/photo-1607301405390-d831c242f59b?auto=format&fit=crop&w=1600&q=80',
-    caption: 'Harvest & packing',
-    order: 10,
-  },
-  {
-    id: 'g11',
-    type: 'image',
-    category: 'cultivation',
-    media_url:
-      'https://images.unsplash.com/photo-1611743331025-2bbf67c72934?auto=format&fit=crop&w=1600&q=80',
-    caption: 'Oyster mushrooms on the shelf',
-    order: 11,
-  },
-  {
-    id: 'g12',
-    type: 'video',
-    category: 'training',
-    media_url:
-      'https://videos.pexels.com/video-files/3571264/3571264-hd_1920_1080_30fps.mp4',
-    thumbnail_url:
-      'https://images.unsplash.com/photo-1601300961833-e6f635e6f4f6?auto=format&fit=crop&w=1600&q=80',
-    caption: 'Greenhouse cultivation clip',
-    order: 12,
-  },
+const GALLERY_PHOTOS = [
+  photo1,
+  photo2,
+  photo3,
+  photo4,
+  photo5,
+  photo6,
+  photo7,
+  photo8,
+  photo9,
+  photo10,
+  photo11,
+  photo12,
+] as const;
+
+const GALLERY_CATEGORIES: GalleryItem['category'][] = [
+  'farm',
+  'cultivation',
+  'cultivation',
+  'training',
+  'farm',
+  'cultivation',
+  'training',
+  'farm',
+  'cultivation',
+  'team',
+  'clients',
+  'farm',
 ];
+
+export const SAMPLE_GALLERY: GalleryItem[] = GALLERY_PHOTOS.map((src, i) => ({
+  id: `photo-${i + 1}`,
+  type: 'image' as const,
+  category: GALLERY_CATEGORIES[i],
+  media_url: src,
+  caption: `Lakhe Mushroom Farm — photo ${i + 1}`,
+  order: i + 1,
+}));
+
+export function mergeSampleGallery(remote: GalleryItem[]): GalleryItem[] {
+  if (remote.length === 0) return SAMPLE_GALLERY;
+  const extra = remote.filter(
+    (r) => r.order > SAMPLE_GALLERY.length && !SAMPLE_GALLERY.some((s) => s.id === r.id)
+  );
+  return [...SAMPLE_GALLERY, ...extra].sort((a, b) => a.order - b.order);
+}
 
 export const SAMPLE_TESTIMONIALS: Testimonial[] = [
   {

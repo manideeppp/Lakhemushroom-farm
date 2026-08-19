@@ -31,11 +31,11 @@ export function HomeGrowOfferingCard({
         className
       )}
     >
-      <div className="relative">
+      <div className="relative bg-cream-100 px-4 pt-6 pb-10 sm:px-6 sm:pt-8 sm:pb-12">
         <img
           src={image}
           alt={imageAlt}
-          className="w-full h-52 sm:h-60 lg:h-64 object-cover object-center"
+          className="mx-auto w-full h-auto max-h-48 sm:max-h-56 lg:max-h-64 object-contain object-center"
           loading="lazy"
           decoding="async"
         />
