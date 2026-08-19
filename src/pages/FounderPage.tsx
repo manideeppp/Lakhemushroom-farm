@@ -14,6 +14,7 @@ import { Section, SectionHeader } from '../components/layout/Section';
 import { ResponsiveGrid } from '../components/layout/Layout';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
+import { FOUNDER } from '../data/founder';
 import { config } from '../lib/config';
 import { HOME_FOUNDER_IMAGE } from '../data/home';
 
@@ -37,14 +38,13 @@ export function FounderPage() {
                 Meet the founder
               </p>
               <h1 className="font-serif text-[2.25rem] leading-[1.05] sm:text-hero tracking-tight">
-                The person behind
-                <br />
-                <span className="text-cream-200">every basket.</span>
+                {FOUNDER.honorific}
               </h1>
+              <p className="text-body-lg font-medium text-cream-200/95">
+                {FOUNDER.title}
+              </p>
               <p className="text-body-lg text-cream-100/90 max-w-lg">
-                A small-town beginning, an obsession with growing things, and a
-                belief that mushrooms could change rural livelihoods — that’s
-                the story of Lakhe.
+                {FOUNDER.bio}
               </p>
               <div className="flex flex-wrap gap-2 pt-1">
                 <Link to="/training">
@@ -115,7 +115,7 @@ export function FounderPage() {
           <ResponsiveGrid cols={{ base: 2, md: 4 }} gap="md">
             <Card padding="lg">
               <span className="font-serif text-display text-brand leading-none">
-                8+
+                {FOUNDER.experienceYears}+
               </span>
               <p className="mt-1 text-small font-medium text-ink-800">
                 Years farming
@@ -123,18 +123,10 @@ export function FounderPage() {
             </Card>
             <Card padding="lg">
               <span className="font-serif text-display text-brand leading-none">
-                12
+                5000+
               </span>
               <p className="mt-1 text-small font-medium text-ink-800">
-                Mushroom varieties grown
-              </p>
-            </Card>
-            <Card padding="lg">
-              <span className="font-serif text-display text-brand leading-none">
-                300+
-              </span>
-              <p className="mt-1 text-small font-medium text-ink-800">
-                Learners mentored
+                Farmers trained
               </p>
             </Card>
             <Card padding="lg">
@@ -142,7 +134,15 @@ export function FounderPage() {
                 50+
               </span>
               <p className="mt-1 text-small font-medium text-ink-800">
-                Farms set up
+                Group farmers
+              </p>
+            </Card>
+            <Card padding="lg">
+              <span className="font-serif text-display text-brand leading-none">
+                12+
+              </span>
+              <p className="mt-1 text-small font-medium text-ink-800">
+                Product varieties
               </p>
             </Card>
           </ResponsiveGrid>
@@ -155,13 +155,12 @@ export function FounderPage() {
               <Quote className="h-8 w-8 text-brand shrink-0" />
               <div>
                 <p className="font-serif text-h2 text-ink-900 leading-snug">
-                  “A mushroom is small, but a mushroom farm changes families.
-                  I’ve seen it happen — that’s why I do this.”
+                  “{FOUNDER.quote}”
                 </p>
                 <div className="mt-3 flex items-center gap-2 text-small text-ink-600">
-                  <span className="font-medium text-ink-800">Founder</span>
+                  <span className="font-medium text-ink-800">{FOUNDER.honorific}</span>
                   <span>·</span>
-                  <span>Lakhe Mushroom Farm</span>
+                  <span>{FOUNDER.farm}</span>
                 </div>
               </div>
             </div>

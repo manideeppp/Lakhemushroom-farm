@@ -10,8 +10,6 @@ import { Input } from '../components/forms/Input';
 import { Button } from '../components/ui/Button';
 import { EmptyState } from '../components/feedback/States';
 import { SkeletonCard } from '../components/ui/Skeleton';
-import { useCart } from '../context/CartContext';
-import { useToast } from '../components/feedback/ToastProvider';
 import { listProducts } from '../lib/data';
 import type { Product, ProductCategory } from '../types/product';
 import type { BadgeVariant } from '../components/ui/Badge';
@@ -30,8 +28,6 @@ export function ProductsPage() {
   const [products, setProducts] = useState<Product[] | null>(null);
   const [q, setQ] = useState('');
   const [cat, setCat] = useState<(typeof CATEGORIES)[number]['key']>('all');
-  const { addItem } = useCart();
-  const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -120,31 +116,15 @@ export function ProductsPage() {
               {filtered.map((p) => (
                 <ProductCard
                   key={p.id}
+                  id={p.id}
+                  slug={p.slug}
                   name={p.name}
-                  category={p.category}
                   price={p.price}
+                  unit={p.unit}
+                  shortDescription={p.short_description}
                   image={p.images[0]}
                   badges={p.badges.slice(0, 2) as BadgeVariant[]}
                   inStock={p.stock > 0}
-                  onAdd={() => {
-                    addItem(
-                      {
-                        id: p.id,
-                        type: 'product',
-                        name: p.name,
-                        price: p.price,
-                        image: p.images[0],
-                        slug: p.slug,
-                        unit: p.unit,
-                      },
-                      1
-                    );
-                    toast({
-                      tone: 'success',
-                      title: 'Added to cart',
-                      message: p.name,
-                    });
-                  }}
                   onClick={() => navigate(`/products/${p.slug}`)}
                 />
               ))}

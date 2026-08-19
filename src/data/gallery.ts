@@ -164,12 +164,21 @@ export const SAMPLE_TESTIMONIALS: Testimonial[] = [
       'Clear modules and honest advice. I started selling dried mushrooms to neighbours within two months.',
   },
   {
-    id: 't6',
-    name: 'Jean Dupont',
-    location: 'Paris, France',
-    role: 'Product buyer',
+    id: 't7',
+    name: 'Rajesh Kulkarni',
+    location: 'Ahmednagar',
+    role: 'Spawn buyer',
     rating: 5,
     quote:
-      'The fresh oysters arrived beautifully packed. You can taste the care in every batch.',
+      'Lakhe spawn quality is consistent — our unit harvests improved within the first cycle. Genuine farm support.',
+  },
+  {
+    id: 't8',
+    name: 'Deepa Nair',
+    location: 'Bangalore',
+    role: 'Retail buyer',
+    rating: 5,
+    quote:
+      'Fresh mushrooms arrive clean and well packed. Lakhe is our trusted supplier for premium varieties.',
   },
 ];

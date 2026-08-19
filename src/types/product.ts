@@ -27,5 +27,6 @@ export interface Product {
   highlights?: string[];
   nutrition_basis?: string;
   nutrition?: NutritionRow[];
+  specifications?: NutritionRow[];
   created_at?: string;
 }

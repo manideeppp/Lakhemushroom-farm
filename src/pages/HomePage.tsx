@@ -32,9 +32,12 @@ import { ResponsiveVideo } from '../components/media/ResponsiveVideo';
 import type { BadgeVariant } from '../components/ui/Badge';
 import { ProductGridSkeleton } from '../components/feedback/PageSkeletons';
 import { HomeQueryForm } from '../components/forms/HomeQueryForm';
+import { TestimonialCarousel } from '../components/feedback/TestimonialCarousel';
+import { FOUNDER } from '../data/founder';
 import {
   listGallery,
   listProducts,
+  listTestimonials,
   listTraining,
 } from '../lib/data';
 import { mergeSampleProducts, mergeSampleTraining } from '../lib/mediaResolve';
@@ -50,8 +53,7 @@ import {
 import { trainingImages } from '../data/media';
 import type { Product } from '../types/product';
 import type { TrainingCourse, TrainingFormat } from '../types/training';
-import type { GalleryItem } from '../types/profile';
-import { useCart } from '../context/CartContext';
+import type { GalleryItem, Testimonial } from '../types/profile';
 import { config } from '../lib/config';
 import { WhatsAppIcon } from '../components/icons/WhatsAppIcon';
 
@@ -72,20 +74,22 @@ export function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [training, setTraining] = useState<TrainingCourse[]>([]);
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
-  const { addItem } = useCart();
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     void (async () => {
       try {
-        const [p, t, g] = await Promise.all([
+        const [p, t, g, testim] = await Promise.all([
           listProducts(),
           listTraining(),
           listGallery(),
+          listTestimonials(),
         ]);
         setProducts(p);
         setTraining(t);
         setGallery(g);
+        setTestimonials(testim);
       } finally {
         setLoading(false);
       }
@@ -266,29 +270,14 @@ export function HomePage() {
                 {displayProducts.map((p) => (
                   <HorizontalScrollItem key={p.id}>
                     <ProductCard
+                      id={p.id}
+                      slug={p.slug}
                       name={p.name}
-                      category={p.category}
                       price={p.price}
+                      unit={p.unit}
+                      shortDescription={p.short_description}
                       image={p.images[0]}
                       badges={p.badges.slice(0, 2) as BadgeVariant[]}
-                      onAdd={() => {
-                        addItem(
-                          {
-                            id: p.id,
-                            type: 'product',
-                            name: p.name,
-                            price: p.price,
-                            image: p.images[0],
-                            slug: p.slug,
-                            unit: p.unit,
-                          },
-                          1,
-                          { announce: false }
-                        );
-                        navigate(`/products/${p.slug}`, {
-                          state: { cartAdded: true, itemName: p.name },
-                        });
-                      }}
                       onClick={() => navigate(`/products/${p.slug}`)}
                     />
                   </HorizontalScrollItem>
@@ -347,6 +336,20 @@ export function HomePage() {
                 />
               </HorizontalScrollItem>
             </HorizontalScrollRow>
+          </Section>
+        </PageContainer>
+      </section>
+
+      {/* TESTIMONIALS */}
+      <section className="bg-sage-50/40 border-t border-ink-100">
+        <PageContainer>
+          <Section size="md">
+            <SectionHeader
+              eyebrow="Testimonials"
+              title="Trusted by growers & customers"
+              description="Farmers, students and buyers who have worked with Lakhe Mushroom Farm."
+            />
+            <TestimonialCarousel items={testimonials} />
           </Section>
         </PageContainer>
       </section>
@@ -488,12 +491,13 @@ export function HomePage() {
                   Founder&apos;s story
                 </p>
                 <h2 className="mt-2 font-serif text-h1 text-ink-900 leading-tight">
-                  The person behind Lakhe
+                  {FOUNDER.honorific}
                 </h2>
+                <p className="mt-1 text-small font-medium text-forest-700">
+                  {FOUNDER.title} · {FOUNDER.location}
+                </p>
                 <p className="mt-4 text-body text-ink-600 leading-relaxed">
-                  From experimenting in a backyard unit to training thousands of
-                  farmers, our founder built Lakhe on real soil, real failures and
-                  real harvests — and still walks the farm every day.
+                  {FOUNDER.bio}
                 </p>
                 <Link to="/founder" className="mt-6 inline-block">
                   <Button variant="outline" rightIcon={<ArrowRight className="h-4 w-4" />}>

@@ -313,44 +313,39 @@ export function UIPreviewPage() {
         <PreviewBlock title="Product Cards">
           <ResponsiveGrid cols={{ base: 2, sm: 2, md: 3, lg: 4 }} gap="md">
             <ProductCard
+              id="preview-spawn"
+              slug="oyster-mushroom-spawn"
               name="Oyster Mushroom Spawn"
-              category="Spawn"
               price={150}
+              unit="500g bag"
+              shortDescription="Vigorous contamination-free spawn from our farm."
               image={SAMPLE_MUSHROOM_IMG}
               badges={['fresh', 'best-seller']}
-              onAdd={() =>
-                toast({
-                  tone: 'success',
-                  title: 'Added to cart',
-                  message: 'Oyster Mushroom Spawn × 1',
-                })
-              }
             />
             <ProductCard
+              id="preview-powder"
+              slug="mushroom-powder"
               name="Mushroom Powder"
-              category="Wellness"
               price={300}
+              unit="150g jar"
+              shortDescription="Nutrient-dense wellness powder."
               image={SAMPLE_POWDER_IMG}
               badges={['premium']}
-              onAdd={() =>
-                toast({
-                  tone: 'success',
-                  title: 'Added to cart',
-                  message: 'Mushroom Powder × 1',
-                })
-              }
             />
             <ProductCard
+              id="preview-shiitake"
+              slug="dry-shiitake-mushroom"
               name="Dried Shiitake"
-              category="Culinary"
               price={450}
+              unit="100g pouch"
               badges={['natural']}
-              onAdd={() => toast({ tone: 'info', message: 'Nice choice.' })}
             />
             <ProductCard
+              id="preview-rte"
+              slug="ready-to-eat-oyster"
               name="Ready-to-Eat Pack"
-              category="Meals"
               price={280}
+              unit="250g pack"
               image={SAMPLE_MUSHROOM_IMG}
               badges={['ready-to-eat']}
               inStock={false}
@@ -670,9 +665,11 @@ export function UIPreviewPage() {
             {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="snap-start shrink-0 w-40">
                 <ProductCard
+                  id={`preview-scroll-${i}`}
+                  slug={`sample-product-${i}`}
                   name={`Sample product ${i + 1}`}
-                  category="Sample"
                   price={100 + i * 50}
+                  unit="250g pack"
                   image={SAMPLE_MUSHROOM_IMG}
                   badges={['fresh']}
                 />

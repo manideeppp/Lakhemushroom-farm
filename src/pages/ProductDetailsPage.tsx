@@ -151,6 +151,15 @@ export function ProductDetailsPage() {
                   <ProductNutritionPanel
                     basis={product.nutrition_basis}
                     rows={product.nutrition}
+                    specifications={product.specifications}
+                  />
+                </div>
+              )}
+
+              {!product.nutrition?.length && product.specifications?.length && (
+                <div className="mt-6">
+                  <ProductNutritionPanel
+                    specifications={product.specifications}
                   />
                 </div>
               )}

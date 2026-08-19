@@ -1,111 +1,205 @@
-import { Plus, ShoppingCart } from 'lucide-react';
+import { Leaf, Minus, Plus, ShoppingBag, ShoppingCart } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Badge, type BadgeVariant } from '../ui/Badge';
-import { Button } from '../ui/Button';
 import { ResponsiveImage } from '../media/ResponsiveImage';
 import { formatINR } from '../../utils/format';
 import { cn } from '../../utils/cn';
+import { useCart } from '../../context/CartContext';
+
+/** Shared card shell — product & training cards use identical footprint. */
+const CATALOG_CARD_SHELL =
+  'h-full flex flex-col overflow-hidden rounded-2xl border border-cream-200/90 bg-cream-50 shadow-[0_2px_12px_rgba(30,53,32,0.06)] transition-shadow hover:shadow-[0_6px_20px_rgba(30,53,32,0.1)]';
+
+const CATALOG_IMAGE_ASPECT = 'aspect-[4/3]';
 
 export interface ProductCardProps {
+  id: string;
+  slug: string;
   name: string;
-  category?: string;
   price: number;
+  unit?: string;
+  shortDescription?: string;
   image?: string;
   imageAlt?: string;
   badges?: BadgeVariant[];
   inStock?: boolean;
-  onAdd?: () => void;
   onClick?: () => void;
   className?: string;
   detailHint?: string;
+  /** Legacy: if set, overrides internal cart add */
+  onAdd?: () => void;
 }
 
 export function ProductCard({
+  id,
+  slug,
   name,
-  category,
   price,
+  unit,
+  shortDescription,
   image,
   imageAlt,
   badges = [],
   inStock = true,
-  onAdd,
   onClick,
   className,
-  detailHint = 'Tap for full details & nutrition',
+  detailHint = 'Tap for nutrition & full details',
+  onAdd,
 }: ProductCardProps) {
+  const { items, addItem, updateQty } = useCart();
+  const cartQty =
+    items.find((i) => i.id === id && i.type === 'product')?.qty ?? 0;
+
+  const displayBadges = badges.filter((b) =>
+    ['fresh', 'natural', 'premium', 'best-seller'].includes(b)
+  ).slice(0, 2);
+
+  const descriptor =
+    shortDescription?.split('.')[0]?.trim() || 'Farm fresh · Naturally grown';
+
+  function handleAdd(e: React.MouseEvent) {
+    e.stopPropagation();
+    if (!inStock) return;
+    if (onAdd) {
+      onAdd();
+      return;
+    }
+    addItem(
+      {
+        id,
+        type: 'product',
+        name,
+        price,
+        image,
+        slug,
+        unit,
+      },
+      1
+    );
+  }
+
+  function handleQtyChange(e: React.MouseEvent, delta: number) {
+    e.stopPropagation();
+    const next = cartQty + delta;
+    if (next <= 0) {
+      updateQty(id, 'product', 0);
+    } else {
+      updateQty(id, 'product', next);
+    }
+  }
+
   return (
-    <Card
-      as="article"
-      padding="none"
-      interactive={!!onClick}
+    <article
+      className={cn(CATALOG_CARD_SHELL, onClick && 'cursor-pointer', className)}
       onClick={onClick}
-      className={cn('overflow-hidden flex flex-col', className)}
     >
-      <div className="relative">
+      <div className={cn('relative overflow-hidden', CATALOG_IMAGE_ASPECT)}>
         {image ? (
-          <ResponsiveImage
+          <img
             src={image}
             alt={imageAlt ?? name}
-            aspect="aspect-square"
-            rounded="none"
-            fit="contain"
-            containerClassName="bg-cream-50"
+            className="h-full w-full object-cover"
+            loading="lazy"
+            decoding="async"
           />
         ) : (
-          <div className="aspect-square w-full bg-forest-50 flex items-center justify-center text-forest-400">
+          <div className="h-full w-full bg-sage-100 flex items-center justify-center text-forest-400">
             <span className="text-caption">No image</span>
           </div>
         )}
-        {badges.length > 0 && (
-          <div className="absolute left-2 top-2 flex flex-wrap gap-1">
-            {badges.map((b) => (
-              <Badge key={b} variant={b} size="sm" />
+        {displayBadges.length > 0 && (
+          <div className="absolute left-2 top-2 flex flex-wrap gap-1.5">
+            {displayBadges.map((b) => (
+              <span
+                key={b}
+                className="inline-flex items-center gap-1 rounded-full border border-white/60 bg-white/85 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-forest-800 shadow-sm backdrop-blur-sm"
+              >
+                {b === 'fresh' || b === 'natural' ? (
+                  <Leaf className="h-3 w-3" aria-hidden />
+                ) : null}
+                {b === 'fresh'
+                  ? 'Fresh'
+                  : b === 'natural'
+                    ? 'Natural'
+                    : b === 'premium'
+                      ? 'Premium'
+                      : 'Best Seller'}
+              </span>
             ))}
           </div>
         )}
       </div>
-      <div className="p-3 flex flex-1 flex-col gap-1">
-        {category && (
-          <span className="text-caption uppercase tracking-widest text-forest-600 font-medium">
-            {category}
-          </span>
-        )}
-        <h3 className="text-body font-serif font-semibold text-ink-900 leading-tight line-clamp-2">
+
+      <div className="flex flex-1 flex-col gap-1.5 p-3.5 sm:p-4 min-h-[148px]">
+        <h3 className="font-serif text-[1.05rem] leading-tight text-forest-900 line-clamp-2">
           {name}
         </h3>
-        {onClick && (
-          <p className="text-caption text-forest-600/90 leading-snug">
-            {detailHint}
+        <p className="text-caption text-ink-500 leading-snug line-clamp-1">
+          {descriptor}
+        </p>
+        {unit && (
+          <p className="text-caption text-forest-700/80 flex items-center gap-1.5">
+            <span className="font-medium">{unit}</span>
+            <span className="text-ink-300">·</span>
+            <span className="inline-flex items-center gap-1 text-forest-700">
+              <Leaf className="h-3 w-3" aria-hidden />
+              Pesticide free
+            </span>
           </p>
         )}
-        <div className="mt-auto flex items-end justify-between pt-2">
-          <div className="flex flex-col">
-            <span className="text-caption text-ink-500">Price</span>
-            <span className="text-price font-semibold text-ink-900">
+        {onClick && (
+          <p className="text-[11px] text-forest-600/75 leading-snug">{detailHint}</p>
+        )}
+
+        <div className="mt-auto flex items-end justify-between gap-2 pt-2">
+          <div className="min-w-0">
+            <p className="font-serif text-[1.2rem] leading-none text-forest-900">
               {formatINR(price)}
-            </span>
+            </p>
+            <p className="mt-0.5 text-[10px] text-ink-400">Inclusive of all taxes</p>
           </div>
-          {onAdd && (
-            <Button
-              variant="primary"
-              size="sm"
-              aria-label={`Add ${name} to cart`}
-              disabled={!inStock}
-              onClick={(e) => {
-                e.stopPropagation();
-                onAdd();
-              }}
-              leftIcon={<Plus className="h-4 w-4" />}
+
+          {!inStock ? (
+            <span className="text-caption text-danger shrink-0">Out of stock</span>
+          ) : cartQty > 0 ? (
+            <div
+              className="flex items-center rounded-full border border-forest-200 bg-white shadow-sm shrink-0"
+              onClick={(e) => e.stopPropagation()}
             >
-              Add
-            </Button>
+              <button
+                type="button"
+                aria-label="Decrease quantity"
+                className="flex h-9 w-9 items-center justify-center text-forest-800 hover:bg-forest-50 rounded-l-full"
+                onClick={(e) => handleQtyChange(e, -1)}
+              >
+                <Minus className="h-4 w-4" />
+              </button>
+              <span className="w-8 text-center text-small font-semibold text-forest-900 tabular-nums">
+                {cartQty}
+              </span>
+              <button
+                type="button"
+                aria-label="Increase quantity"
+                className="flex h-9 w-9 items-center justify-center text-forest-800 hover:bg-forest-50 rounded-r-full"
+                onClick={(e) => handleQtyChange(e, 1)}
+              >
+                <Plus className="h-4 w-4" />
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              aria-label={`Add ${name} to cart`}
+              className="inline-flex items-center gap-1.5 rounded-full bg-forest-800 px-4 py-2 text-small font-semibold text-cream-50 shadow-sm hover:bg-forest-900 transition-colors shrink-0"
+              onClick={handleAdd}
+            >
+              <ShoppingBag className="h-4 w-4" aria-hidden />
+              <span>Add</span>
+            </button>
           )}
         </div>
-        {!inStock && (
-          <span className="text-caption text-danger mt-1">Out of stock</span>
-        )}
       </div>
-    </Card>
+    </article>
   );
 }
 
@@ -137,44 +231,40 @@ export function TrainingCard({
   detailHint = 'Tap for programme details',
 }: TrainingCardProps) {
   return (
-    <Card
-      as="article"
-      padding="none"
-      interactive={!!onClick}
+    <article
+      className={cn(CATALOG_CARD_SHELL, onClick && 'cursor-pointer', className)}
       onClick={onClick}
-      className={cn('overflow-hidden flex flex-col', className)}
     >
-      {image ? (
-        <ResponsiveImage
-          src={image}
-          alt={imageAlt ?? title}
-          aspect="aspect-[4/3]"
-          rounded="none"
-          fit="contain"
-          containerClassName="bg-cream-50"
-        />
-      ) : (
-        <div className="aspect-[4/3] w-full bg-forest-50" aria-hidden />
-      )}
-      <div className="p-4 flex flex-1 flex-col gap-2">
-        <div className="flex items-center justify-between gap-2">
-          <Badge variant={format === 'Online' ? 'online' : 'offline'} />
-          {price !== undefined && (
-            <span className="text-price font-semibold text-brand">
-              {formatINR(price)}
-            </span>
-          )}
+      <div className={cn('relative overflow-hidden', CATALOG_IMAGE_ASPECT)}>
+        {image ? (
+          <img
+            src={image}
+            alt={imageAlt ?? title}
+            className="h-full w-full object-cover"
+            loading="lazy"
+            decoding="async"
+          />
+        ) : (
+          <div className="h-full w-full bg-sage-100" aria-hidden />
+        )}
+        <div className="absolute left-2 top-2">
+          <Badge variant={format === 'Online' ? 'online' : 'offline'} size="sm" />
         </div>
-        <h3 className="text-h3 font-serif text-ink-900 leading-tight">{title}</h3>
+      </div>
+
+      <div className="flex flex-1 flex-col gap-1.5 p-3.5 sm:p-4 min-h-[148px]">
+        <h3 className="font-serif text-[1.05rem] leading-tight text-forest-900 line-clamp-2">
+          {title}
+        </h3>
         {onClick && (
-          <p className="text-caption text-forest-600/90">{detailHint}</p>
+          <p className="text-[11px] text-forest-600/75 leading-snug">{detailHint}</p>
         )}
         {features.length > 0 && (
-          <ul className="mt-1 space-y-1.5 text-small text-ink-700">
-            {features.slice(0, 3).map((f) => (
-              <li key={f} className="flex items-start gap-2">
+          <ul className="space-y-1 text-caption text-ink-600 line-clamp-3">
+            {features.slice(0, 2).map((f) => (
+              <li key={f} className="flex items-start gap-1.5">
                 <span
-                  className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-forest-500"
+                  className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-forest-500"
                   aria-hidden
                 />
                 <span>{f}</span>
@@ -182,23 +272,37 @@ export function TrainingCard({
             ))}
           </ul>
         )}
-        <div className="mt-auto flex items-center justify-between pt-3">
-          {duration && (
-            <span className="text-caption text-ink-500">{duration}</span>
-          )}
-          <Button
-            variant="primary"
-            size="sm"
+
+        <div className="mt-auto flex items-end justify-between gap-2 pt-2">
+          <div className="min-w-0">
+            {price !== undefined ? (
+              <>
+                <p className="font-serif text-[1.2rem] leading-none text-forest-900">
+                  {formatINR(price)}
+                </p>
+                <p className="mt-0.5 text-[10px] text-ink-400">
+                  {duration ?? 'Full programme'}
+                </p>
+              </>
+            ) : (
+              <p className="text-small font-medium text-forest-800">
+                {duration ?? 'Custom programme'}
+              </p>
+            )}
+          </div>
+          <button
+            type="button"
+            className="inline-flex items-center gap-1.5 rounded-full bg-forest-800 px-4 py-2 text-small font-semibold text-cream-50 shadow-sm hover:bg-forest-900 transition-colors shrink-0"
             onClick={(e) => {
               e.stopPropagation();
               onClick?.();
             }}
           >
             {cta}
-          </Button>
+          </button>
         </div>
       </div>
-    </Card>
+    </article>
   );
 }
 
