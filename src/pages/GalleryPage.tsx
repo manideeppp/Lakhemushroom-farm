@@ -100,11 +100,6 @@ export function GalleryPage() {
                         <PlayCircle className="h-10 w-10 text-cream-50 drop-shadow" />
                       </span>
                     )}
-                    {it.caption && (
-                      <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink-900/80 to-transparent px-3 py-2 text-caption text-cream-50">
-                        {it.caption}
-                      </span>
-                    )}
                   </div>
                 </button>
               ))}
@@ -140,11 +135,6 @@ export function GalleryPage() {
                 alt={lightbox.caption ?? ''}
                 className="max-h-[80vh] w-full rounded-lg object-contain"
               />
-            )}
-            {lightbox.caption && (
-              <p className="mt-3 text-center text-cream-100 text-small">
-                {lightbox.caption}
-              </p>
             )}
           </div>
         </div>

@@ -14,12 +14,12 @@ export interface HomeGrowOfferingCardProps {
   className?: string;
 }
 
+/** Compact offering card — image hero like product cards, smaller footprint. */
 export function HomeGrowOfferingCard({
   title,
   description,
   image,
   imageAlt,
-  icon: Icon,
   to,
   className,
 }: HomeGrowOfferingCardProps) {
@@ -27,35 +27,29 @@ export function HomeGrowOfferingCard({
     <Link
       to={to}
       className={cn(
-        'group block overflow-hidden rounded-2xl bg-cream-50 text-center shadow-[0_4px_24px_rgba(30,53,32,0.07)] border border-forest-100/70 transition-shadow hover:shadow-[0_8px_32px_rgba(30,53,32,0.11)] focus:outline-none focus-visible:ring-2 focus-visible:ring-forest-500',
+        'group flex flex-col overflow-hidden rounded-2xl border border-cream-200 bg-cream-50 shadow-[0_4px_22px_rgba(30,53,32,0.08)] transition-shadow hover:shadow-[0_8px_28px_rgba(30,53,32,0.11)] focus:outline-none focus-visible:ring-2 focus-visible:ring-forest-500',
         className
       )}
     >
-      <div className="relative bg-cream-100 px-4 pt-6 pb-10 sm:px-6 sm:pt-8 sm:pb-12">
+      <div className="relative aspect-[3/2] shrink-0 overflow-hidden bg-cream-50">
         <img
           src={image}
           alt={imageAlt}
-          className="mx-auto w-full h-auto max-h-48 sm:max-h-56 lg:max-h-64 object-contain object-center"
+          className="absolute inset-0 h-full w-full object-contain object-center p-2 sm:p-3"
           loading="lazy"
           decoding="async"
         />
-        <span
-          className="absolute bottom-0 left-1/2 z-10 inline-flex h-11 w-11 -translate-x-1/2 translate-y-1/2 items-center justify-center rounded-full bg-cream-100 text-forest-800 shadow-[0_2px_12px_rgba(30,53,32,0.12)] ring-4 ring-cream-50"
-          aria-hidden
-        >
-          <Icon className="h-5 w-5" aria-hidden />
-        </span>
       </div>
 
-      <div className="px-6 pb-8 pt-9 sm:px-8 sm:pb-9 sm:pt-10 bg-cream-50">
-        <h3 className="font-serif text-h2 sm:text-[1.65rem] text-forest-900 leading-tight">
+      <div className="flex flex-col items-center px-5 pb-5 pt-4 text-center">
+        <h3 className="font-serif text-[1.2rem] sm:text-[1.35rem] text-forest-900 leading-snug">
           {title}
         </h3>
-        <p className="mt-3 text-body text-forest-700/85 max-w-sm mx-auto leading-relaxed">
+        <p className="mt-2 text-[0.8125rem] sm:text-small text-forest-700/85 max-w-[16rem] leading-relaxed">
           {description}
         </p>
         <span
-          className="mt-6 inline-flex h-10 w-10 items-center justify-center rounded-full bg-forest-800 text-cream-50 transition-colors group-hover:bg-forest-900"
+          className="mt-4 inline-flex h-9 w-9 items-center justify-center rounded-full bg-forest-800 text-cream-50 transition-colors group-hover:bg-forest-900"
           aria-hidden
         >
           <ArrowRight className="h-4 w-4" />

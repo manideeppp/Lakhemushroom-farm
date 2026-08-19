@@ -132,25 +132,28 @@ export function HomePage() {
         />
 
         <div
-          className="relative z-10 mx-auto flex min-h-[min(88vh,720px)] sm:min-h-[680px] max-w-[1320px] items-center px-4 sm:px-6 lg:px-8 pb-20 sm:pb-24 pt-20 sm:pt-24"
+          className="relative z-10 mx-auto flex min-h-[min(88vh,720px)] sm:min-h-[680px] max-w-[1320px] items-center px-4 sm:px-6 lg:px-8 pb-16 sm:pb-20 pt-20 sm:pt-24"
         >
-          <div
-            className="max-w-xl rounded-2xl border border-white/10 bg-forest-950/55 px-6 py-7 sm:px-8 sm:py-9 backdrop-blur-md shadow-[0_8px_40px_rgba(0,0,0,0.25)]"
-          >
-            <p className="text-[0.6875rem] sm:text-xs uppercase tracking-[0.22em] text-cream-100/90 font-semibold">
+          <div className="max-w-xl">
+            <p
+              className="text-[0.6875rem] sm:text-xs uppercase tracking-[0.22em] text-cream-100/95 font-semibold [text-shadow:0_1px_10px_rgba(0,0,0,0.45)]"
+            >
               Lakhe Mushroom Farm
             </p>
             <h1
-              className="mt-3 font-serif text-[2rem] leading-[1.12] sm:text-[2.5rem] lg:text-[2.75rem] tracking-tight text-white"
+              className="mt-5 sm:mt-6 font-serif text-[2rem] sm:text-[2.5rem] lg:text-[2.75rem] tracking-tight text-white [text-shadow:0_2px_20px_rgba(0,0,0,0.5)]"
             >
-              Fresh Mushrooms.
-              <br />
-              Grown with Care.
+              <span className="block leading-[1.35] sm:leading-[1.4]">Fresh Mushrooms.</span>
+              <span className="mt-2 sm:mt-3 block leading-[1.35] sm:leading-[1.4]">
+                Grown with Care.
+              </span>
             </h1>
-            <p className="mt-4 text-[0.9375rem] sm:text-body-lg text-cream-50/95 leading-relaxed max-w-md">
+            <p
+              className="mt-6 sm:mt-7 text-[0.9375rem] sm:text-body-lg text-cream-50/95 leading-relaxed max-w-md [text-shadow:0_1px_10px_rgba(0,0,0,0.45)]"
+            >
               Farm-fresh mushrooms, expert training, and complete farm solutions.
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
+            <div className="mt-8 sm:mt-9 flex flex-wrap gap-3">
               <Link to="/products">
                 <Button
                   size="lg"
@@ -177,7 +180,7 @@ export function HomePage() {
           viewBox="0 0 1440 88"
           preserveAspectRatio="none"
           aria-hidden
-          className="absolute bottom-0 left-0 z-20 w-full h-12 sm:h-16 text-cream-100 pointer-events-none"
+          className="absolute bottom-0 left-0 w-full h-14 sm:h-[4.5rem] text-cream-100"
         >
           <path
             fill="currentColor"
@@ -187,13 +190,13 @@ export function HomePage() {
       </section>
 
       {/* EVERYTHING YOU NEED TO GROW */}
-      <section className="relative z-10 -mt-12 sm:-mt-16 bg-cream-100">
+      <section className="relative -mt-px bg-gradient-to-b from-cream-100 via-cream-50 to-cream-100">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(47,82,50,0.06),transparent_55%)]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(47,82,50,0.07),transparent_58%)]"
         />
         <PageContainer>
-          <Section size="md" className="!pt-14 sm:!pt-20">
+          <Section size="md" className="!pt-12 sm:!pt-16">
             <div className="mx-auto max-w-3xl text-center">
               <GrowSectionEmblem className="mb-6" />
               <h2 className="font-serif text-h1 sm:text-display text-forest-900 leading-[1.1]">
@@ -204,7 +207,7 @@ export function HomePage() {
                 grow with confidence.
               </p>
             </div>
-            <div className="mx-auto mt-12 sm:mt-14 flex max-w-lg sm:max-w-xl flex-col gap-6 sm:gap-7">
+            <div className="mx-auto mt-10 sm:mt-12 flex max-w-[17.5rem] sm:max-w-xs flex-col gap-5 sm:gap-6">
               {HOME_GROW_OFFERINGS.map((offering) => (
                 <HomeGrowOfferingCard
                   key={offering.title}
@@ -361,11 +364,6 @@ export function HomePage() {
                         </span>
                       )}
                     </div>
-                    {g.caption && (
-                      <p className="px-3 py-2 text-caption text-ink-600">
-                        {g.caption}
-                      </p>
-                    )}
                   </Card>
                 </div>
               ))}
