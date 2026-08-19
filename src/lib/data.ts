@@ -187,18 +187,25 @@ export async function listProducts(): Promise<Product[]> {
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
+  const fromSample = () => {
+    const sample = SAMPLE_PRODUCTS.find((p) => p.slug === slug);
+    return sample ? withProductImages(sample) : null;
+  };
+
   if (!isSupabaseConfigured()) {
-    const product =
-      localGet<Product[]>(K.products, []).find((p) => p.slug === slug) ?? null;
-    return product ? withProductImages(product) : null;
+    const local = localGet<Product[]>(K.products, []);
+    const product = local.find((p) => p.slug === slug);
+    return product ? withProductImages(product) : fromSample();
   }
+
   const { data, error } = await supabase
     .from('products')
     .select('*')
     .eq('slug', slug)
     .maybeSingle();
   if (error) throw error;
-  return data ? withProductImages(data as Product) : null;
+  if (data) return withProductImages(data as Product);
+  return fromSample();
 }
 
 export async function upsertProduct(p: Product): Promise<Product> {

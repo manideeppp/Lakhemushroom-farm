@@ -14,8 +14,8 @@ export function HorizontalScrollRow({
   return (
     <div
       className={cn(
-        'flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-2',
-        '-mx-4 px-4 sm:mx-0 sm:px-0',
+        'flex items-stretch gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-2',
+        '-mx-4 px-4 sm:mx-0 sm:px-0 sm:gap-4',
         className
       )}
     >
@@ -34,11 +34,11 @@ export function HorizontalScrollItem({
   return (
     <div
       className={cn(
-        'snap-start shrink-0 w-[280px] max-w-[280px] h-full',
+        'snap-start shrink-0 flex w-[calc(50%-0.375rem)] min-w-[158px] max-w-[280px] sm:w-[280px]',
         className
       )}
     >
-      {children}
+      <div className="w-full h-full">{children}</div>
     </div>
   );
 }

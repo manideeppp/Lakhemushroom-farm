@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Header } from './Header';
 import { MobileBottomNav } from '../navigation/MobileBottomNav';
+import { ScrollToTopButton } from '../navigation/ScrollToTopButton';
 import { Footer } from './Footer';
 import { AddedToCartBar } from '../cart/AddedToCartBar';
 import { CheckoutTopBar } from '../cart/CheckoutTopBar';
@@ -73,6 +74,7 @@ export function AppShell({
       </main>
       {!hideFooter && showFooter && <Footer />}
       {!hideBottomNav && <MobileBottomNav cartCount={cartCount} />}
+      <ScrollToTopButton />
     </div>
   );
 }
