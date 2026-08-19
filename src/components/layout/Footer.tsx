@@ -77,12 +77,17 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone className="h-4 w-4 shrink-0 text-cream-300/90" />
-                <a
-                  href={`tel:${config.business.phone}`}
-                  className="hover:text-cream-50 transition-colors"
-                >
-                  {config.business.phone}
-                </a>
+                <span className="flex flex-col gap-0.5">
+                  {config.business.phones.map((phone) => (
+                    <a
+                      key={phone}
+                      href={`tel:${phone.replace(/\s+/g, '')}`}
+                      className="hover:text-cream-50 transition-colors"
+                    >
+                      {phone}
+                    </a>
+                  ))}
+                </span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Mail className="h-4 w-4 shrink-0 text-cream-300/90" />

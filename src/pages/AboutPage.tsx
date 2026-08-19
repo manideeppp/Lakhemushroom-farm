@@ -45,10 +45,11 @@ export function AboutPage() {
               craft, and community.
             </h1>
             <p className="text-body-lg text-cream-100/90 max-w-xl">
-              Lakhe Mushroom Farm began as a simple idea — that mushrooms
-              deserve the same care that great tea or wine gets. Today it’s a
-              brand, a training school and a farm-setup partner for people who
-              want to build their own mushroom business.
+              Lakhe Mushroom Farm is a leading oyster mushroom producer in
+              Mundhekarwadi with over 24 years of cultivation experience, our own
+              spawn laboratory, and training backed by institutions including
+              Mahatma Phule Krishi Vidyapeeth Pune, NRCM and ICAR Chambaghat
+              Solan.
             </p>
           </div>
         </div>
@@ -91,24 +92,24 @@ export function AboutPage() {
           <ol className="relative border-l-2 border-forest-200 ml-3 space-y-6">
             {[
               {
-                year: 'Beginning',
-                title: 'A single grow tent',
-                text: 'Started as a home experiment with a handful of substrate bags and one tiny grow tent — and a lot of curiosity.',
+                year: '2008',
+                title: 'Progressive Mushroom Grower Award',
+                text: 'Recognised by the National Research Centre for Mushroom (NRCM) Solan for excellence in mushroom cultivation.',
               },
               {
-                year: 'First harvests',
-                title: 'From kitchen table to local market',
-                text: 'Neighbours became first customers. Local restaurants asked for weekly deliveries. The name Lakhe was born.',
-              },
-              {
-                year: 'Training begins',
-                title: 'Sharing what worked',
-                text: 'Farmers and hobbyists began asking how to do this at home. We started structured, hands-on training programs.',
+                year: '24+ years',
+                title: 'Spawn lab & farm operations',
+                text: 'Own spawn laboratory, metro-city supply of mushrooms and spawn, and group farming delivering kitchen produce in Pune.',
               },
               {
                 year: 'Today',
-                title: 'A farm, a brand and a school',
-                text: 'Fresh produce, wellness products, spawn, training and end-to-end farm setup — all under one honest brand.',
+                title: 'Farmers to consumers',
+                text: 'Leading a group of 50 farmers supplying Pune and Mumbai, exporting to Gulf countries, and serving premium retail and hotel clients.',
+              },
+              {
+                year: 'Forward',
+                title: 'Innovation & scale',
+                text: 'Experimenting with new agri technologies and building year-round supply partnerships with major brands and hospitality groups.',
               },
             ].map((step) => (
               <li key={step.title} className="ml-6">
@@ -160,10 +161,10 @@ export function AboutPage() {
         {/* STATS */}
         <Section size="md">
           <ResponsiveGrid cols={{ base: 2, md: 4 }} gap="md">
-            <StatCard value="1000+" label="Kilos harvested" hint="every year" />
-            <StatCard value="300+" label="Farmers trained" />
-            <StatCard value="50+" label="Farms set up" />
-            <StatCard value="10+" label="States served" />
+            <StatCard value="24+" label="Years cultivating" />
+            <StatCard value="5000+" label="Farmers trained" />
+            <StatCard value="50+" label="Group farmers" />
+            <StatCard value="25+" label="Countries served" />
           </ResponsiveGrid>
         </Section>
 

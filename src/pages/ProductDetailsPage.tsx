@@ -14,6 +14,7 @@ import { getProductBySlug } from '../lib/data';
 import type { Product } from '../types/product';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../components/feedback/ToastProvider';
+import { ProductNutritionPanel } from '../components/products/ProductNutritionPanel';
 import { useCartAddedFromNavigation } from '../hooks/useCartAddedFromNavigation';
 
 export function ProductDetailsPage() {
@@ -145,7 +146,16 @@ export function ProductDetailsPage() {
                 </ul>
               )}
 
-              <div className="mt-2 flex items-end justify-between border-t border-ink-100 pt-4">
+              {product.nutrition && product.nutrition.length > 0 && (
+                <div className="mt-6">
+                  <ProductNutritionPanel
+                    basis={product.nutrition_basis}
+                    rows={product.nutrition}
+                  />
+                </div>
+              )}
+
+              <div className="mt-4 flex items-end justify-between border-t border-ink-100 pt-4">
                 <div>
                   <p className="text-caption text-ink-500">Price</p>
                   <p className="text-h1 font-serif text-ink-900">

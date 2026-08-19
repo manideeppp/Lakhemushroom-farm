@@ -1,3 +1,9 @@
+export interface NutritionRow {
+  label: string;
+  value: string;
+  dailyValue?: string;
+}
+
 export type ProductCategory =
   | 'spawn'
   | 'fresh'
@@ -19,5 +25,7 @@ export interface Product {
   stock: number;
   rating?: number;
   highlights?: string[];
+  nutrition_basis?: string;
+  nutrition?: NutritionRow[];
   created_at?: string;
 }

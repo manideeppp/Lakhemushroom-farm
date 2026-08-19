@@ -24,16 +24,38 @@ export const config = {
       return readRuntimeEnv('VITE_WHATSAPP_NUMBER') || '919921480466';
     },
     get email() {
-      return readRuntimeEnv('VITE_CONTACT_EMAIL') || 'hello@lakhemushroom.com';
+      return readRuntimeEnv('VITE_CONTACT_EMAIL') || 'lakhe.tatya@gmail.com';
     },
     get phone() {
       return readRuntimeEnv('VITE_CONTACT_PHONE') || '+91 99214 80466';
     },
+    get phones() {
+      const raw = import.meta.env.VITE_CONTACT_PHONES as string | undefined;
+      const list = (raw || '+91 99214 80466, +91 63621 83728')
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+      return list;
+    },
     get address() {
       return (
         readRuntimeEnv('VITE_CONTACT_ADDRESS') ||
-        "Lakhe's Hi-Tech Mushroom Project, Mundhekarwadi, Maharashtra 413726"
+        'At. Post Mundhekarwadi, Tal. Shrigonda, Dist. Ahmednagar, Maharashtra 413726'
       );
+    },
+    get branches() {
+      return [
+        {
+          label: 'Maharashtra (Farm)',
+          address:
+            'At. Post Mundhekarwadi, Tal. Shrigonda, Dist. Ahmednagar, Maharashtra 413726',
+        },
+        {
+          label: 'Bangalore',
+          address:
+            '15, Mari Chinnappa Manson, Medarahalli, Opp. JJ Hospital, Chikkabanavara, Bangalore 560090',
+        },
+      ];
     },
     get mapsUrl() {
       return (

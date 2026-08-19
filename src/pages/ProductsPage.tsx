@@ -56,7 +56,7 @@ export function ProductsPage() {
           <SectionHeader
             eyebrow="Shop"
             title="Our Products"
-            description="Freshly harvested mushrooms, wellness powders and ready-to-eat packs — all made on our farm."
+            description="Freshly harvested mushrooms, wellness powders and ready-to-eat packs — all made on our farm. Tap any product for full details, specifications and nutritional values."
           />
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <Input

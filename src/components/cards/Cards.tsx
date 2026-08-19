@@ -17,6 +17,7 @@ export interface ProductCardProps {
   onAdd?: () => void;
   onClick?: () => void;
   className?: string;
+  detailHint?: string;
 }
 
 export function ProductCard({
@@ -30,6 +31,7 @@ export function ProductCard({
   onAdd,
   onClick,
   className,
+  detailHint = 'Tap for full details & nutrition',
 }: ProductCardProps) {
   return (
     <Card
@@ -71,6 +73,11 @@ export function ProductCard({
         <h3 className="text-body font-serif font-semibold text-ink-900 leading-tight line-clamp-2">
           {name}
         </h3>
+        {onClick && (
+          <p className="text-caption text-forest-600/90 leading-snug">
+            {detailHint}
+          </p>
+        )}
         <div className="mt-auto flex items-end justify-between pt-2">
           <div className="flex flex-col">
             <span className="text-caption text-ink-500">Price</span>
@@ -113,6 +120,7 @@ export interface TrainingCardProps {
   onClick?: () => void;
   cta?: string;
   className?: string;
+  detailHint?: string;
 }
 
 export function TrainingCard({
@@ -126,9 +134,16 @@ export function TrainingCard({
   onClick,
   cta = 'View Details',
   className,
+  detailHint = 'Tap for programme details',
 }: TrainingCardProps) {
   return (
-    <Card as="article" padding="none" className={cn('overflow-hidden flex flex-col', className)}>
+    <Card
+      as="article"
+      padding="none"
+      interactive={!!onClick}
+      onClick={onClick}
+      className={cn('overflow-hidden flex flex-col', className)}
+    >
       {image ? (
         <ResponsiveImage
           src={image}
@@ -151,6 +166,9 @@ export function TrainingCard({
           )}
         </div>
         <h3 className="text-h3 font-serif text-ink-900 leading-tight">{title}</h3>
+        {onClick && (
+          <p className="text-caption text-forest-600/90">{detailHint}</p>
+        )}
         {features.length > 0 && (
           <ul className="mt-1 space-y-1.5 text-small text-ink-700">
             {features.slice(0, 3).map((f) => (
@@ -168,7 +186,14 @@ export function TrainingCard({
           {duration && (
             <span className="text-caption text-ink-500">{duration}</span>
           )}
-          <Button variant="primary" size="sm" onClick={onClick}>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              onClick?.();
+            }}
+          >
             {cta}
           </Button>
         </div>

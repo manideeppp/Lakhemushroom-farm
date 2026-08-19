@@ -140,21 +140,30 @@ export function ContactPage() {
 
             <div className="space-y-4">
               <Card padding="lg" className="bg-forest-50 border-forest-200">
-                <h3 className="font-serif text-h3 text-forest-900">Reach us</h3>
-                <ul className="mt-3 space-y-3 text-small">
-                  <li className="flex items-start gap-2 text-forest-900">
-                    <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
-                    {config.business.address}
-                  </li>
-                  <li className="flex items-start gap-2 text-forest-900">
-                    <Phone className="h-4 w-4 mt-0.5 shrink-0" />
-                    <a
-                      href={`tel:${config.business.phone.replace(/\s+/g, '')}`}
-                      className="hover:underline"
-                    >
-                      {config.business.phone}
-                    </a>
-                  </li>
+                <h3 className="font-serif text-h3 text-forest-900">Our branches</h3>
+                <ul className="mt-3 space-y-4 text-small">
+                  {config.business.branches.map((branch) => (
+                    <li key={branch.label} className="text-forest-900">
+                      <p className="font-semibold text-forest-800">{branch.label}</p>
+                      <p className="mt-1 flex items-start gap-2 leading-relaxed">
+                        <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
+                        {branch.address}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+                <ul className="mt-4 space-y-3 text-small border-t border-forest-200/60 pt-4">
+                  {config.business.phones.map((phone) => (
+                    <li key={phone} className="flex items-center gap-2 text-forest-900">
+                      <Phone className="h-4 w-4 shrink-0" />
+                      <a
+                        href={`tel:${phone.replace(/\s+/g, '')}`}
+                        className="hover:underline"
+                      >
+                        {phone}
+                      </a>
+                    </li>
+                  ))}
                   <li className="flex items-start gap-2 text-forest-900">
                     <Mail className="h-4 w-4 mt-0.5 shrink-0" />
                     <a

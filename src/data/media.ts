@@ -3,6 +3,13 @@ import dryOyster from '../assets/dry oyester mushroom.png';
 import mushroomPowder from '../assets/mushroom powder.png';
 import oysterSpawn from '../assets/oyester mushroom spawn.png';
 import readyToEat from '../assets/ready to eat fresh.png';
+import freshMilkey from '../assets/Fresh Milkey Mushroom.png';
+import dryReishi from '../assets/Dry Reishi Mushroom.png';
+import dryShiitake from '../assets/Dry Shiitake Mushroom.png';
+import lionsMane from '../assets/Lions Mane Mushrooom.png';
+import roastedMushroom from '../assets/Roasted Mushroom(Ready to eat).png';
+import cordyceps from '../assets/cordyceps.png';
+import buttonMushroom from '../assets/Button Mushroom.png';
 import onlineTraining from '../assets/online training.png';
 import offlineTraining from '../assets/offline training.png';
 
@@ -12,6 +19,13 @@ export const productImages = {
   mushroomPowder,
   oysterSpawn,
   readyToEat,
+  freshMilkey,
+  dryReishi,
+  dryShiitake,
+  lionsMane,
+  roastedMushroom,
+  cordyceps,
+  buttonMushroom,
 } as const;
 
 export const trainingImages = {

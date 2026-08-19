@@ -23,6 +23,10 @@ import {
 } from '../components/cards/Cards';
 import { GrowSectionEmblem } from '../components/home/GrowSectionEmblem';
 import { HomeGrowOfferingCard } from '../components/home/HomeGrowOfferingCard';
+import {
+  HorizontalScrollItem,
+  HorizontalScrollRow,
+} from '../components/home/HorizontalScrollRow';
 import { ResponsiveImage } from '../components/media/ResponsiveImage';
 import { ResponsiveVideo } from '../components/media/ResponsiveVideo';
 import type { BadgeVariant } from '../components/ui/Badge';
@@ -246,6 +250,7 @@ export function HomePage() {
             <SectionHeader
               eyebrow="Our products"
               title="Farm-grown, carefully packed"
+              description="Swipe to browse — tap any product for specifications, nutrition facts and full details."
               action={
                 <Link to="/products">
                   <Button variant="primary" rightIcon={<ArrowRight className="h-4 w-4" />}>
@@ -255,39 +260,40 @@ export function HomePage() {
               }
             />
             {loading ? (
-              <ProductGridSkeleton count={5} />
+              <ProductGridSkeleton count={4} />
             ) : (
-              <ResponsiveGrid cols={{ base: 2, md: 3, lg: 5 }} gap="md">
-                {displayProducts.slice(0, 5).map((p) => (
-                  <ProductCard
-                    key={p.id}
-                    name={p.name}
-                    category={p.category}
-                    price={p.price}
-                    image={p.images[0]}
-                    badges={p.badges.slice(0, 2) as BadgeVariant[]}
-                    onAdd={() => {
-                      addItem(
-                        {
-                          id: p.id,
-                          type: 'product',
-                          name: p.name,
-                          price: p.price,
-                          image: p.images[0],
-                          slug: p.slug,
-                          unit: p.unit,
-                        },
-                        1,
-                        { announce: false }
-                      );
-                      navigate(`/products/${p.slug}`, {
-                        state: { cartAdded: true, itemName: p.name },
-                      });
-                    }}
-                    onClick={() => navigate(`/products/${p.slug}`)}
-                  />
+              <HorizontalScrollRow>
+                {displayProducts.map((p) => (
+                  <HorizontalScrollItem key={p.id}>
+                    <ProductCard
+                      name={p.name}
+                      category={p.category}
+                      price={p.price}
+                      image={p.images[0]}
+                      badges={p.badges.slice(0, 2) as BadgeVariant[]}
+                      onAdd={() => {
+                        addItem(
+                          {
+                            id: p.id,
+                            type: 'product',
+                            name: p.name,
+                            price: p.price,
+                            image: p.images[0],
+                            slug: p.slug,
+                            unit: p.unit,
+                          },
+                          1,
+                          { announce: false }
+                        );
+                        navigate(`/products/${p.slug}`, {
+                          state: { cartAdded: true, itemName: p.name },
+                        });
+                      }}
+                      onClick={() => navigate(`/products/${p.slug}`)}
+                    />
+                  </HorizontalScrollItem>
                 ))}
-              </ResponsiveGrid>
+              </HorizontalScrollRow>
             )}
           </Section>
         </PageContainer>
@@ -300,7 +306,7 @@ export function HomePage() {
             <SectionHeader
               eyebrow="Our training"
               title="Learn from a working farm"
-              description="Online, offline and farm setup programmes — pick the path that fits you."
+              description="Swipe to explore programmes — tap a card for modules, pricing and full details."
               action={
                 <Link to="/training">
                   <Button variant="primary" rightIcon={<ArrowRight className="h-4 w-4" />}>
@@ -309,34 +315,38 @@ export function HomePage() {
                 </Link>
               }
             />
-            <ResponsiveGrid cols={{ base: 1, md: 3 }} gap="md">
+            <HorizontalScrollRow>
               {homeTraining.map((t) => (
-                <TrainingCard
-                  key={t.id}
-                  title={t.title}
-                  format={formatLabel[t.format]}
-                  duration={t.duration}
-                  price={t.price}
-                  image={t.image}
-                  features={t.features}
-                  onClick={() => navigate(`/training/${t.slug}`)}
-                />
+                <HorizontalScrollItem key={t.id}>
+                  <TrainingCard
+                    title={t.title}
+                    format={formatLabel[t.format]}
+                    duration={t.duration}
+                    price={t.price}
+                    image={t.image}
+                    features={t.features}
+                    onClick={() => navigate(`/training/${t.slug}`)}
+                  />
+                </HorizontalScrollItem>
               ))}
-              <TrainingCard
-                title="Farm Setup Programme"
-                format="Offline"
-                duration="Custom timeline"
-                price={undefined}
-                image={trainingImages.offline}
-                features={[
-                  'Site planning & unit design',
-                  'Equipment & workflow setup',
-                  '90-day post go-live support',
-                ]}
-                cta="Explore setup"
-                onClick={() => navigate('/consultancy')}
-              />
-            </ResponsiveGrid>
+              <HorizontalScrollItem>
+                <TrainingCard
+                  title="Farm Setup Programme"
+                  format="Offline"
+                  duration="Custom timeline"
+                  price={undefined}
+                  image={trainingImages.offline}
+                  features={[
+                    'Site planning & unit design',
+                    'Equipment & workflow setup',
+                    '90-day post go-live support',
+                  ]}
+                  cta="Explore setup"
+                  detailHint="Tap for farm setup details"
+                  onClick={() => navigate('/consultancy')}
+                />
+              </HorizontalScrollItem>
+            </HorizontalScrollRow>
           </Section>
         </PageContainer>
       </section>
