@@ -50,7 +50,7 @@ export function TrainingPage() {
           <SectionHeader
             eyebrow="Training"
             title="Learn mushroom farming from a real farm"
-            description="Online and offline programs — pick the format that fits your life."
+            description="Online and offline programs — tap any card for modules, pricing and full details."
           />
 
           <div className="flex flex-wrap gap-2">
@@ -87,8 +87,9 @@ export function TrainingPage() {
                   duration={c.duration}
                   price={c.price}
                   image={c.image}
-                  features={c.features}
+                  subtitle={c.features[0]}
                   onClick={() => navigate(`/training/${c.slug}`)}
+                  className="h-full"
                 />
               ))}
             </ResponsiveGrid>

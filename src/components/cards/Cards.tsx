@@ -1,4 +1,14 @@
-import { Leaf, Minus, Plus, ShoppingBag, ShoppingCart } from 'lucide-react';
+import {
+  ArrowRight,
+  Clock,
+  GraduationCap,
+  Leaf,
+  Minus,
+  Plus,
+  Scale,
+  ShoppingBag,
+  ShoppingCart,
+} from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Badge, type BadgeVariant } from '../ui/Badge';
 import { ResponsiveImage } from '../media/ResponsiveImage';
@@ -6,11 +16,83 @@ import { formatINR } from '../../utils/format';
 import { cn } from '../../utils/cn';
 import { useCart } from '../../context/CartContext';
 
-/** Shared card shell — product & training cards use identical footprint. */
-const CATALOG_CARD_SHELL =
-  'h-full flex flex-col overflow-hidden rounded-2xl border border-cream-200/90 bg-cream-50 shadow-[0_2px_12px_rgba(30,53,32,0.06)] transition-shadow hover:shadow-[0_6px_20px_rgba(30,53,32,0.1)]';
+/** Shared catalog card footprint — product & training must match. */
+export const CATALOG_CARD_SHELL =
+  'h-full min-h-[420px] flex flex-col overflow-hidden rounded-2xl border border-cream-200 bg-cream-50 shadow-[0_4px_22px_rgba(30,53,32,0.08)] transition-shadow hover:shadow-[0_8px_28px_rgba(30,53,32,0.11)]';
 
-const CATALOG_IMAGE_ASPECT = 'aspect-[4/3]';
+export const CATALOG_IMAGE_ASPECT = 'aspect-[5/4]';
+
+const CATALOG_BODY =
+  'flex flex-1 flex-col px-4 pb-4 pt-3.5 min-h-[172px]';
+
+function CatalogMetaDivider() {
+  return (
+    <span
+      className="h-3.5 w-px border-l border-dashed border-ink-300/70"
+      aria-hidden
+    />
+  );
+}
+
+function CatalogPriceFooter({
+  priceLabel,
+  priceSub,
+  action,
+}: {
+  priceLabel: string;
+  priceSub?: string;
+  action: React.ReactNode;
+}) {
+  return (
+  <>
+    <div className="mt-3 border-t border-cream-200/90" />
+    <div className="mt-3 flex items-end justify-between gap-3">
+      <div className="min-w-0">
+        <p className="font-serif text-[1.35rem] leading-none tracking-tight text-forest-900">
+          {priceLabel}
+        </p>
+        {priceSub && (
+          <p className="mt-1 text-[10px] leading-tight text-ink-400 font-sans">
+            {priceSub}
+          </p>
+        )}
+      </div>
+      {action}
+    </div>
+  </>
+  );
+}
+
+function ImageOverlayBadge({
+  label,
+  tone = 'fresh',
+}: {
+  label: string;
+  tone?: 'fresh' | 'natural' | 'format-online' | 'format-offline';
+}) {
+  const toneClass =
+    tone === 'fresh'
+      ? 'bg-sage-100/95 border-sage-200/90 text-forest-800'
+      : tone === 'natural'
+        ? 'bg-cream-50/95 border-cream-300/90 text-forest-800'
+        : tone === 'format-online'
+          ? 'bg-sage-100/95 border-sage-200/90 text-forest-800'
+          : 'bg-cream-100/95 border-cream-300/90 text-forest-800';
+
+  return (
+    <span
+      className={cn(
+        'inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.06em] shadow-sm backdrop-blur-[2px]',
+        toneClass
+      )}
+    >
+      {(tone === 'fresh' || tone === 'natural') && (
+        <Leaf className="h-3 w-3 shrink-0" aria-hidden />
+      )}
+      {label}
+    </span>
+  );
+}
 
 export interface ProductCardProps {
   id: string;
@@ -25,8 +107,6 @@ export interface ProductCardProps {
   inStock?: boolean;
   onClick?: () => void;
   className?: string;
-  detailHint?: string;
-  /** Legacy: if set, overrides internal cart add */
   onAdd?: () => void;
 }
 
@@ -36,26 +116,24 @@ export function ProductCard({
   name,
   price,
   unit,
-  shortDescription,
   image,
   imageAlt,
   badges = [],
   inStock = true,
   onClick,
   className,
-  detailHint = 'Tap for nutrition & full details',
   onAdd,
 }: ProductCardProps) {
   const { items, addItem, updateQty } = useCart();
   const cartQty =
     items.find((i) => i.id === id && i.type === 'product')?.qty ?? 0;
 
-  const displayBadges = badges.filter((b) =>
-    ['fresh', 'natural', 'premium', 'best-seller'].includes(b)
-  ).slice(0, 2);
+  const showFresh = badges.includes('fresh') || badges.includes('best-seller');
+  const showNatural = badges.includes('natural') || badges.includes('premium');
 
-  const descriptor =
-    shortDescription?.split('.')[0]?.trim() || 'Farm fresh · Naturally grown';
+  const descriptor = 'Farm fresh · Naturally grown';
+
+  const weightLabel = unit?.replace(/\s*pack$/i, '').trim() || unit;
 
   function handleAdd(e: React.MouseEvent) {
     e.stopPropagation();
@@ -93,7 +171,7 @@ export function ProductCard({
       className={cn(CATALOG_CARD_SHELL, onClick && 'cursor-pointer', className)}
       onClick={onClick}
     >
-      <div className={cn('relative overflow-hidden', CATALOG_IMAGE_ASPECT)}>
+      <div className={cn('relative shrink-0 overflow-hidden', CATALOG_IMAGE_ASPECT)}>
         {image ? (
           <img
             src={image}
@@ -107,96 +185,82 @@ export function ProductCard({
             <span className="text-caption">No image</span>
           </div>
         )}
-        {displayBadges.length > 0 && (
-          <div className="absolute left-2 top-2 flex flex-wrap gap-1.5">
-            {displayBadges.map((b) => (
-              <span
-                key={b}
-                className="inline-flex items-center gap-1 rounded-full border border-white/60 bg-white/85 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-forest-800 shadow-sm backdrop-blur-sm"
-              >
-                {b === 'fresh' || b === 'natural' ? (
-                  <Leaf className="h-3 w-3" aria-hidden />
-                ) : null}
-                {b === 'fresh'
-                  ? 'Fresh'
-                  : b === 'natural'
-                    ? 'Natural'
-                    : b === 'premium'
-                      ? 'Premium'
-                      : 'Best Seller'}
-              </span>
-            ))}
+        {(showFresh || showNatural) && (
+          <div className="absolute left-2.5 top-2.5 flex flex-wrap gap-1.5">
+            {showFresh && <ImageOverlayBadge label="Fresh" tone="fresh" />}
+            {showNatural && <ImageOverlayBadge label="Natural" tone="natural" />}
           </div>
         )}
       </div>
 
-      <div className="flex flex-1 flex-col gap-1.5 p-3.5 sm:p-4 min-h-[148px]">
-        <h3 className="font-serif text-[1.05rem] leading-tight text-forest-900 line-clamp-2">
+      <div className={CATALOG_BODY}>
+        <h3 className="font-serif text-[1.125rem] leading-snug text-forest-900 line-clamp-2">
           {name}
         </h3>
-        <p className="text-caption text-ink-500 leading-snug line-clamp-1">
+        <p className="mt-1 text-[0.8125rem] leading-snug text-ink-500 font-sans line-clamp-1">
           {descriptor}
         </p>
-        {unit && (
-          <p className="text-caption text-forest-700/80 flex items-center gap-1.5">
-            <span className="font-medium">{unit}</span>
-            <span className="text-ink-300">·</span>
+        {weightLabel && (
+          <div className="mt-2.5 flex items-center gap-2 text-[0.75rem] text-forest-800 font-sans">
+            <span className="inline-flex items-center gap-1">
+              <Scale className="h-3.5 w-3.5 text-forest-600" aria-hidden />
+              <span className="font-medium">{weightLabel}</span>
+            </span>
+            <CatalogMetaDivider />
             <span className="inline-flex items-center gap-1 text-forest-700">
-              <Leaf className="h-3 w-3" aria-hidden />
+              <Leaf className="h-3.5 w-3.5" aria-hidden />
               Pesticide free
             </span>
-          </p>
-        )}
-        {onClick && (
-          <p className="text-[11px] text-forest-600/75 leading-snug">{detailHint}</p>
-        )}
-
-        <div className="mt-auto flex items-end justify-between gap-2 pt-2">
-          <div className="min-w-0">
-            <p className="font-serif text-[1.2rem] leading-none text-forest-900">
-              {formatINR(price)}
-            </p>
-            <p className="mt-0.5 text-[10px] text-ink-400">Inclusive of all taxes</p>
           </div>
+        )}
 
-          {!inStock ? (
-            <span className="text-caption text-danger shrink-0">Out of stock</span>
-          ) : cartQty > 0 ? (
-            <div
-              className="flex items-center rounded-full border border-forest-200 bg-white shadow-sm shrink-0"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                type="button"
-                aria-label="Decrease quantity"
-                className="flex h-9 w-9 items-center justify-center text-forest-800 hover:bg-forest-50 rounded-l-full"
-                onClick={(e) => handleQtyChange(e, -1)}
-              >
-                <Minus className="h-4 w-4" />
-              </button>
-              <span className="w-8 text-center text-small font-semibold text-forest-900 tabular-nums">
-                {cartQty}
-              </span>
-              <button
-                type="button"
-                aria-label="Increase quantity"
-                className="flex h-9 w-9 items-center justify-center text-forest-800 hover:bg-forest-50 rounded-r-full"
-                onClick={(e) => handleQtyChange(e, 1)}
-              >
-                <Plus className="h-4 w-4" />
-              </button>
-            </div>
-          ) : (
-            <button
-              type="button"
-              aria-label={`Add ${name} to cart`}
-              className="inline-flex items-center gap-1.5 rounded-full bg-forest-800 px-4 py-2 text-small font-semibold text-cream-50 shadow-sm hover:bg-forest-900 transition-colors shrink-0"
-              onClick={handleAdd}
-            >
-              <ShoppingBag className="h-4 w-4" aria-hidden />
-              <span>Add</span>
-            </button>
-          )}
+        <div className="mt-auto">
+          <CatalogPriceFooter
+            priceLabel={formatINR(price)}
+            priceSub="Inclusive of all taxes"
+            action={
+              !inStock ? (
+                <span className="text-caption text-danger shrink-0 font-sans">
+                  Out of stock
+                </span>
+              ) : cartQty > 0 ? (
+                <div
+                  className="flex items-center rounded-full border border-forest-200/80 bg-white shadow-sm shrink-0"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <button
+                    type="button"
+                    aria-label="Decrease quantity"
+                    className="flex h-10 w-10 items-center justify-center text-forest-800 hover:bg-forest-50 rounded-l-full"
+                    onClick={(e) => handleQtyChange(e, -1)}
+                  >
+                    <Minus className="h-4 w-4" />
+                  </button>
+                  <span className="w-8 text-center text-small font-semibold text-forest-900 tabular-nums font-sans">
+                    {cartQty}
+                  </span>
+                  <button
+                    type="button"
+                    aria-label="Increase quantity"
+                    className="flex h-10 w-10 items-center justify-center text-forest-800 hover:bg-forest-50 rounded-r-full"
+                    onClick={(e) => handleQtyChange(e, 1)}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  aria-label={`Add ${name} to cart`}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-forest-800 px-4 py-2.5 text-[0.8125rem] font-semibold text-cream-50 shadow-sm hover:bg-forest-900 transition-colors shrink-0 font-sans"
+                  onClick={handleAdd}
+                >
+                  <ShoppingBag className="h-4 w-4 shrink-0" aria-hidden />
+                  <span>+ Add</span>
+                </button>
+              )
+            }
+          />
         </div>
       </div>
     </article>
@@ -210,11 +274,10 @@ export interface TrainingCardProps {
   price?: number;
   image?: string;
   imageAlt?: string;
-  features?: string[];
+  subtitle?: string;
   onClick?: () => void;
   cta?: string;
   className?: string;
-  detailHint?: string;
 }
 
 export function TrainingCard({
@@ -224,18 +287,22 @@ export function TrainingCard({
   price,
   image,
   imageAlt,
-  features = [],
+  subtitle,
   onClick,
-  cta = 'View Details',
+  cta = 'View',
   className,
-  detailHint = 'Tap for programme details',
 }: TrainingCardProps) {
+  const isOnline = format === 'Online';
+  const descriptor =
+    subtitle?.trim() ||
+    (isOnline ? 'Learn from home · Expert-led' : 'On-farm · Hands-on practice');
+
   return (
     <article
       className={cn(CATALOG_CARD_SHELL, onClick && 'cursor-pointer', className)}
       onClick={onClick}
     >
-      <div className={cn('relative overflow-hidden', CATALOG_IMAGE_ASPECT)}>
+      <div className={cn('relative shrink-0 overflow-hidden', CATALOG_IMAGE_ASPECT)}>
         {image ? (
           <img
             src={image}
@@ -247,59 +314,55 @@ export function TrainingCard({
         ) : (
           <div className="h-full w-full bg-sage-100" aria-hidden />
         )}
-        <div className="absolute left-2 top-2">
-          <Badge variant={format === 'Online' ? 'online' : 'offline'} size="sm" />
+        <div className="absolute left-2.5 top-2.5">
+          <ImageOverlayBadge
+            label={format}
+            tone={isOnline ? 'format-online' : 'format-offline'}
+          />
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col gap-1.5 p-3.5 sm:p-4 min-h-[148px]">
-        <h3 className="font-serif text-[1.05rem] leading-tight text-forest-900 line-clamp-2">
+      <div className={CATALOG_BODY}>
+        <h3 className="font-serif text-[1.125rem] leading-snug text-forest-900 line-clamp-2">
           {title}
         </h3>
-        {onClick && (
-          <p className="text-[11px] text-forest-600/75 leading-snug">{detailHint}</p>
-        )}
-        {features.length > 0 && (
-          <ul className="space-y-1 text-caption text-ink-600 line-clamp-3">
-            {features.slice(0, 2).map((f) => (
-              <li key={f} className="flex items-start gap-1.5">
-                <span
-                  className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-forest-500"
-                  aria-hidden
-                />
-                <span>{f}</span>
-              </li>
-            ))}
-          </ul>
+        <p className="mt-1 text-[0.8125rem] leading-snug text-ink-500 font-sans line-clamp-1">
+          {descriptor}
+        </p>
+        {duration && (
+          <div className="mt-2.5 flex items-center gap-2 text-[0.75rem] text-forest-800 font-sans">
+            <span className="inline-flex items-center gap-1">
+              <Clock className="h-3.5 w-3.5 text-forest-600" aria-hidden />
+              <span className="font-medium">{duration}</span>
+            </span>
+            <CatalogMetaDivider />
+            <span className="inline-flex items-center gap-1 text-forest-700">
+              <GraduationCap className="h-3.5 w-3.5" aria-hidden />
+              Expert-led
+            </span>
+          </div>
         )}
 
-        <div className="mt-auto flex items-end justify-between gap-2 pt-2">
-          <div className="min-w-0">
-            {price !== undefined ? (
-              <>
-                <p className="font-serif text-[1.2rem] leading-none text-forest-900">
-                  {formatINR(price)}
-                </p>
-                <p className="mt-0.5 text-[10px] text-ink-400">
-                  {duration ?? 'Full programme'}
-                </p>
-              </>
-            ) : (
-              <p className="text-small font-medium text-forest-800">
-                {duration ?? 'Custom programme'}
-              </p>
-            )}
-          </div>
-          <button
-            type="button"
-            className="inline-flex items-center gap-1.5 rounded-full bg-forest-800 px-4 py-2 text-small font-semibold text-cream-50 shadow-sm hover:bg-forest-900 transition-colors shrink-0"
-            onClick={(e) => {
-              e.stopPropagation();
-              onClick?.();
-            }}
-          >
-            {cta}
-          </button>
+        <div className="mt-auto">
+          <CatalogPriceFooter
+            priceLabel={price !== undefined ? formatINR(price) : 'Custom quote'}
+            priceSub={
+              price !== undefined ? 'Programme fee · taxes as applicable' : duration
+            }
+            action={
+              <button
+                type="button"
+                className="inline-flex items-center gap-1.5 rounded-full bg-forest-800 px-4 py-2.5 text-[0.8125rem] font-semibold text-cream-50 shadow-sm hover:bg-forest-900 transition-colors shrink-0 font-sans"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onClick?.();
+                }}
+              >
+                <ArrowRight className="h-4 w-4 shrink-0" aria-hidden />
+                <span>{cta}</span>
+              </button>
+            }
+          />
         </div>
       </div>
     </article>

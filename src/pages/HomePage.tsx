@@ -254,7 +254,7 @@ export function HomePage() {
             <SectionHeader
               eyebrow="Our products"
               title="Farm-grown, carefully packed"
-              description="Swipe to browse — tap any product for specifications, nutrition facts and full details."
+              description="Tap any card for full details, nutrition facts and specifications."
               action={
                 <Link to="/products">
                   <Button variant="primary" rightIcon={<ArrowRight className="h-4 w-4" />}>
@@ -279,6 +279,7 @@ export function HomePage() {
                       image={p.images[0]}
                       badges={p.badges.slice(0, 2) as BadgeVariant[]}
                       onClick={() => navigate(`/products/${p.slug}`)}
+                      className="h-full"
                     />
                   </HorizontalScrollItem>
                 ))}
@@ -295,7 +296,7 @@ export function HomePage() {
             <SectionHeader
               eyebrow="Our training"
               title="Learn from a working farm"
-              description="Swipe to explore programmes — tap a card for modules, pricing and full details."
+              description="Tap any card for programme modules, pricing and full details."
               action={
                 <Link to="/training">
                   <Button variant="primary" rightIcon={<ArrowRight className="h-4 w-4" />}>
@@ -313,8 +314,9 @@ export function HomePage() {
                     duration={t.duration}
                     price={t.price}
                     image={t.image}
-                    features={t.features}
+                    subtitle={t.features[0]}
                     onClick={() => navigate(`/training/${t.slug}`)}
+                    className="h-full"
                   />
                 </HorizontalScrollItem>
               ))}
@@ -325,14 +327,10 @@ export function HomePage() {
                   duration="Custom timeline"
                   price={undefined}
                   image={trainingImages.offline}
-                  features={[
-                    'Site planning & unit design',
-                    'Equipment & workflow setup',
-                    '90-day post go-live support',
-                  ]}
-                  cta="Explore setup"
-                  detailHint="Tap for farm setup details"
+                  subtitle="End-to-end farm build support"
+                  cta="Explore"
                   onClick={() => navigate('/consultancy')}
+                  className="h-full"
                 />
               </HorizontalScrollItem>
             </HorizontalScrollRow>

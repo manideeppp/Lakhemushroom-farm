@@ -52,7 +52,7 @@ export function ProductsPage() {
           <SectionHeader
             eyebrow="Shop"
             title="Our Products"
-            description="Freshly harvested mushrooms, wellness powders and ready-to-eat packs — all made on our farm. Tap any product for full details, specifications and nutritional values."
+            description="Freshly harvested mushrooms, wellness powders and ready-to-eat packs. Tap any card for specifications, nutrition and full details."
           />
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <Input
@@ -126,6 +126,7 @@ export function ProductsPage() {
                   badges={p.badges.slice(0, 2) as BadgeVariant[]}
                   inStock={p.stock > 0}
                   onClick={() => navigate(`/products/${p.slug}`)}
+                  className="h-full"
                 />
               ))}
             </ResponsiveGrid>

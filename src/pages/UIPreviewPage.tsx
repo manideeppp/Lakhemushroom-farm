@@ -361,11 +361,7 @@ export function UIPreviewPage() {
               duration="12 hours · Self-paced"
               price={1500}
               image={SAMPLE_FARM_IMG}
-              features={[
-                '10+ recorded modules',
-                'Lifetime access',
-                'Certificate on completion',
-              ]}
+              subtitle="10+ recorded modules · Certificate included"
             />
             <TrainingCard
               title="Weekend Farm Immersion"
@@ -373,22 +369,14 @@ export function UIPreviewPage() {
               duration="2 days"
               price={3000}
               image={SAMPLE_FARM_IMG}
-              features={[
-                'Hands-on farm sessions',
-                'Meals included',
-                'Small batch of 10',
-              ]}
+              subtitle="Hands-on farm sessions · Small batch"
             />
             <TrainingCard
               title="Advanced Cultivation Bootcamp"
               format="Hybrid"
               duration="4 weeks"
               image={SAMPLE_FARM_IMG}
-              features={[
-                'Live weekly Q&A',
-                'On-farm assessment',
-                'Business toolkit',
-              ]}
+              subtitle="Live weekly Q&A · On-farm assessment"
             />
           </ResponsiveGrid>
         </PreviewBlock>
