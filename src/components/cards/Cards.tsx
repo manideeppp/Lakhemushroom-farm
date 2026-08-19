@@ -22,16 +22,31 @@ export const CATALOG_CARD_SHELL =
 
 export const CATALOG_IMAGE_ASPECT = 'aspect-[3/2]';
 
-const CATALOG_BODY = 'flex flex-col px-4 pt-3 pb-3';
+const CATALOG_BODY = 'flex flex-col px-3.5 pt-3 pb-3 sm:px-4';
 
 const CATALOG_TITLE =
-  'font-serif text-[1.125rem] leading-[1.35] text-forest-900 line-clamp-2 min-h-[2.7rem]';
+  'font-serif text-[1.05rem] leading-snug text-forest-900 line-clamp-2 sm:text-[1.125rem]';
 
 const CATALOG_DESCRIPTOR =
-  'mt-1 h-5 text-[0.8125rem] leading-5 text-ink-500 font-sans line-clamp-1';
+  'mt-1 text-[0.75rem] leading-snug text-ink-500 font-sans line-clamp-1 sm:text-[0.8125rem]';
 
 const CATALOG_META_ROW =
-  'mt-2 h-5 flex items-center gap-2 text-[0.75rem] text-forest-800 font-sans';
+  'mt-2 flex flex-nowrap items-center gap-2 text-[0.6875rem] leading-none text-forest-800 font-sans sm:text-xs';
+
+function CatalogMetaItem({
+  icon,
+  label,
+}: {
+  icon: React.ReactNode;
+  label: string;
+}) {
+  return (
+    <span className="inline-flex min-w-0 items-center gap-1 whitespace-nowrap">
+      <span className="shrink-0">{icon}</span>
+      <span className="font-medium">{label}</span>
+    </span>
+  );
+}
 
 function formatWeightLabel(unit?: string): string {
   if (!unit) return '';
@@ -61,7 +76,7 @@ function CatalogPriceFooter({
   return (
   <>
     <div className="mt-2 border-t border-cream-200/90" />
-    <div className="mt-2 flex items-end justify-between gap-2">
+    <div className="mt-2 flex items-center justify-between gap-2">
       <div className="min-w-0">
         <p className="font-serif text-[1.35rem] leading-none tracking-tight text-forest-900">
           {priceLabel}
@@ -212,22 +227,15 @@ export function ProductCard({
         <h3 className={CATALOG_TITLE}>{name}</h3>
         <p className={CATALOG_DESCRIPTOR}>{descriptor}</p>
         <div className={CATALOG_META_ROW}>
-          {weightLabel ? (
-            <span className="inline-flex items-center gap-1">
-              <Scale className="h-3.5 w-3.5 text-forest-600" aria-hidden />
-              <span className="font-medium">{weightLabel}</span>
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1">
-              <Scale className="h-3.5 w-3.5 text-forest-600" aria-hidden />
-              <span className="font-medium">Farm pack</span>
-            </span>
-          )}
+          <CatalogMetaItem
+            icon={<Scale className="h-3.5 w-3.5 text-forest-600" aria-hidden />}
+            label={weightLabel || 'Farm pack'}
+          />
           <CatalogMetaDivider />
-          <span className="inline-flex items-center gap-1 text-forest-700">
-            <Leaf className="h-3.5 w-3.5" aria-hidden />
-            Pesticide free
-          </span>
+          <CatalogMetaItem
+            icon={<Leaf className="h-3.5 w-3.5 text-forest-700" aria-hidden />}
+            label="Pesticide free"
+          />
         </div>
 
         <CatalogPriceFooter
@@ -267,7 +275,7 @@ export function ProductCard({
               <button
                 type="button"
                 aria-label={`Add ${name} to cart`}
-                className="inline-flex h-10 items-center gap-1.5 rounded-full bg-forest-800 px-4 text-[0.8125rem] font-semibold text-cream-50 shadow-sm hover:bg-forest-900 transition-colors font-sans"
+                className="inline-flex h-9 shrink-0 items-center gap-1 rounded-full bg-forest-800 px-3.5 text-[0.75rem] font-semibold text-cream-50 shadow-sm hover:bg-forest-900 transition-colors font-sans sm:h-10 sm:px-4 sm:text-[0.8125rem]"
                 onClick={handleAdd}
               >
                 <ShoppingBag className="h-4 w-4 shrink-0" aria-hidden />
@@ -341,15 +349,15 @@ export function TrainingCard({
         <h3 className={CATALOG_TITLE}>{title}</h3>
         <p className={CATALOG_DESCRIPTOR}>{descriptor}</p>
         <div className={CATALOG_META_ROW}>
-          <span className="inline-flex items-center gap-1">
-            <Clock className="h-3.5 w-3.5 text-forest-600" aria-hidden />
-            <span className="font-medium">{durationLabel}</span>
-          </span>
+          <CatalogMetaItem
+            icon={<Clock className="h-3.5 w-3.5 text-forest-600" aria-hidden />}
+            label={durationLabel}
+          />
           <CatalogMetaDivider />
-          <span className="inline-flex items-center gap-1 text-forest-700">
-            <GraduationCap className="h-3.5 w-3.5" aria-hidden />
-            Expert-led
-          </span>
+          <CatalogMetaItem
+            icon={<GraduationCap className="h-3.5 w-3.5 text-forest-700" aria-hidden />}
+            label="Expert-led"
+          />
         </div>
 
         <CatalogPriceFooter
@@ -362,7 +370,7 @@ export function TrainingCard({
           action={
             <button
               type="button"
-              className="inline-flex h-10 items-center gap-1.5 rounded-full bg-forest-800 px-4 text-[0.8125rem] font-semibold text-cream-50 shadow-sm hover:bg-forest-900 transition-colors font-sans"
+              className="inline-flex h-9 shrink-0 items-center gap-1 rounded-full bg-forest-800 px-3.5 text-[0.75rem] font-semibold text-cream-50 shadow-sm hover:bg-forest-900 transition-colors font-sans sm:h-10 sm:px-4 sm:text-[0.8125rem]"
               onClick={(e) => {
                 e.stopPropagation();
                 onClick?.();

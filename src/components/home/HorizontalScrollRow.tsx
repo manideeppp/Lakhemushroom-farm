@@ -34,7 +34,7 @@ export function HorizontalScrollItem({
   return (
     <div
       className={cn(
-        'snap-start shrink-0 flex w-[calc(50%-0.375rem)] min-w-[158px] max-w-[280px] sm:w-[280px]',
+        'snap-start shrink-0 flex w-[min(260px,calc(100vw-2rem))] sm:w-[280px]',
         className
       )}
     >

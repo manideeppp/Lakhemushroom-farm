@@ -91,7 +91,7 @@ export function ProductsPage() {
 
         <Section size="sm">
           {!filtered ? (
-            <ResponsiveGrid cols={{ base: 2, md: 3, lg: 4 }} gap="md">
+            <ResponsiveGrid cols={{ base: 1, sm: 2, md: 3, lg: 4 }} gap="md">
               {Array.from({ length: 8 }).map((_, i) => (
                 <SkeletonCard key={i} />
               ))}
@@ -112,7 +112,7 @@ export function ProductsPage() {
               }
             />
           ) : (
-            <ResponsiveGrid cols={{ base: 2, md: 3, lg: 4 }} gap="md">
+            <ResponsiveGrid cols={{ base: 1, sm: 2, md: 3, lg: 4 }} gap="md">
               {filtered.map((p) => (
                 <ProductCard
                   key={p.id}
