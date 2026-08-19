@@ -188,8 +188,8 @@ export function HomePage() {
       </section>
 
       {/* HERO OFFERINGS STRIP */}
-      <section className="relative -mt-px bg-cream-100">
-        <PageContainer className="relative z-10 -mt-5 sm:-mt-7 pb-10 sm:pb-12">
+      <section className="relative bg-cream-100">
+        <PageContainer className="relative z-10 pt-6 sm:pt-8 pb-3 sm:pb-4">
           <HeroOfferingsStrip />
         </PageContainer>
       </section>
@@ -197,7 +197,7 @@ export function HomePage() {
       {/* OUR PRODUCTS */}
       <section className="bg-sage-50/40">
         <PageContainer>
-          <Section size="md">
+          <Section size="md" className="!pt-4 sm:!pt-6">
             <SectionHeader
               eyebrow="Our products"
               title="Farm-grown, carefully packed"
