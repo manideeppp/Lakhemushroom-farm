@@ -20,8 +20,7 @@ import {
   ProductCard,
   TrainingCard,
 } from '../components/cards/Cards';
-import { GrowSectionEmblem } from '../components/home/GrowSectionEmblem';
-import { HomeGrowOfferingCard } from '../components/home/HomeGrowOfferingCard';
+import { HeroOfferingsStrip } from '../components/home/HeroOfferingsStrip';
 import {
   HorizontalScrollItem,
   HorizontalScrollRow,
@@ -45,7 +44,6 @@ import { SAMPLE_TRAINING } from '../data/training';
 import {
   HOME_FOUNDER_IMAGE,
   HOME_HERO_IMAGE,
-  HOME_GROW_OFFERINGS,
   HOME_STORY_IMAGE,
   HOME_FARM_SHOWCASE,
 } from '../data/home';
@@ -189,38 +187,10 @@ export function HomePage() {
         </svg>
       </section>
 
-      {/* EVERYTHING YOU NEED TO GROW */}
-      <section className="relative -mt-px bg-gradient-to-b from-cream-100 via-cream-50 to-cream-100">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(47,82,50,0.07),transparent_58%)]"
-        />
-        <PageContainer>
-          <Section size="md" className="!pt-12 sm:!pt-16">
-            <div className="mx-auto max-w-3xl text-center">
-              <GrowSectionEmblem className="mb-6" />
-              <h2 className="font-serif text-h1 sm:text-display text-forest-900 leading-[1.1]">
-                Everything You Need to Grow
-              </h2>
-              <p className="mt-5 text-body-lg sm:text-[1.0625rem] text-forest-700/90 leading-relaxed max-w-2xl mx-auto">
-                From fresh mushrooms to complete farm solutions, we help you
-                grow with confidence.
-              </p>
-            </div>
-            <div className="mx-auto mt-10 sm:mt-12 flex max-w-[17.5rem] sm:max-w-xs flex-col gap-5 sm:gap-6">
-              {HOME_GROW_OFFERINGS.map((offering) => (
-                <HomeGrowOfferingCard
-                  key={offering.title}
-                  title={offering.title}
-                  description={offering.description}
-                  image={offering.image}
-                  imageAlt={offering.imageAlt}
-                  icon={offering.icon}
-                  to={offering.to}
-                />
-              ))}
-            </div>
-          </Section>
+      {/* HERO OFFERINGS STRIP */}
+      <section className="relative -mt-px bg-cream-100">
+        <PageContainer className="relative z-10 -mt-5 sm:-mt-7 pb-10 sm:pb-12">
+          <HeroOfferingsStrip />
         </PageContainer>
       </section>
 
@@ -378,7 +348,7 @@ export function HomePage() {
           <Section size="md">
             <ResponsiveGrid cols={{ base: 2, md: 4 }} gap="md">
               {[
-                { value: '8+', label: 'Years of practice' },
+                { value: '20+', label: 'Years of practice' },
                 { value: '5000+', label: 'Farmers trained' },
                 { value: '25+', label: 'Countries served' },
                 { value: '12+', label: 'Product varieties' },
