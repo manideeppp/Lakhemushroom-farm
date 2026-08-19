@@ -2,6 +2,7 @@ import type { Product } from '../types/product';
 import type { TrainingCourse } from '../types/training';
 import { enrichProduct } from '../data/productNutrition';
 import { SAMPLE_PRODUCTS } from '../data/products';
+import { SAMPLE_TRAINING } from '../data/training';
 import { productImages, trainingImages } from '../data/media';
 
 const PRODUCT_IMAGE_BY_SLUG: Record<string, string> = {
@@ -25,6 +26,7 @@ const TRAINING_IMAGE_BY_SLUG: Record<string, string> = {
   'a-z-mushroom-farming-online': trainingImages.online,
   'weekend-farm-immersion': trainingImages.offline,
   'advanced-cultivation-bootcamp': trainingImages.offline,
+  'complete-farm-setup': trainingImages.farmSetup,
 };
 
 export function withProductImages(product: Product): Product {
@@ -53,6 +55,14 @@ export function mergeSampleProducts(remote: Product[]): Product[] {
 }
 
 export function mergeSampleTraining(remote: TrainingCourse[]): TrainingCourse[] {
-  if (remote.length === 0) return remote;
-  return remote.map(withTrainingImage);
+  const enrichedRemote = remote.map(withTrainingImage);
+  const missingSamples = SAMPLE_TRAINING.filter(
+    (t) => !enrichedRemote.some((r) => r.slug === t.slug)
+  ).map(withTrainingImage);
+
+  if (enrichedRemote.length === 0) {
+    return SAMPLE_TRAINING.map(withTrainingImage);
+  }
+
+  return [...enrichedRemote, ...missingSamples];
 }

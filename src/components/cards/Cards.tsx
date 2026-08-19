@@ -27,6 +27,9 @@ const CATALOG_BODY = 'flex flex-col px-3.5 pt-3 pb-3 sm:px-4';
 const CATALOG_TITLE =
   'font-serif text-[1.05rem] leading-snug text-forest-900 line-clamp-2 sm:text-[1.125rem]';
 
+const CATALOG_TITLE_LISTING =
+  'font-serif text-[1.2rem] font-bold leading-snug text-forest-900 line-clamp-2 sm:text-[1.35rem]';
+
 const CATALOG_DESCRIPTOR =
   'mt-1 text-[0.75rem] leading-snug text-ink-500 font-sans line-clamp-1 sm:text-[0.8125rem]';
 
@@ -138,6 +141,8 @@ export interface ProductCardProps {
   onClick?: () => void;
   className?: string;
   onAdd?: () => void;
+  /** Larger bold title for products listing page; home scroll keeps default. */
+  titleEmphasis?: 'default' | 'listing';
 }
 
 export function ProductCard({
@@ -153,6 +158,7 @@ export function ProductCard({
   onClick,
   className,
   onAdd,
+  titleEmphasis = 'default',
 }: ProductCardProps) {
   const { items, addItem, updateQty } = useCart();
   const cartQty =
@@ -224,7 +230,13 @@ export function ProductCard({
       </div>
 
       <div className={CATALOG_BODY}>
-        <h3 className={CATALOG_TITLE}>{name}</h3>
+        <h3
+          className={
+            titleEmphasis === 'listing' ? CATALOG_TITLE_LISTING : CATALOG_TITLE
+          }
+        >
+          {name}
+        </h3>
         <p className={CATALOG_DESCRIPTOR}>{descriptor}</p>
         <div className={CATALOG_META_ROW}>
           <CatalogMetaItem
@@ -311,7 +323,7 @@ export function TrainingCard({
   imageAlt,
   subtitle,
   onClick,
-  cta = 'View',
+  cta = 'Book',
   className,
 }: TrainingCardProps) {
   const isOnline = format === 'Online';

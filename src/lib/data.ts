@@ -262,19 +262,24 @@ export async function listTraining(): Promise<TrainingCourse[]> {
 export async function getTrainingBySlug(
   slug: string
 ): Promise<TrainingCourse | null> {
+  const fromSample = () => {
+    const sample = SAMPLE_TRAINING.find((t) => t.slug === slug);
+    return sample ? withTrainingImage(sample) : null;
+  };
+
   if (!isSupabaseConfigured()) {
-    const course =
-      localGet<TrainingCourse[]>(K.training, []).find((t) => t.slug === slug) ??
-      null;
-    return course ? withTrainingImage(course) : null;
+    const local = localGet<TrainingCourse[]>(K.training, []);
+    const course = local.find((t) => t.slug === slug);
+    return course ? withTrainingImage(course) : fromSample();
   }
+
   const { data, error } = await supabase
     .from('training_courses')
     .select('*, modules:training_modules(*)')
     .eq('slug', slug)
     .maybeSingle();
   if (error) throw error;
-  if (!data) return null;
+  if (!data) return fromSample();
   const modules = (data.modules ?? []) as TrainingModule[];
   modules.sort((a, b) => a.order - b.order);
   return withTrainingImage({ ...(data as TrainingCourse), modules });

@@ -50,7 +50,6 @@ import {
   HOME_STORY_IMAGE,
   HOME_FARM_SHOWCASE,
 } from '../data/home';
-import { trainingImages } from '../data/media';
 import type { Product } from '../types/product';
 import type { TrainingCourse, TrainingFormat } from '../types/training';
 import type { GalleryItem, Testimonial } from '../types/profile';
@@ -101,11 +100,10 @@ export function HomePage() {
   const displayTraining =
     training.length > 0 ? mergeSampleTraining(training) : SAMPLE_TRAINING;
   const homeTraining = (() => {
-    const online = displayTraining.find((t) => t.format === 'online');
-    const offline = displayTraining.find(
-      (t) => t.format === 'offline' || t.format === 'hybrid'
-    );
-    return [online, offline].filter(Boolean) as TrainingCourse[];
+    const slugs = ['online-training', 'offline-training', 'complete-farm-setup'];
+    return slugs
+      .map((slug) => displayTraining.find((t) => t.slug === slug))
+      .filter(Boolean) as TrainingCourse[];
   })();
   const showcaseGallery =
     gallery.length > 0
@@ -294,9 +292,9 @@ export function HomePage() {
         <PageContainer>
           <Section size="md">
             <SectionHeader
-              eyebrow="Our training"
-              title="Learn from a working farm"
-              description="Tap any card for programme modules, pricing and full details."
+              eyebrow="Our programmes"
+              title="Online, offline & farm setup"
+              description="Pay on the website — Tatya Lakhe shares all programme details with you directly."
               action={
                 <Link to="/training">
                   <Button variant="primary" rightIcon={<ArrowRight className="h-4 w-4" />}>
@@ -320,19 +318,6 @@ export function HomePage() {
                   />
                 </HorizontalScrollItem>
               ))}
-              <HorizontalScrollItem>
-                <TrainingCard
-                  title="Farm Setup Programme"
-                  format="Offline"
-                  duration="Custom timeline"
-                  price={undefined}
-                  image={trainingImages.offline}
-                  subtitle="End-to-end farm build support"
-                  cta="Explore"
-                  onClick={() => navigate('/consultancy')}
-                  className="h-full"
-                />
-              </HorizontalScrollItem>
             </HorizontalScrollRow>
           </Section>
         </PageContainer>

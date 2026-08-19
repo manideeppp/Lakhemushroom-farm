@@ -6,7 +6,6 @@ import {
   Download,
   ExternalLink,
   Package,
-  PlayCircle,
 } from 'lucide-react';
 import { AppShell } from '../components/layout/AppShell';
 import { PageContainer } from '../components/layout/PageContainer';
@@ -120,7 +119,8 @@ export function OrderDetailsPage() {
                       </p>
                     )}
                     <p className="mt-1 text-forest-800/90">
-                      Products move to dispatch; training access is granted when ready.
+                      Products move to dispatch; programme orders are confirmed and
+                      the owner contacts you directly.
                     </p>
                   </div>
                 )}
@@ -165,15 +165,9 @@ export function OrderDetailsPage() {
                             {it.item_type === 'training' &&
                               it.status === 'access_granted' &&
                               course && (
-                                <Link to={`/training/${course.slug}/access`}>
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    leftIcon={<PlayCircle className="h-4 w-4" />}
-                                  >
-                                    Start learning
-                                  </Button>
-                                </Link>
+                                <span className="text-caption text-ink-600">
+                                  Tatya Lakhe will contact you with programme details.
+                                </span>
                               )}
                             {it.item_type === 'product' && (
                               <span className="text-caption text-ink-500 inline-flex items-center gap-1">

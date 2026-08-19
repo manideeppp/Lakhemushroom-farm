@@ -35,7 +35,7 @@ export const HOME_GROW_OFFERINGS: HomeGrowOffering[] = [
   {
     title: 'Mushroom Training',
     description:
-      'Practical training and expert guidance to start and grow successfully.',
+      'Pay programme fee online — full guidance shared directly by the owner.',
     image: HOME_GROW_TRAINING_IMAGE,
     imageAlt: 'Mushroom cultivation training materials',
     icon: GraduationCap,
@@ -43,11 +43,11 @@ export const HOME_GROW_OFFERINGS: HomeGrowOffering[] = [
   },
   {
     title: 'Complete Farm Setup',
-    description: 'End-to-end solutions for your mushroom farm setup.',
+    description: 'Pay programme fee — setup plan and timeline from the owner.',
     image: HOME_GROW_FARM_SETUP_IMAGE,
     imageAlt: 'Complete mushroom farm growing facility',
     icon: Building2,
-    to: '/consultancy',
+    to: '/training/complete-farm-setup',
   },
 ];
 

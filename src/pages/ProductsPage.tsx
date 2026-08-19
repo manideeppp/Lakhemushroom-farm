@@ -1,13 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, SlidersHorizontal } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { AppShell } from '../components/layout/AppShell';
 import { PageContainer } from '../components/layout/PageContainer';
 import { Section, SectionHeader } from '../components/layout/Section';
 import { ResponsiveGrid } from '../components/layout/Layout';
 import { ProductCard } from '../components/cards/Cards';
 import { Input } from '../components/forms/Input';
-import { Button } from '../components/ui/Button';
 import { EmptyState } from '../components/feedback/States';
 import { SkeletonCard } from '../components/ui/Skeleton';
 import { listProducts } from '../lib/data';
@@ -54,22 +53,13 @@ export function ProductsPage() {
             title="Our Products"
             description="Freshly harvested mushrooms, wellness powders and ready-to-eat packs. Tap any card for specifications, nutrition and full details."
           />
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <Input
-              placeholder="Search products…"
-              leftIcon={<Search className="h-4 w-4" />}
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              containerClassName="flex-1"
-            />
-            <Button
-              variant="outline"
-              leftIcon={<SlidersHorizontal className="h-4 w-4" />}
-              onClick={() => setCat('all')}
-            >
-              Reset
-            </Button>
-          </div>
+          <Input
+            placeholder="Search products…"
+            leftIcon={<Search className="h-4 w-4" />}
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            containerClassName="flex-1"
+          />
           <div className="mt-4 -mx-4 px-4 flex gap-2 overflow-x-auto no-scrollbar sm:mx-0 sm:px-0 sm:flex-wrap">
             {CATEGORIES.map((c) => (
               <button
@@ -100,16 +90,6 @@ export function ProductsPage() {
             <EmptyState
               title="No products match"
               message="Try clearing the search or picking a different category."
-              action={
-                <Button
-                  onClick={() => {
-                    setQ('');
-                    setCat('all');
-                  }}
-                >
-                  Reset filters
-                </Button>
-              }
             />
           ) : (
             <ResponsiveGrid cols={{ base: 1, sm: 2, md: 3, lg: 4 }} gap="md">
@@ -127,6 +107,7 @@ export function ProductsPage() {
                   inStock={p.stock > 0}
                   onClick={() => navigate(`/products/${p.slug}`)}
                   className="h-full"
+                  titleEmphasis="listing"
                 />
               ))}
             </ResponsiveGrid>

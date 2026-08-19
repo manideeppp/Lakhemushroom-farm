@@ -225,7 +225,7 @@ export function AccountPage() {
                   <GraduationCap className="h-5 w-5" />
                 </span>
                 <div>
-                  <p className="text-caption text-ink-500">Enrolled trainings</p>
+                  <p className="text-caption text-ink-500">Programme payments</p>
                   <p className="font-serif text-h2 text-ink-900 leading-none">
                     {trainingItems.length}
                   </p>
@@ -234,7 +234,7 @@ export function AccountPage() {
                     onClick={() => setTab('training')}
                     className="text-caption text-forest-800 hover:underline"
                   >
-                    Continue learning
+                    View programmes
                   </button>
                 </div>
               </Card>
@@ -381,8 +381,8 @@ export function AccountPage() {
                 <OrderListSkeleton count={2} />
               ) : trainingItems.length === 0 ? (
                 <EmptyState
-                  title="No training yet"
-                  message="Enrol in an online course to begin learning."
+                  title="No programmes yet"
+                  message="Pay for online training, offline training or farm setup — the owner will contact you with details."
                   action={
                     <Link to="/training">
                       <Button>Browse training</Button>
@@ -408,10 +408,10 @@ export function AccountPage() {
                       <p className="text-caption text-ink-500">
                         Order {order.order_ref} ·{' '}
                         {item.status === 'access_granted'
-                          ? 'Access granted'
+                          ? 'Confirmed — owner will contact you'
                           : item.status === 'access_pending'
-                            ? 'Access pending'
-                            : 'Access rejected'}
+                            ? 'Awaiting confirmation'
+                            : 'Update pending'}
                       </p>
                     </div>
                     <div>
@@ -422,18 +422,18 @@ export function AccountPage() {
                               ?.slug ?? ''
                           }/access`}
                         >
-                          <Button size="sm">Open</Button>
+                          <Button size="sm" variant="outline">Details</Button>
                         </Link>
                       ) : (
-                        <Badge variant="pending">Waiting</Badge>
+                        <Badge variant="pending">Pending</Badge>
                       )}
                     </div>
                   </Card>
                 ))
               )}
               <p className="text-caption text-ink-500">
-                Tip: from any training page, you’ll see “Continue learning” once
-                access is granted.
+                Programme details are shared directly by Tatya Lakhe after your
+                payment is confirmed — not through an online course on this site.
               </p>
             </div>
           )}

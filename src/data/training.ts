@@ -1,6 +1,7 @@
 import type { TrainingCourse } from '../types/training';
 import { trainingImages } from './media';
 
+/** Sample programmes — pay on site; owner shares details directly after order confirmation. */
 export const SAMPLE_TRAINING: TrainingCourse[] = [
   {
     id: 't-online',
@@ -8,90 +9,17 @@ export const SAMPLE_TRAINING: TrainingCourse[] = [
     title: 'Online Training',
     format: 'online',
     price: 1500,
-    duration: '12 hours · Self-paced',
+    duration: 'Flexible schedule',
     image: trainingImages.online,
     short_description:
-      'Complete mushroom farming from spawn to sale — learn at your own pace.',
+      'Pay programme fee online — full training plan shared directly by the owner.',
     description:
-      'A complete online program covering biology, substrate prep, spawn making, cultivation, harvesting, packaging, marketing and business planning. Learn from years of on-farm practice.',
+      'Reserve your online training with Lakhe Mushroom Farm. After your payment is verified, Tatya Lakhe will contact you personally with schedule, materials and step-by-step guidance. There is no online course portal on this website — everything is coordinated directly with the owner.',
     features: [
-      '10+ recorded video modules',
-      'Downloadable PDFs & checklists',
-      'Lifetime access',
-      'Certificate of completion',
-    ],
-    outcomes: [
-      'Set up a small mushroom unit at home',
-      'Prepare your own spawn',
-      'Sell fresh, dry & value-added products',
-    ],
-    modules: [
-      {
-        id: 'm1',
-        course_id: 't-online',
-        title: 'Welcome & Introduction to Mushroom Farming',
-        description:
-          'Overview of the course, mushroom varieties, and the business potential.',
-        video_url: '',
-        duration_minutes: 25,
-        order: 1,
-      },
-      {
-        id: 'm2',
-        course_id: 't-online',
-        title: 'Biology of Oyster Mushrooms',
-        description: 'Life cycle, growth conditions, and common terms.',
-        duration_minutes: 40,
-        order: 2,
-      },
-      {
-        id: 'm3',
-        course_id: 't-online',
-        title: 'Substrate Preparation',
-        description: 'Straw, sawdust and paper substrates. Pasteurisation methods.',
-        duration_minutes: 55,
-        order: 3,
-      },
-      {
-        id: 'm4',
-        course_id: 't-online',
-        title: 'Spawn Production',
-        description: 'Sterile technique, grain spawn, and quality checks.',
-        duration_minutes: 60,
-        order: 4,
-      },
-      {
-        id: 'm5',
-        course_id: 't-online',
-        title: 'Inoculation & Incubation',
-        description: 'Bag prep, spawning ratios, and incubation environment.',
-        duration_minutes: 50,
-        order: 5,
-      },
-      {
-        id: 'm6',
-        course_id: 't-online',
-        title: 'Fruiting & Harvesting',
-        description: 'Fruiting room setup, humidity, harvesting cycles.',
-        duration_minutes: 45,
-        order: 6,
-      },
-      {
-        id: 'm7',
-        course_id: 't-online',
-        title: 'Post-harvest, Drying & Value Addition',
-        description: 'Packaging, drying, powders and ready-to-eat products.',
-        duration_minutes: 50,
-        order: 7,
-      },
-      {
-        id: 'm8',
-        course_id: 't-online',
-        title: 'Marketing, Pricing & Business Setup',
-        description: 'Positioning, retail, wholesale, licenses and subsidies.',
-        duration_minutes: 60,
-        order: 8,
-      },
+      'One-to-one guidance from the owner',
+      'Schedule & materials shared after payment',
+      'Covers spawn to sale on your setup',
+      'WhatsApp support during training',
     ],
   },
   {
@@ -100,22 +28,36 @@ export const SAMPLE_TRAINING: TrainingCourse[] = [
     title: 'Offline Training',
     format: 'offline',
     price: 3000,
-    duration: '2 days',
+    duration: 'Farm visit · dates confirmed by owner',
     image: trainingImages.offline,
     short_description:
-      'Hands-on training at our farm — see, touch and practice every step.',
+      'Pay to book your seat — dates and on-farm details confirmed by the owner.',
     description:
-      'Small batch sessions at Lakhe Mushroom Farm. Includes farm meals, printed workbook and starter spawn kit. Pick a date, book your seat, and pay on arrival.',
+      'Pay the programme fee online to reserve offline training at Lakhe Mushroom Farm. Once your order is approved, Tatya Lakhe will call you to confirm dates, batch size, what to bring and the full on-farm plan. Hands-on practice happens at the farm — not through this website.',
     features: [
-      'Hands-on farm sessions',
-      'Meals included',
-      'Starter spawn kit',
-      'Small batch training',
+      'Hands-on sessions at Lakhe farm',
+      'Dates confirmed directly by owner',
+      'Meals & farm walk included',
+      'Starter materials guidance',
     ],
-    outcomes: [
-      'Practice substrate & spawn prep',
-      'See real fruiting rooms',
-      'Take home a working setup',
+  },
+  {
+    id: 't-farm-setup',
+    slug: 'complete-farm-setup',
+    title: 'Complete Farm Setup',
+    format: 'offline',
+    price: 10000,
+    duration: 'Custom project timeline',
+    image: trainingImages.farmSetup,
+    short_description:
+      'Pay programme fee — full farm setup plan delivered directly by the owner.',
+    description:
+      'Pay the farm setup programme fee online. Tatya Lakhe will visit or consult on your site, assess your land and goals, and share a complete setup plan, timeline and costing directly with you. Build, equipment and execution details are coordinated personally — not through an online course on this site.',
+    features: [
+      'Site assessment & planning',
+      'Grow-room & workflow design',
+      'Equipment & vendor guidance',
+      'Launch support from the owner',
     ],
   },
 ];

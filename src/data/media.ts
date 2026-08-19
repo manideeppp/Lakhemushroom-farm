@@ -12,6 +12,7 @@ import cordyceps from '../assets/cordyceps.png';
 import buttonMushroom from '../assets/Button Mushroom.png';
 import onlineTraining from '../assets/online training.png';
 import offlineTraining from '../assets/offline training.png';
+import homeGrowFarmSetup from '../assets/home-grow-farm-setup.png';
 
 export const productImages = {
   freshOyster,
@@ -31,4 +32,5 @@ export const productImages = {
 export const trainingImages = {
   online: onlineTraining,
   offline: offlineTraining,
+  farmSetup: homeGrowFarmSetup,
 } as const;

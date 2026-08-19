@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Check, Minus, Plus, ShoppingCart } from 'lucide-react';
+import { ArrowLeft, Check, Phone, ShoppingCart } from 'lucide-react';
 import { AppShell } from '../components/layout/AppShell';
 import { PageContainer } from '../components/layout/PageContainer';
 import { Section } from '../components/layout/Section';
@@ -15,6 +15,7 @@ import type { TrainingCourse, TrainingFormat } from '../types/training';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../components/feedback/ToastProvider';
 import { useCartAddedFromNavigation } from '../hooks/useCartAddedFromNavigation';
+import { config } from '../lib/config';
 
 const formatLabel: Record<TrainingFormat, string> = {
   online: 'Online',
@@ -26,7 +27,6 @@ export function TrainingDetailsPage() {
   const { slug } = useParams();
   const [course, setCourse] = useState<TrainingCourse | null>(null);
   const [loading, setLoading] = useState(true);
-  const [qty, setQty] = useState(1);
   const { addItem, announceRecentAdd } = useCart();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -46,16 +46,16 @@ export function TrainingDetailsPage() {
   if (loading)
     return (
       <AppShell>
-        <LoadingState message="Loading training…" />
+        <LoadingState message="Loading programme…" />
       </AppShell>
     );
   if (!course)
     return (
       <AppShell>
         <PageContainer className="py-14 text-center">
-          <p className="text-body text-ink-700">Training not found.</p>
+          <p className="text-body text-ink-700">Programme not found.</p>
           <Link to="/training" className="mt-3 inline-block">
-            <Button variant="outline">Back to training</Button>
+            <Button variant="outline">Back to programmes</Button>
           </Link>
         </PageContainer>
       </AppShell>
@@ -75,12 +75,12 @@ export function TrainingDetailsPage() {
         image: course.image,
         slug: course.slug,
       },
-      qty
+      1
     );
     toast({
       tone: 'success',
       title: 'Added to cart',
-      message: `${course.title} × ${qty}`,
+      message: course.title,
     });
   }
 
@@ -140,33 +140,40 @@ export function TrainingDetailsPage() {
                 </ul>
               )}
 
+              <Card padding="md" className="bg-forest-50 border-forest-200/80">
+                <p className="text-label uppercase tracking-widest text-forest-700 font-medium">
+                  How it works
+                </p>
+                <ol className="mt-2 space-y-2 text-small text-forest-900/90">
+                  <li>1. Add this programme to cart and complete payment on the website.</li>
+                  <li>
+                    2. After your order is verified, Tatya Lakhe will call or WhatsApp you
+                    directly.
+                  </li>
+                  <li>
+                    3. All programme details — dates, schedule, materials and next steps —
+                    are shared personally by the owner. There is no online course to
+                    complete on this website.
+                  </li>
+                </ol>
+                <a
+                  href={`tel:${config.business.phone.replace(/\s/g, '')}`}
+                  className="mt-3 inline-flex items-center gap-1.5 text-small font-medium text-forest-800 hover:text-forest-900"
+                >
+                  <Phone className="h-4 w-4" aria-hidden />
+                  {config.business.phone}
+                </a>
+              </Card>
+
               <div className="mt-2 flex items-end justify-between border-t border-ink-100 pt-4">
                 <div>
-                  <p className="text-caption text-ink-500">Program fee</p>
+                  <p className="text-caption text-ink-500">Programme fee</p>
                   <p className="text-h1 font-serif text-ink-900">
                     {formatINR(course.price)}
                   </p>
-                </div>
-                <div className="flex items-center rounded-md border border-ink-200">
-                  <button
-                    type="button"
-                    onClick={() => setQty((q) => Math.max(1, q - 1))}
-                    className="h-10 w-10 text-ink-700 hover:bg-forest-50"
-                    aria-label="Decrease quantity"
-                  >
-                    <Minus className="h-4 w-4 mx-auto" />
-                  </button>
-                  <span className="w-10 text-center text-body font-medium">
-                    {qty}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setQty((q) => q + 1)}
-                    className="h-10 w-10 text-ink-700 hover:bg-forest-50"
-                    aria-label="Increase quantity"
-                  >
-                    <Plus className="h-4 w-4 mx-auto" />
-                  </button>
+                  <p className="mt-0.5 text-caption text-ink-500">
+                    Pay online · details from owner after confirmation
+                  </p>
                 </div>
               </div>
 
@@ -177,7 +184,7 @@ export function TrainingDetailsPage() {
                   leftIcon={<ShoppingCart className="h-4 w-4" />}
                   onClick={addToCart}
                 >
-                  Add to cart
+                  Add to cart & pay
                 </Button>
                 <Link to="/cart" className="sm:flex-1">
                   <Button size="lg" fullWidth variant="outline">
@@ -187,25 +194,6 @@ export function TrainingDetailsPage() {
               </div>
             </div>
           </div>
-
-          {course.outcomes && course.outcomes.length > 0 && (
-            <Card padding="lg" className="mt-8">
-              <h2 className="font-serif text-h2 text-ink-900">
-                What you&apos;ll learn
-              </h2>
-              <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-                {course.outcomes.map((o) => (
-                  <li
-                    key={o}
-                    className="flex items-start gap-2 text-small text-ink-700"
-                  >
-                    <Check className="h-4 w-4 mt-0.5 text-success shrink-0" />
-                    {o}
-                  </li>
-                ))}
-              </ul>
-            </Card>
-          )}
         </Section>
       </PageContainer>
     </AppShell>
