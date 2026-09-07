@@ -165,6 +165,24 @@ function parseRpcArray<T>(data: unknown): T[] {
   return JSON.parse(String(data)) as T[];
 }
 
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+function isUuid(value: string | null | undefined): boolean {
+  return typeof value === 'string' && UUID_RE.test(value);
+}
+
+function isExistingRowId(id: string, rows: { id: string }[]): boolean {
+  return isUuid(id) && rows.some((r) => r.id === id);
+}
+
+async function adminListRows<T>(
+  fn: string
+): Promise<T[]> {
+  const data = await adminRpc<unknown>(fn);
+  return parseRpcArray<T>(data);
+}
+
 // ---------------------------------------------------------------------------
 // Products
 // ---------------------------------------------------------------------------
@@ -172,6 +190,10 @@ function parseRpcArray<T>(data: unknown): T[] {
 export async function listProducts(): Promise<Product[]> {
   if (!isSupabaseConfigured())
     return mergeSampleProducts(localGet<Product[]>(K.products, []));
+  if (adminRpcActive()) {
+    const rows = await adminListRows<Product>('admin_list_products');
+    return rows.map(withProductImages);
+  }
   try {
     const { data, error } = await supabase
       .from('products')
@@ -217,6 +239,19 @@ export async function upsertProduct(p: Product): Promise<Product> {
     localSet(K.products, items);
     return p;
   }
+  if (adminRpcActive()) {
+    const existing = await adminListRows<Product>('admin_list_products');
+    const isNew = !isExistingRowId(p.id, existing);
+    const data = await adminRpc<unknown>('admin_upsert_product', {
+      product: { ...p, id: isNew ? null : p.id },
+    });
+    if (!data) {
+      throw new Error(
+        'Product was not saved. Run supabase/patches/admin_catalog_rpcs.sql in Supabase.'
+      );
+    }
+    return withProductImages(data as Product);
+  }
   const { data, error } = await supabase
     .from('products')
     .upsert(p)
@@ -234,6 +269,10 @@ export async function deleteProduct(id: string): Promise<void> {
     localSet(K.products, items);
     return;
   }
+  if (adminRpcActive()) {
+    await adminRpc('admin_delete_product', { product_id: id });
+    return;
+  }
   const { error } = await supabase.from('products').delete().eq('id', id);
   if (error) throw error;
 }
@@ -245,6 +284,10 @@ export async function deleteProduct(id: string): Promise<void> {
 export async function listTraining(): Promise<TrainingCourse[]> {
   if (!isSupabaseConfigured())
     return mergeSampleTraining(localGet<TrainingCourse[]>(K.training, []));
+  if (adminRpcActive()) {
+    const rows = await adminListRows<TrainingCourse>('admin_list_training');
+    return rows.map(withTrainingImage);
+  }
   try {
     const { data: courses, error } = await supabase
       .from('training_courses')
@@ -313,6 +356,19 @@ export async function upsertTraining(t: TrainingCourse): Promise<TrainingCourse>
     return t;
   }
   const { modules: _modules, ...rest } = t;
+  if (adminRpcActive()) {
+    const existing = await adminListRows<TrainingCourse>('admin_list_training');
+    const isNew = !isExistingRowId(t.id, existing);
+    const data = await adminRpc<unknown>('admin_upsert_training', {
+      course: { ...rest, id: isNew ? null : t.id },
+    });
+    if (!data) {
+      throw new Error(
+        'Training was not saved. Run supabase/patches/admin_catalog_rpcs.sql in Supabase.'
+      );
+    }
+    return withTrainingImage(data as TrainingCourse);
+  }
   const { data, error } = await supabase
     .from('training_courses')
     .upsert(rest)
@@ -382,13 +438,6 @@ export interface CreateOrderInput {
   payment_screenshot_url?: string;
   coupon_code?: string;
   discount?: number;
-}
-
-const UUID_RE =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-
-function isUuid(value: string | null | undefined): boolean {
-  return typeof value === 'string' && UUID_RE.test(value);
 }
 
 async function resolveProductId(
@@ -731,11 +780,8 @@ export async function validateCouponCode(
   };
 }
 
-const COUPON_UUID_RE =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-
 function isExistingCouponId(id: string, coupons: Coupon[]): boolean {
-  return COUPON_UUID_RE.test(id) && coupons.some((c) => c.id === id);
+  return isExistingRowId(id, coupons);
 }
 
 export async function listCoupons(): Promise<Coupon[]> {
@@ -1014,6 +1060,9 @@ export async function updateQueryStatus(
 
 export async function listGallery(): Promise<GalleryItem[]> {
   if (!isSupabaseConfigured()) return SAMPLE_GALLERY;
+  if (adminRpcActive()) {
+    return await adminListRows<GalleryItem>('admin_list_gallery');
+  }
   try {
     const { data, error } = await supabase
       .from('gallery_items')
@@ -1036,6 +1085,19 @@ export async function upsertGalleryItem(item: GalleryItem): Promise<GalleryItem>
     localSet(K.gallery, all);
     return item;
   }
+  if (adminRpcActive()) {
+    const existing = await adminListRows<GalleryItem>('admin_list_gallery');
+    const isNew = !isExistingRowId(item.id, existing);
+    const data = await adminRpc<unknown>('admin_upsert_gallery_item', {
+      item: { ...item, id: isNew ? null : item.id },
+    });
+    if (!data) {
+      throw new Error(
+        'Gallery item was not saved. Run supabase/patches/admin_catalog_rpcs.sql in Supabase.'
+      );
+    }
+    return data as GalleryItem;
+  }
   const { data, error } = await supabase
     .from('gallery_items')
     .upsert(item)
@@ -1051,6 +1113,10 @@ export async function deleteGalleryItem(id: string): Promise<void> {
       K.gallery,
       localGet<GalleryItem[]>(K.gallery, []).filter((x) => x.id !== id)
     );
+    return;
+  }
+  if (adminRpcActive()) {
+    await adminRpc('admin_delete_gallery_item', { item_id: id });
     return;
   }
   const { error } = await supabase.from('gallery_items').delete().eq('id', id);

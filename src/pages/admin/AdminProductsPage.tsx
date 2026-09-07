@@ -14,6 +14,7 @@ import { AdminImageField } from '../../components/admin/AdminImageField';
 import type { Product, ProductCategory } from '../../types/product';
 import { newId } from '../../utils/ids';
 import { formatINR } from '../../utils/format';
+import { getErrorMessage } from '../../utils/errors';
 
 const CATEGORIES: ProductCategory[] = [
   'fresh',
@@ -74,7 +75,7 @@ export function AdminProductsPage() {
     } catch (err) {
       toast({
         tone: 'danger',
-        message: err instanceof Error ? err.message : 'Could not save.',
+        message: getErrorMessage(err, 'Could not save.'),
       });
     } finally {
       setSaving(false);
