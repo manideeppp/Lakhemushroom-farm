@@ -30,14 +30,17 @@ const TRAINING_IMAGE_BY_SLUG: Record<string, string> = {
 };
 
 export function withProductImages(product: Product): Product {
+  const validImages = (product.images ?? []).filter(Boolean);
   const local = PRODUCT_IMAGE_BY_SLUG[product.slug];
-  const withImg = local ? { ...product, images: [local] } : product;
-  return enrichProduct(withImg);
+  // Keep admin/DB images; bundled assets are fallbacks only when none are set.
+  const images =
+    validImages.length > 0 ? validImages : local ? [local] : [];
+  return enrichProduct({ ...product, images });
 }
 
 export function withTrainingImage(course: TrainingCourse): TrainingCourse {
   const local = TRAINING_IMAGE_BY_SLUG[course.slug];
-  if (!local) return course;
+  if (!local || course.image?.trim()) return course;
   return { ...course, image: local };
 }
 

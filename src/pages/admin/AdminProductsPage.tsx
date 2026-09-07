@@ -32,7 +32,7 @@ const emptyProduct = (): Product => ({
   short_description: '',
   description: '',
   price: 0,
-  unit: 'per pack',
+  unit: 'per kg',
   images: [''],
   badges: [],
   stock: 10,
@@ -282,7 +282,7 @@ export function AdminProductsPage() {
               />
             </div>
             <Input
-              label="Unit label (e.g. per 200g)"
+              label="Unit label (e.g. per kg, per 200g, 500g pack)"
               value={editing.unit ?? ''}
               onChange={(e) => setEditing({ ...editing, unit: e.target.value })}
             />

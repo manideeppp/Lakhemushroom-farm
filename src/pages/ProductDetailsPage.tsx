@@ -9,7 +9,7 @@ import { Button } from '../components/ui/Button';
 import { Badge, type BadgeVariant } from '../components/ui/Badge';
 import { Card } from '../components/ui/Card';
 import { LoadingState } from '../components/feedback/States';
-import { formatINR } from '../utils/format';
+import { formatINR, productUnitLabel } from '../utils/format';
 import { getProductBySlug } from '../lib/data';
 import type { Product } from '../types/product';
 import { useCart } from '../context/CartContext';
@@ -95,7 +95,7 @@ export function ProductDetailsPage() {
                       <img
                         src={src}
                         alt=""
-                        className="h-full w-full object-cover"
+                        className="h-full w-full object-contain bg-cream-50 p-0.5"
                       />
                     </button>
                   ))}
@@ -119,8 +119,6 @@ export function ProductDetailsPage() {
                     {product.rating ?? 4.8}
                   </span>
                 </span>
-                <span>·</span>
-                <span>{product.unit ?? 'per pack'}</span>
                 <span>·</span>
                 <span
                   className={
@@ -169,6 +167,11 @@ export function ProductDetailsPage() {
                   <p className="text-caption text-ink-500">Price</p>
                   <p className="text-h1 font-serif text-ink-900">
                     {formatINR(product.price)}
+                    {productUnitLabel(product.unit) && (
+                      <span className="ml-2 text-h3 font-sans font-medium text-ink-500">
+                        {productUnitLabel(product.unit)}
+                      </span>
+                    )}
                   </p>
                 </div>
                 <div className="flex items-center rounded-md border border-ink-200">

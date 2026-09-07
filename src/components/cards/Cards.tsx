@@ -12,7 +12,7 @@ import {
 import { Card } from '../ui/Card';
 import { Badge, type BadgeVariant } from '../ui/Badge';
 import { ResponsiveImage } from '../media/ResponsiveImage';
-import { formatINR } from '../../utils/format';
+import { formatINR, productUnitLabel } from '../../utils/format';
 import { cn } from '../../utils/cn';
 import { useCart } from '../../context/CartContext';
 
@@ -52,10 +52,11 @@ function CatalogMetaItem({
 }
 
 function formatWeightLabel(unit?: string): string {
-  if (!unit) return '';
+  if (!unit) return 'Farm pack';
   const match = unit.match(/(\d+)\s*g/i);
   if (match) return `${match[1]} g`;
-  return unit.replace(/\s*pack$/i, '').trim();
+  if (/^per\s/i.test(unit.trim())) return 'Farm pack';
+  return unit.replace(/\s*pack$/i, '').trim() || 'Farm pack';
 }
 
 function CatalogMetaDivider() {
@@ -69,10 +70,12 @@ function CatalogMetaDivider() {
 
 function CatalogPriceFooter({
   priceLabel,
+  priceUnit,
   priceSub,
   action,
 }: {
   priceLabel: string;
+  priceUnit?: string;
   priceSub?: string;
   action: React.ReactNode;
 }) {
@@ -82,7 +85,12 @@ function CatalogPriceFooter({
     <div className="mt-2 flex items-center justify-between gap-2">
       <div className="min-w-0">
         <p className="font-serif text-[1.35rem] leading-none tracking-tight text-forest-900">
-          {priceLabel}
+          <span>{priceLabel}</span>
+          {priceUnit && (
+            <span className="ml-1.5 text-[0.8125rem] font-sans font-medium text-ink-500">
+              {priceUnit}
+            </span>
+          )}
         </p>
         {priceSub && (
           <p className="mt-0.5 text-[10px] leading-tight text-ink-400 font-sans">
@@ -207,12 +215,17 @@ export function ProductCard({
       className={cn(CATALOG_CARD_SHELL, onClick && 'cursor-pointer', className)}
       onClick={onClick}
     >
-      <div className={cn('relative shrink-0 overflow-hidden', CATALOG_IMAGE_ASPECT)}>
+      <div
+        className={cn(
+          'relative shrink-0 overflow-hidden bg-cream-50',
+          CATALOG_IMAGE_ASPECT
+        )}
+      >
         {image ? (
           <img
             src={image}
             alt={imageAlt ?? name}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-contain p-2"
             loading="lazy"
             decoding="async"
           />
@@ -241,7 +254,7 @@ export function ProductCard({
         <div className={CATALOG_META_ROW}>
           <CatalogMetaItem
             icon={<Scale className="h-3.5 w-3.5 text-forest-600" aria-hidden />}
-            label={weightLabel || 'Farm pack'}
+            label={weightLabel}
           />
           <CatalogMetaDivider />
           <CatalogMetaItem
@@ -252,6 +265,7 @@ export function ProductCard({
 
         <CatalogPriceFooter
           priceLabel={formatINR(price)}
+          priceUnit={productUnitLabel(unit)}
           priceSub="Inclusive of all taxes"
           action={
             !inStock ? (
