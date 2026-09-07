@@ -32,10 +32,12 @@ import type {
   QueryStatus,
 } from '../types/booking';
 import type { GalleryItem, Profile, Testimonial } from '../types/profile';
+import { normalizeGalleryCategory } from '../types/profile';
 import type { Coupon, CouponDiscountType } from '../types/coupon';
 
 import { SAMPLE_PRODUCTS } from '../data/products';
-import { SAMPLE_TRAINING, isPublicTrainingSlug, sortPublicTraining } from '../data/training';
+import { SAMPLE_TRAINING, isPublicTrainingSlug, sortPublicTraining, LEGACY_TRAINING_SLUGS } from '../data/training';
+import { sortProductsByDisplayOrder } from '../data/productOrder';
 import {
   mergeSampleProducts,
   mergeSampleTraining,
@@ -201,14 +203,18 @@ export async function listProductsAdmin(): Promise<Product[]> {
 /** Public shop — database products only (no sample merge, no admin RPC). */
 export async function listProducts(): Promise<Product[]> {
   if (!isSupabaseConfigured())
-    return mergeSampleProducts(localGet<Product[]>(K.products, []));
+    return sortProductsByDisplayOrder(
+      mergeSampleProducts(localGet<Product[]>(K.products, []))
+    );
   try {
     const { data, error } = await supabase
       .from('products')
       .select('*')
       .order('created_at', { ascending: false });
     if (error) throw error;
-    return ((data ?? []) as Product[]).map(withProductImages);
+    return sortProductsByDisplayOrder(
+      ((data ?? []) as Product[]).map(withProductImages)
+    );
   } catch (err) {
     console.warn('listProducts failed', err);
     return [];
@@ -320,7 +326,12 @@ export async function listTrainingAdmin(): Promise<TrainingCourse[]> {
     throw new Error('Admin session required');
   }
   const rows = await adminListRows<TrainingCourse>('admin_list_training');
-  return rows.map(withTrainingImage);
+  return rows
+    .filter(
+      (c) =>
+        !(LEGACY_TRAINING_SLUGS as readonly string[]).includes(c.slug)
+    )
+    .map(withTrainingImage);
 }
 
 /** Public site — only online-training & offline-training (never legacy seed slugs). */
@@ -1107,10 +1118,18 @@ export async function updateQueryStatus(
 // Gallery + Testimonials
 // ---------------------------------------------------------------------------
 
+function withGalleryCategory(item: GalleryItem): GalleryItem {
+  return {
+    ...item,
+    category: normalizeGalleryCategory(item.category),
+  };
+}
+
 export async function listGallery(): Promise<GalleryItem[]> {
   if (!isSupabaseConfigured()) return SAMPLE_GALLERY;
   if (adminRpcActive()) {
-    return await adminListRows<GalleryItem>('admin_list_gallery');
+    const rows = await adminListRows<GalleryItem>('admin_list_gallery');
+    return rows.map(withGalleryCategory);
   }
   try {
     const { data, error } = await supabase
@@ -1118,7 +1137,9 @@ export async function listGallery(): Promise<GalleryItem[]> {
       .select('*')
       .order('order', { ascending: true });
     if (error) throw error;
-    return mergeSampleGallery((data ?? []) as GalleryItem[]);
+    return mergeSampleGallery(
+      ((data ?? []) as GalleryItem[]).map(withGalleryCategory)
+    );
   } catch (err) {
     console.warn('listGallery failed — using sample photos', err);
     return SAMPLE_GALLERY;

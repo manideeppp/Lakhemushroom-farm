@@ -8,14 +8,29 @@ export interface Profile {
   created_at?: string;
 }
 
+export type GalleryCategory = 'farm' | 'cultivation' | 'journey' | 'others';
+
 export interface GalleryItem {
   id: string;
   type: 'image' | 'video';
-  category: 'farm' | 'cultivation' | 'training' | 'team' | 'clients';
+  category: GalleryCategory;
   media_url: string;
   thumbnail_url?: string;
   caption?: string;
   order: number;
+}
+
+export function normalizeGalleryCategory(category: string): GalleryCategory {
+  if (
+    category === 'farm' ||
+    category === 'cultivation' ||
+    category === 'journey' ||
+    category === 'others'
+  ) {
+    return category;
+  }
+  if (category === 'training' || category === 'team') return 'journey';
+  return 'others';
 }
 
 export interface Testimonial {

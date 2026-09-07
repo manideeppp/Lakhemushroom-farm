@@ -19,20 +19,15 @@ import { CouponCodeField } from '../components/payment/CouponCodeField';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { formatINR } from '../utils/format';
-
-const SHIPPING_FLAT = 60;
-const FREE_SHIPPING_THRESHOLD = 999;
+import { SHIPPING_FEE_NOTE } from '../utils/shipping';
 
 export function CartPage() {
   const { items, subtotal, discount, updateQty, removeItem, itemCount } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const shipping = items.some((it) => it.type === 'product')
-    ? subtotal >= FREE_SHIPPING_THRESHOLD
-      ? 0
-      : SHIPPING_FLAT
-    : 0;
+  const hasProducts = items.some((it) => it.type === 'product');
+  const shipping = 0;
   const total = Math.max(0, subtotal + shipping - discount);
 
   function proceed() {
@@ -175,10 +170,16 @@ export function CartPage() {
                         {formatINR(subtotal)}
                       </dd>
                     </div>
-                    <div className="flex justify-between">
-                      <dt>Shipping</dt>
-                      <dd className="font-medium text-ink-900">
-                        {shipping === 0 ? 'Free' : formatINR(shipping)}
+                    <div className="flex justify-between gap-3">
+                      <dt className="shrink-0">Shipping</dt>
+                      <dd className="font-medium text-ink-900 text-right max-w-[14rem]">
+                        {hasProducts ? (
+                          <span className="text-caption leading-snug">
+                            {SHIPPING_FEE_NOTE}
+                          </span>
+                        ) : (
+                          '—'
+                        )}
                       </dd>
                     </div>
                     {discount > 0 && (
@@ -196,12 +197,6 @@ export function CartPage() {
                       </dd>
                     </div>
                   </dl>
-                  {shipping > 0 && (
-                    <p className="text-caption text-ink-500">
-                      Add {formatINR(FREE_SHIPPING_THRESHOLD - subtotal)} more
-                      for free shipping.
-                    </p>
-                  )}
                   <UpiAppBadges />
                   <Button
                     fullWidth

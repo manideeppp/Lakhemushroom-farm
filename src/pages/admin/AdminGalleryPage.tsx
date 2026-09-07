@@ -20,9 +20,8 @@ import { newId } from '../../utils/ids';
 const CATEGORIES: GalleryItem['category'][] = [
   'farm',
   'cultivation',
-  'training',
-  'team',
-  'clients',
+  'journey',
+  'others',
 ];
 
 const empty = (): GalleryItem => ({

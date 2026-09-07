@@ -1,6 +1,7 @@
 import type { Order } from '../../types/order';
 import { formatDate } from '../../utils/ids';
 import { formatINR } from '../../utils/format';
+import { SHIPPING_FEE_NOTE } from '../../utils/shipping';
 import { config } from '../../lib/config';
 import { LakheLogo } from '../navigation/LakheLogo';
 import { cn } from '../../utils/cn';
@@ -61,6 +62,7 @@ export function OrderReceiptDocument({
   className?: string;
 }) {
   const isApproved = order.status === 'approved';
+  const hasProductItems = order.items.some((it) => it.item_type === 'product');
 
   return (
     <div
@@ -241,10 +243,16 @@ export function OrderReceiptDocument({
                 {formatINR(order.subtotal)}
               </span>
             </div>
-            <div className="flex justify-between text-ink-600">
-              <span>Shipping</span>
-              <span className="tabular-nums text-ink-900">
-                {order.shipping === 0 ? 'Free' : formatINR(order.shipping)}
+            <div className="flex justify-between gap-3 text-ink-600">
+              <span className="shrink-0">Shipping</span>
+              <span className="text-right max-w-[14rem] text-ink-900">
+                {hasProductItems ? (
+                  <span className="text-caption leading-snug">{SHIPPING_FEE_NOTE}</span>
+                ) : order.shipping === 0 ? (
+                  '—'
+                ) : (
+                  <span className="tabular-nums">{formatINR(order.shipping)}</span>
+                )}
               </span>
             </div>
             {(order.discount ?? 0) > 0 && (

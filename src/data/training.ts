@@ -12,6 +12,12 @@ const CURRICULUM = [
 
 export const PUBLIC_TRAINING_SLUGS = ['online-training', 'offline-training'] as const;
 
+export const LEGACY_TRAINING_SLUGS = [
+  'weekend-farm-immersion',
+  'advanced-cultivation-bootcamp',
+  'a-z-mushroom-farming-online',
+] as const;
+
 export function isPublicTrainingSlug(slug: string): boolean {
   return (PUBLIC_TRAINING_SLUGS as readonly string[]).includes(slug);
 }

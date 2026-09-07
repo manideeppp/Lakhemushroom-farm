@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
 import { formatINR } from '../../utils/format';
+import { SHIPPING_FEE_NOTE } from '../../utils/shipping';
 import type { CartItem } from '../../context/CartContext';
 
 export function OrderSummaryCard({
@@ -13,6 +14,7 @@ export function OrderSummaryCard({
   total,
   footer,
   className,
+  showShippingNote = false,
 }: {
   items: CartItem[];
   subtotal: number;
@@ -22,6 +24,7 @@ export function OrderSummaryCard({
   total: number;
   footer?: ReactNode;
   className?: string;
+  showShippingNote?: boolean;
 }) {
   return (
     <Card padding="lg" elevated className={className}>
@@ -58,10 +61,16 @@ export function OrderSummaryCard({
           <dt>Subtotal</dt>
           <dd className="font-medium text-ink-900">{formatINR(subtotal)}</dd>
         </div>
-        <div className="flex justify-between">
-          <dt>Shipping</dt>
-          <dd className="font-medium text-ink-900">
-            {shipping === 0 ? 'Free' : formatINR(shipping)}
+        <div className="flex justify-between gap-3">
+          <dt className="shrink-0">Shipping</dt>
+          <dd className="font-medium text-ink-900 text-right max-w-[14rem]">
+            {showShippingNote ? (
+              <span className="text-caption leading-snug">{SHIPPING_FEE_NOTE}</span>
+            ) : shipping === 0 ? (
+              'Free'
+            ) : (
+              formatINR(shipping)
+            )}
           </dd>
         </div>
         {discount > 0 && (

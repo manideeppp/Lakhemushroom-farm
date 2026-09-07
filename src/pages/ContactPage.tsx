@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import {
   ArrowRight,
+  Instagram,
   Mail,
   MapPin,
   Phone,
@@ -172,6 +173,17 @@ export function ContactPage() {
                       className="hover:underline"
                     >
                       {config.business.email}
+                    </a>
+                  </li>
+                  <li className="flex items-center gap-2 text-forest-900">
+                    <Instagram className="h-4 w-4 shrink-0" />
+                    <a
+                      href={config.business.instagramUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="hover:underline"
+                    >
+                      {config.business.instagramHandle}
                     </a>
                   </li>
                 </ul>

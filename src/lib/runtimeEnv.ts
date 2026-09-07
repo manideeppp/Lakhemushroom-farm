@@ -9,7 +9,9 @@ export interface RuntimeEnv {
   VITE_WHATSAPP_NUMBER?: string;
   VITE_CONTACT_EMAIL?: string;
   VITE_CONTACT_PHONE?: string;
+  VITE_CONTACT_PHONES?: string;
   VITE_CONTACT_ADDRESS?: string;
+  VITE_INSTAGRAM_URL?: string;
   VITE_GOOGLE_MAPS_URL?: string;
   VITE_GOOGLE_MAPS_EMBED?: string;
 }

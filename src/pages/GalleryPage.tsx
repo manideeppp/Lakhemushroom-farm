@@ -18,9 +18,8 @@ const CATEGORIES: {
   { key: 'all', label: 'All' },
   { key: 'farm', label: 'Farm' },
   { key: 'cultivation', label: 'Cultivation' },
-  { key: 'training', label: 'Training' },
-  { key: 'team', label: 'Team' },
-  { key: 'clients', label: 'Clients' },
+  { key: 'journey', label: 'Journey' },
+  { key: 'others', label: 'Others' },
 ];
 
 export function GalleryPage() {

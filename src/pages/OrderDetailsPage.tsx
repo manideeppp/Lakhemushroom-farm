@@ -19,6 +19,7 @@ import type { Order, OrderItemStatus } from '../types/order';
 import type { TrainingCourse } from '../types/training';
 import { formatDateTime } from '../utils/ids';
 import { formatINR } from '../utils/format';
+import { SHIPPING_FEE_NOTE } from '../utils/shipping';
 
 function itemStatusBadge(s: OrderItemStatus) {
   if (s === 'processing') return { variant: 'processing' as const, label: 'Processing' };
@@ -73,6 +74,8 @@ export function OrderDetailsPage() {
         : order.status === 'cancelled'
           ? { variant: 'neutral' as const, label: 'Cancelled' }
           : { variant: 'pending' as const, label: 'Pending verification' };
+
+  const hasProductItems = order.items.some((it) => it.item_type === 'product');
 
   return (
     <AppShell>
@@ -240,10 +243,18 @@ export function OrderDetailsPage() {
                       {formatINR(order.subtotal)}
                     </dd>
                   </div>
-                  <div className="flex justify-between">
-                    <dt>Shipping</dt>
-                    <dd className="font-medium text-ink-900">
-                      {order.shipping === 0 ? 'Free' : formatINR(order.shipping)}
+                  <div className="flex justify-between gap-3">
+                    <dt className="shrink-0">Shipping</dt>
+                    <dd className="font-medium text-ink-900 text-right max-w-[14rem]">
+                      {hasProductItems ? (
+                        <span className="text-caption leading-snug">
+                          {SHIPPING_FEE_NOTE}
+                        </span>
+                      ) : order.shipping === 0 ? (
+                        '—'
+                      ) : (
+                        formatINR(order.shipping)
+                      )}
                     </dd>
                   </div>
                   <div className="flex justify-between border-t border-ink-100 pt-2 mt-2">

@@ -100,7 +100,14 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-2.5">
                 <Instagram className="h-4 w-4 shrink-0 text-cream-300/90" />
-                <span>@lakhemushroomfarm</span>
+                <a
+                  href={config.business.instagramUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-cream-50 transition-colors"
+                >
+                  {config.business.instagramHandle}
+                </a>
               </li>
             </ul>
           </div>

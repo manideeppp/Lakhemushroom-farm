@@ -61,7 +61,7 @@ export function FarmLocationSection({
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
           allowFullScreen
-          className="block h-[min(420px,55vh)] w-full min-h-[280px] border-0"
+          className="block h-[360px] w-full border-0 sm:h-[400px] lg:h-[480px]"
         />
       </Card>
     </div>

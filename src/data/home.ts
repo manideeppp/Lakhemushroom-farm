@@ -2,7 +2,6 @@ import type { ComponentType } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { GraduationCap } from 'lucide-react';
 import { MushroomIcon } from '../components/icons/MushroomIcon';
-import homeStoryFarm from '../assets/home-story-farm.png';
 import founderPortrait from '../assets/founder-portrait.png';
 import heroMushroomBasket from '../assets/hero-mushroom-basket.png';
 import onlineTrainingPic from '../assets/online training pic.png';
@@ -42,7 +41,7 @@ export const HOME_GROW_OFFERINGS: HomeGrowOffering[] = [
   },
 ];
 
-export const HOME_STORY_IMAGE = homeStoryFarm;
+export const HOME_STORY_IMAGE = heroMushroomBasket;
 
 export const HOME_FOUNDER_IMAGE = founderPortrait;
 

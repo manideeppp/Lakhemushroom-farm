@@ -242,7 +242,7 @@ create trigger set_queries_updated_at
 create table if not exists public.gallery_items (
   id uuid primary key default gen_random_uuid(),
   type text not null check (type in ('image','video')),
-  category text not null check (category in ('farm','cultivation','training','team','clients')),
+  category text not null check (category in ('farm','cultivation','journey','others')),
   media_url text not null,
   thumbnail_url text,
   caption text,
@@ -1117,6 +1117,50 @@ on conflict (slug) do update set
   outcomes = excluded.outcomes,
   is_published = true;
 
+-- Gallery categories: farm, cultivation, journey, others
+alter table public.gallery_items drop constraint if exists gallery_items_category_check;
+update public.gallery_items set category = 'journey' where category in ('training', 'team');
+update public.gallery_items set category = 'others' where category = 'clients';
+alter table public.gallery_items add constraint gallery_items_category_check
+  check (category in ('farm','cultivation','journey','others'));
+
+-- Remove legacy training programmes from admin & public
+update public.order_items
+set course_id = null
+where course_id in (
+  select id from public.training_courses
+  where slug in (
+    'weekend-farm-immersion',
+    'advanced-cultivation-bootcamp',
+    'a-z-mushroom-farming-online'
+  )
+);
+update public.offline_bookings
+set course_id = null
+where course_id in (
+  select id from public.training_courses
+  where slug in (
+    'weekend-farm-immersion',
+    'advanced-cultivation-bootcamp',
+    'a-z-mushroom-farming-online'
+  )
+);
+delete from public.training_modules
+where course_id in (
+  select id from public.training_courses
+  where slug in (
+    'weekend-farm-immersion',
+    'advanced-cultivation-bootcamp',
+    'a-z-mushroom-farming-online'
+  )
+);
+delete from public.training_courses
+where slug in (
+  'weekend-farm-immersion',
+  'advanced-cultivation-bootcamp',
+  'a-z-mushroom-farming-online'
+);
+
 -- Modules for online course
 with c as (select id from public.training_courses where slug = 'online-training')
 insert into public.training_modules (course_id, title, description, duration_minutes, "order")
@@ -1142,9 +1186,9 @@ insert into public.gallery_items (type, category, media_url, caption, "order") v
   ('image','farm','https://images.unsplash.com/photo-1602867741746-6df80f40b3f6?auto=format&fit=crop&w=1600&q=70','Our main growing shed',1),
   ('image','cultivation','https://images.unsplash.com/photo-1568900122085-3c05f8bd57e5?auto=format&fit=crop&w=1600&q=70','Oyster mushrooms at peak fruiting',2),
   ('image','cultivation','https://images.unsplash.com/photo-1611574474461-46f3f36fbb90?auto=format&fit=crop&w=1600&q=70','Freshly harvested clusters',3),
-  ('image','training','https://images.unsplash.com/photo-1524178232363-1ba1f8b83d0b?auto=format&fit=crop&w=1600&q=70','Weekend immersion in session',4),
-  ('image','team','https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1600&q=70','Our farm team',5),
-  ('image','clients','https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1600&q=70','International cohort visit',6)
+  ('image','journey','https://images.unsplash.com/photo-1524178232363-1ba1f8b83d0b?auto=format&fit=crop&w=1600&q=70','Training on the farm',4),
+  ('image','farm','https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1600&q=70','Our farm team',5),
+  ('image','others','https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1600&q=70','International cohort visit',6)
 on conflict do nothing;
 
 -- Admin uses /admin with portal password (no is_admin profile update needed).

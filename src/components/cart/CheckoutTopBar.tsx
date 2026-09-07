@@ -5,9 +5,6 @@ import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { formatINR } from '../../utils/format';
 
-const SHIPPING_FLAT = 60;
-const FREE_SHIPPING_THRESHOLD = 999;
-
 export function CheckoutTopBar() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -18,12 +15,7 @@ export function CheckoutTopBar() {
   const onPayment = pathname === '/payment';
   if ((!onCart && !onPayment) || items.length === 0) return null;
 
-  const hasProducts = items.some((it) => it.type === 'product');
-  const shipping = hasProducts
-    ? subtotal >= FREE_SHIPPING_THRESHOLD
-      ? 0
-      : SHIPPING_FLAT
-    : 0;
+  const shipping = 0;
   const total = Math.max(0, subtotal + shipping - discount);
 
   function goCheckout() {

@@ -31,14 +31,14 @@ const GALLERY_CATEGORIES: GalleryItem['category'][] = [
   'farm',
   'cultivation',
   'cultivation',
-  'training',
+  'journey',
   'farm',
   'cultivation',
-  'training',
+  'journey',
   'farm',
   'cultivation',
-  'team',
-  'clients',
+  'journey',
+  'others',
   'farm',
 ];
 

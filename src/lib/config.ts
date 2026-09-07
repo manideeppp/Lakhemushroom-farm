@@ -27,15 +27,24 @@ export const config = {
       return readRuntimeEnv('VITE_CONTACT_EMAIL') || 'lakhe.tatya@gmail.com';
     },
     get phone() {
-      return readRuntimeEnv('VITE_CONTACT_PHONE') || '+91 99214 80466';
+      return readRuntimeEnv('VITE_CONTACT_PHONE') || '9921480466';
     },
     get phones() {
       const raw = import.meta.env.VITE_CONTACT_PHONES as string | undefined;
-      const list = (raw || '+91 99214 80466, +91 63621 83728')
+      const list = (raw || '9921480466, +91 63621 83728')
         .split(',')
         .map((s) => s.trim())
         .filter(Boolean);
       return list;
+    },
+    get instagramUrl() {
+      return (
+        readRuntimeEnv('VITE_INSTAGRAM_URL') ||
+        'https://www.instagram.com/lakhe_mushroom_farm?stkn=MXZxb2w3MGY3cm5ieg=='
+      );
+    },
+    get instagramHandle() {
+      return '@lakhe_mushroom_farm';
     },
     get address() {
       return (

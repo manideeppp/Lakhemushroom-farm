@@ -32,9 +32,6 @@ import { cn } from '../utils/cn';
 import { config } from '../lib/config';
 import { brandAssets } from '../data/media';
 
-const SHIPPING_FLAT = 60;
-const FREE_SHIPPING_THRESHOLD = 999;
-
 export function PaymentPage() {
   const { items, subtotal, discount, appliedCoupon, clear } = useCart();
   const { user, profile } = useAuth();
@@ -50,11 +47,7 @@ export function PaymentPage() {
   const [submitting, setSubmitting] = useState(false);
 
   const hasProducts = items.some((it) => it.type === 'product');
-  const shipping = hasProducts
-    ? subtotal >= FREE_SHIPPING_THRESHOLD
-      ? 0
-      : SHIPPING_FLAT
-    : 0;
+  const shipping = 0;
   const total = Math.max(0, subtotal + shipping - discount);
 
   const canSubmit =
@@ -202,6 +195,7 @@ export function PaymentPage() {
                 discount={discount}
                 couponCode={appliedCoupon?.code}
                 total={total}
+                showShippingNote={hasProducts}
                 className="lg:sticky lg:top-24"
                 footer={
                   <>
