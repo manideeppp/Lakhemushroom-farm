@@ -62,10 +62,10 @@ export function PaymentSubmittedPage() {
 
   return (
     <AppShell hideBottomNav>
-      <div className="min-h-[calc(100dvh-var(--header-h))] bg-cream-50">
-        <PageContainer className="py-8 sm:py-10">
-          <div className="mx-auto max-w-3xl">
-            <div className="mx-auto max-w-lg">
+      <div className="min-h-[calc(100dvh-var(--header-h))] bg-cream-50 overflow-x-hidden">
+        <PageContainer className="py-6 sm:py-10">
+          <div className="mx-auto w-full min-w-0 max-w-3xl">
+            <div className="mx-auto w-full min-w-0 max-w-lg">
             {/* Success icon */}
             <div className="flex flex-col items-center text-center">
               <div className="relative flex h-20 w-20 items-center justify-center">
@@ -148,15 +148,14 @@ export function PaymentSubmittedPage() {
             </div>
             </div>
 
-            {/* Business receipt */}
-            <div className="mt-10">
+            <div className="mt-8 w-full min-w-0">
               <p className="text-caption font-semibold uppercase tracking-widest text-ink-500 mb-4 text-center">
                 Your receipt
               </p>
               <OrderReceiptDocument order={order} />
             </div>
 
-            <div className="mx-auto max-w-lg">
+            <div className="mx-auto w-full min-w-0 max-w-lg">
             {/* Actions */}
             <div className="mt-6 space-y-3">
               <Link to={`/orders/${order.order_ref}/receipt`} className="block">

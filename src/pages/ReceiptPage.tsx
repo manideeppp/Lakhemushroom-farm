@@ -49,9 +49,9 @@ export function ReceiptPage() {
 
   return (
     <AppShell hideBottomNav hideFooter>
-      <div className="min-h-[calc(100dvh-var(--header-h))] bg-cream-50 print:bg-white">
-        <PageContainer className="py-6 sm:py-8 print:py-0">
-          <div className="mx-auto max-w-3xl">
+      <div className="min-h-[calc(100dvh-var(--header-h))] bg-cream-50 overflow-x-hidden print:bg-white">
+        <PageContainer className="py-4 sm:py-8 print:py-0">
+          <div className="mx-auto w-full min-w-0 max-w-3xl">
             <div className="mb-5 flex items-center justify-between print:hidden">
               <button
                 type="button"

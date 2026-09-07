@@ -1255,6 +1255,20 @@ export async function listCustomers(): Promise<Profile[]> {
   return (data ?? []) as Profile[];
 }
 
+export async function deleteCustomer(id: string): Promise<void> {
+  if (!isSupabaseConfigured()) {
+    localSet(
+      K.profiles,
+      localGet<Profile[]>(K.profiles, []).filter((p) => p.id !== id)
+    );
+    return;
+  }
+  if (!adminRpcActive()) {
+    throw new Error('Admin session required');
+  }
+  await adminRpc('admin_delete_customer', { customer_id: id });
+}
+
 // ---------------------------------------------------------------------------
 // Payment screenshot upload
 // ---------------------------------------------------------------------------
