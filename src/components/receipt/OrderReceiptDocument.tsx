@@ -6,6 +6,8 @@ import { config } from '../../lib/config';
 import { LakheLogo } from '../navigation/LakheLogo';
 import { cn } from '../../utils/cn';
 
+const RECEIPT_EMAIL = 'lakhe.tatya@gmail.com';
+
 function formatOrderTime(iso: string): string {
   try {
     return new Date(iso).toLocaleTimeString('en-IN', {
@@ -67,7 +69,7 @@ export function OrderReceiptDocument({
   return (
     <div
       className={cn(
-        'relative mx-auto w-full min-w-0 max-w-3xl overflow-hidden rounded-xl border border-ink-200 bg-white shadow-card print:rounded-none print:border print:border-ink-300 print:shadow-none',
+        'relative mx-auto w-full min-w-0 max-w-3xl overflow-hidden rounded-xl border border-ink-200 bg-cream-50 shadow-card print:rounded-none print:border print:border-ink-300 print:bg-cream-50 print:shadow-none',
         className
       )}
     >
@@ -95,7 +97,7 @@ export function OrderReceiptDocument({
               <address className="mt-3 not-italic text-caption text-ink-600 space-y-1 leading-relaxed break-words">
                 <p>{config.business.address}</p>
                 <p>{config.business.phone}</p>
-                <p className="break-all">{config.business.email}</p>
+                <p className="break-all">{RECEIPT_EMAIL}</p>
               </address>
             </div>
 
@@ -150,7 +152,7 @@ export function OrderReceiptDocument({
         </header>
 
         <div className="mt-5 grid gap-4 sm:mt-6 sm:grid-cols-2">
-          <div className="rounded-lg border border-ink-200 bg-cream-50/50 p-3.5 sm:p-4">
+          <div className="rounded-lg border border-ink-200 bg-cream-100/60 p-3.5 sm:p-4">
             <p className="text-caption font-bold uppercase tracking-widest text-ink-500">
               Bill to
             </p>
@@ -169,7 +171,7 @@ export function OrderReceiptDocument({
               </p>
             )}
           </div>
-          <div className="rounded-lg border border-ink-200 bg-white p-3.5 sm:p-4 sm:text-right">
+          <div className="rounded-lg border border-ink-200 bg-cream-100/80 p-3.5 sm:p-4 sm:text-right">
             <p className="text-caption font-bold uppercase tracking-widest text-ink-500">
               Order reference
             </p>
@@ -183,7 +185,7 @@ export function OrderReceiptDocument({
         {/* Mobile line items */}
         <ul className="mt-5 divide-y divide-ink-100 rounded-lg border border-ink-200 sm:hidden">
           {order.items.map((it, idx) => (
-            <li key={it.id} className="bg-white p-3.5">
+            <li key={it.id} className="bg-cream-50 p-3.5">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-caption text-ink-500">#{idx + 1}</p>
@@ -210,7 +212,7 @@ export function OrderReceiptDocument({
         <div className="mt-6 hidden overflow-x-auto rounded-lg border border-ink-200 sm:block">
           <table className="w-full min-w-[520px] text-small">
             <thead>
-              <tr className="border-b border-ink-200 bg-ink-50 text-caption uppercase tracking-wide text-ink-600">
+              <tr className="border-b border-ink-200 bg-cream-100 text-caption uppercase tracking-wide text-ink-600">
                 <th className="px-4 py-3 text-left font-semibold w-10">#</th>
                 <th className="px-4 py-3 text-left font-semibold">Description</th>
                 <th className="px-4 py-3 text-center font-semibold w-16">Qty</th>
@@ -224,7 +226,7 @@ export function OrderReceiptDocument({
             </thead>
             <tbody className="divide-y divide-ink-100">
               {order.items.map((it, idx) => (
-                <tr key={it.id} className="text-ink-900 bg-white">
+                <tr key={it.id} className="text-ink-900 bg-cream-50">
                   <td className="px-4 py-3.5 text-ink-500 tabular-nums">
                     {idx + 1}
                   </td>
@@ -258,7 +260,7 @@ export function OrderReceiptDocument({
             </p>
             <p className="mt-2 text-ink-400">All amounts in Indian Rupees (INR).</p>
           </div>
-          <div className="w-full rounded-lg border border-ink-200 bg-cream-50/40 p-3.5 space-y-2 text-small sm:w-72 sm:p-4">
+          <div className="w-full rounded-lg border border-ink-200 bg-cream-100/70 p-3.5 space-y-2 text-small sm:w-72 sm:p-4">
             <div className="flex justify-between text-ink-600">
               <span>Subtotal</span>
               <span className="tabular-nums text-ink-900">
@@ -300,33 +302,14 @@ export function OrderReceiptDocument({
             </div>
           </div>
         </div>
-
-        <div className="mt-8 grid gap-6 border-t border-dashed border-ink-300 pt-6 sm:mt-10 sm:grid-cols-2 sm:gap-8 sm:pt-8">
-          <div>
-            <p className="text-caption text-ink-500 uppercase tracking-widest">
-              Customer
-            </p>
-            <p className="mt-4 border-b border-ink-300 pb-1 text-small text-ink-700 break-words sm:mt-6">
-              {order.customer_name}
-            </p>
-          </div>
-          <div className="sm:text-right">
-            <p className="text-caption text-ink-500 uppercase tracking-widest">
-              For Lakhe Mushroom Farm
-            </p>
-            <p className="mt-4 border-b border-ink-300 pb-1 text-small text-ink-700 sm:mt-6 sm:max-w-[200px] sm:ml-auto">
-              Authorized signatory
-            </p>
-          </div>
-        </div>
       </div>
 
-      <div className="border-t border-ink-200 bg-ink-50 px-4 py-3 text-center text-caption text-ink-500 sm:px-6 sm:py-4">
+      <div className="border-t border-ink-200 bg-cream-100 px-4 py-3 text-center text-caption text-ink-500 sm:px-6 sm:py-4">
         <p className="font-medium text-ink-700">
           Thank you for choosing Lakhe Mushroom Farm
         </p>
         <p className="mt-1 break-words">
-          Questions? {config.business.phone} · {config.business.email}
+          Questions? {config.business.phone} · {RECEIPT_EMAIL}
         </p>
         <p className="mt-2 text-ink-400 break-all">
           Computer-generated receipt · {order.order_ref}
