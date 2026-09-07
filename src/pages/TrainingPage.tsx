@@ -16,11 +16,7 @@ const formatLabel: Record<TrainingFormat, 'Online' | 'Offline'> = {
   hybrid: 'Offline',
 };
 
-const PROGRAMME_ORDER = [
-  'online-training',
-  'offline-training',
-  'complete-farm-setup',
-];
+const PROGRAMME_ORDER = ['online-training', 'offline-training'];
 
 export function TrainingPage() {
   const [courses, setCourses] = useState<TrainingCourse[] | null>(null);
@@ -46,18 +42,18 @@ export function TrainingPage() {
         <Section size="sm">
           <SectionHeader
             eyebrow="Programmes"
-            title="Online training, offline training & farm setup"
-            description="Pay the programme fee on this website. Tatya Lakhe will contact you directly with dates, schedule and full details — there is no online course portal here."
+            title="Online & offline mushroom training"
+            description="Pay the programme fee on this website. Online includes recorded videos; offline is a 2-day hands-on programme at our farm. Tatya Lakhe will contact you with full details after payment."
           />
         </Section>
 
         <Section size="sm">
           {!sorted ? (
-            <TrainingGridSkeleton count={3} />
+            <TrainingGridSkeleton count={2} />
           ) : sorted.length === 0 ? (
             <EmptyState title="No programmes listed" />
           ) : (
-            <ResponsiveGrid cols={{ base: 1, md: 2, lg: 3 }} gap="md">
+            <ResponsiveGrid cols={{ base: 1, md: 2 }} gap="md" className="max-w-4xl mx-auto">
               {sorted.map((c) => (
                 <TrainingCard
                   key={c.id}

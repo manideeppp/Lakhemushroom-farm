@@ -91,7 +91,7 @@ export function HomePage() {
   const displayTraining =
     training.length > 0 ? mergeSampleTraining(training) : SAMPLE_TRAINING;
   const homeTraining = (() => {
-    const slugs = ['online-training', 'offline-training', 'complete-farm-setup'];
+    const slugs = ['online-training', 'offline-training'];
     return slugs
       .map((slug) => displayTraining.find((t) => t.slug === slug))
       .filter(Boolean) as TrainingCourse[];

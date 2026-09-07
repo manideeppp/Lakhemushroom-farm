@@ -1083,41 +1083,32 @@ on conflict (slug) do nothing;
 
 insert into public.training_courses (slug, title, format, price, duration, image, short_description, description, features, outcomes)
 values
-  ('a-z-mushroom-farming-online','A–Z Mushroom Farming Online Training','online',1500,'12 hours · Self-paced',
+  ('online-training','Online Mushroom Training','online',3000,'Self-paced · video modules',
    'https://images.unsplash.com/photo-1602867741746-6df80f40b3f6?auto=format&fit=crop&w=1600&q=70',
-   'Everything you need to start growing mushrooms — from spawn to sale.',
-   'A complete online program covering biology, substrate prep, spawn making, cultivation, harvesting, packaging, marketing and business planning.',
-   array['10+ recorded video modules','Downloadable PDFs & checklists','Lifetime access','Certificate of completion'],
-   array['Set up a small mushroom unit at home','Prepare your own spawn','Sell fresh, dry & value-added products']),
+   'Full mushroom farming programme with recorded videos — learn spawn to sale from Lakhe farm.',
+   'Complete online mushroom cultivation programme. After payment verification, Tatya Lakhe shares recorded video lessons covering information planning, raw materials, cultivation, crop management, packing and marketing.',
+   array['Importance of information & farm planning','Raw material samples & substrate preparation','Practical cultivation training','Crop management & fruiting room care','Packing & post-harvest handling','Marketing & sales guidance','Recorded video modules provided'],
+   array['Plan and set up a small mushroom unit','Prepare substrates and manage spawn','Harvest, pack and market your produce']),
 
-  ('weekend-farm-immersion','Weekend Farm Immersion','offline',3000,'2 days',
+  ('offline-training','Offline Mushroom Training','offline',10000,'2 days · at Lakhe farm',
    'https://images.unsplash.com/photo-1615398265937-71bc7a9c8dfe?auto=format&fit=crop&w=1600&q=70',
-   'A hands-on two-day session at our farm — see, touch and try every step.',
-   'Small batch of 10. Includes farm meals, printed workbook and starter spawn kit.',
-   array['Hands-on farm sessions','Meals included','Starter spawn kit','Small batch of 10'],
-   array['Practice substrate & spawn prep','See real fruiting rooms','Take home a working setup']),
-
-  ('advanced-cultivation-bootcamp','Advanced Cultivation Bootcamp','hybrid',4500,'4 weeks',
-   'https://images.unsplash.com/photo-1601300961833-e6f635e6f4f6?auto=format&fit=crop&w=1600&q=70',
-   'Deep-dive program combining online modules with an on-farm assessment.',
-   'Includes weekly live Q&A, business toolkit, and a one-day on-farm evaluation.',
-   array['Live weekly Q&A','On-farm assessment day','Business toolkit','Priority support'],
-   array['Plan a commercial unit','Optimise yield and margins','Access to founder mentoring'])
+   'Two-day hands-on training at our farm — see, practice and learn every step on site.',
+   'Intensive two-day programme at Lakhe Mushroom Farm. Hands-on practice through spawn handling, substrate prep, crop management, harvesting, packing and marketing with Tatya Lakhe.',
+   array['Importance of information & farm planning','Raw material samples & substrate preparation','Hands-on cultivation training','Crop management & fruiting room care','Packing & post-harvest handling','Marketing & sales guidance','Farm meals & printed workbook'],
+   array['Experience every step on a working farm','Build confidence for your own unit','Network with fellow growers'])
 on conflict (slug) do nothing;
 
 -- Modules for online course
-with c as (select id from public.training_courses where slug = 'a-z-mushroom-farming-online')
+with c as (select id from public.training_courses where slug = 'online-training')
 insert into public.training_modules (course_id, title, description, duration_minutes, "order")
 select c.id, m.title, m.description, m.duration, m.ord from c,
 (values
-  ('Welcome & Introduction','Overview of the course, mushroom varieties, and the business potential.',25,1),
-  ('Biology of Oyster Mushrooms','Life cycle, growth conditions, and common terms.',40,2),
-  ('Substrate Preparation','Straw, sawdust and paper substrates. Pasteurisation methods.',55,3),
-  ('Spawn Production','Sterile technique, grain spawn, and quality checks.',60,4),
-  ('Inoculation & Incubation','Bag prep, spawning ratios, and incubation environment.',50,5),
-  ('Fruiting & Harvesting','Fruiting room setup, humidity, harvesting cycles.',45,6),
-  ('Post-harvest & Value Addition','Packaging, drying, powders and ready-to-eat products.',50,7),
-  ('Marketing & Business Setup','Positioning, retail, wholesale, licenses and subsidies.',60,8)
+  ('Information & Planning','Why proper information and planning matter before you start.',30,1),
+  ('Raw Material Samples','Substrate types, spawn quality and material selection.',45,2),
+  ('Cultivation Training','Inoculation, incubation and fruiting room setup.',55,3),
+  ('Crop Management','Daily care, humidity, pest control and harvesting cycles.',50,4),
+  ('Packing','Post-harvest handling, grading and packaging.',40,5),
+  ('Marketing','Pricing, retail, wholesale and customer outreach.',45,6)
 ) as m(title, description, duration, ord)
 on conflict do nothing;
 

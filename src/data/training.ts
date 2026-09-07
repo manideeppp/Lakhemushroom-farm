@@ -1,63 +1,66 @@
 import type { TrainingCourse } from '../types/training';
 import { trainingImages } from './media';
 
-/** Sample programmes — pay on site; owner shares details directly after order confirmation. */
+const CURRICULUM = [
+  'Importance of information & farm planning',
+  'Raw material samples & substrate preparation',
+  'Practical cultivation training',
+  'Crop management & fruiting room care',
+  'Packing & post-harvest handling',
+  'Marketing & sales guidance',
+];
+
+/** Online & offline programmes — pay on site; owner coordinates after order confirmation. */
 export const SAMPLE_TRAINING: TrainingCourse[] = [
   {
     id: 't-online',
     slug: 'online-training',
-    title: 'Online Training',
+    title: 'Online Mushroom Training',
     format: 'online',
-    price: 1500,
-    duration: 'Flexible schedule',
+    price: 3000,
+    duration: 'Self-paced · video modules',
     image: trainingImages.online,
     short_description:
-      'Pay programme fee online — full training plan shared directly by the owner.',
+      'Full mushroom farming programme with recorded videos — learn spawn to sale from Lakhe farm.',
     description:
-      'Reserve your online training with Lakhe Mushroom Farm. After your payment is verified, Tatya Lakhe will contact you personally with schedule, materials and step-by-step guidance. There is no online course portal on this website — everything is coordinated directly with the owner.',
+      'A complete online mushroom cultivation programme from Lakhe Mushroom Farm. After your payment is verified, Tatya Lakhe will share access to recorded video lessons covering every stage — from understanding raw materials and substrates to crop management, packing and marketing. Ideal if you want to learn at your own pace while still receiving direct guidance from our farm team.',
     features: [
-      'One-to-one guidance from the owner',
-      'Schedule & materials shared after payment',
-      'Covers spawn to sale on your setup',
-      'WhatsApp support during training',
+      ...CURRICULUM,
+      'Recorded video modules provided for each topic',
+      'Downloadable notes & checklists',
+      'WhatsApp support from the owner',
+      'Certificate on completion',
+    ],
+    outcomes: [
+      'Plan and set up a small mushroom unit',
+      'Prepare substrates and manage spawn',
+      'Harvest, pack and market your produce',
     ],
   },
   {
     id: 't-offline',
     slug: 'offline-training',
-    title: 'Offline Training',
-    format: 'offline',
-    price: 3000,
-    duration: 'Farm visit · dates confirmed by owner',
-    image: trainingImages.offline,
-    short_description:
-      'Pay to book your seat — dates and on-farm details confirmed by the owner.',
-    description:
-      'Pay the programme fee online to reserve offline training at Lakhe Mushroom Farm. Once your order is approved, Tatya Lakhe will call you to confirm dates, batch size, what to bring and the full on-farm plan. Hands-on practice happens at the farm — not through this website.',
-    features: [
-      'Hands-on sessions at Lakhe farm',
-      'Dates confirmed directly by owner',
-      'Meals & farm walk included',
-      'Starter materials guidance',
-    ],
-  },
-  {
-    id: 't-farm-setup',
-    slug: 'complete-farm-setup',
-    title: 'Complete Farm Setup',
+    title: 'Offline Mushroom Training',
     format: 'offline',
     price: 10000,
-    duration: 'Custom project timeline',
-    image: trainingImages.farmSetup,
+    duration: '2 days · at Lakhe farm',
+    image: trainingImages.offline,
     short_description:
-      'Pay programme fee — full farm setup plan delivered directly by the owner.',
+      'Two-day hands-on training at our farm — see, practice and learn every step on site.',
     description:
-      'Pay the farm setup programme fee online. Tatya Lakhe will visit or consult on your site, assess your land and goals, and share a complete setup plan, timeline and costing directly with you. Build, equipment and execution details are coordinated personally — not through an online course on this site.',
+      'An intensive two-day programme at Lakhe Mushroom Farm in Ahmednagar. Work alongside our team through spawn handling, substrate prep, inoculation, crop management, harvesting, packing and marketing. After payment verification, Tatya Lakhe will confirm your batch dates, travel details and what to bring. Small groups for personal attention.',
     features: [
-      'Site assessment & planning',
-      'Grow-room & workflow design',
-      'Equipment & vendor guidance',
-      'Launch support from the owner',
+      ...CURRICULUM,
+      'Hands-on practice in our growing sheds',
+      'Live demonstrations of spawn & substrate work',
+      'Farm meals during the programme',
+      'Printed workbook & starter guidance',
+      'Direct Q&A with Tatya Lakhe',
+    ],
+    outcomes: [
+      'Experience every step on a working farm',
+      'Build confidence for your own unit',
+      'Network with fellow growers',
     ],
   },
 ];

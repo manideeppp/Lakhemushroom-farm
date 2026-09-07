@@ -1,18 +1,17 @@
 import type { ComponentType } from 'react';
 import type { LucideIcon } from 'lucide-react';
-import { Building2, GraduationCap } from 'lucide-react';
+import { GraduationCap } from 'lucide-react';
 import { MushroomIcon } from '../components/icons/MushroomIcon';
 import homeStoryFarm from '../assets/home-story-farm.png';
 import founderPortrait from '../assets/founder-portrait.png';
 import heroMushroomBasket from '../assets/hero-mushroom-basket.png';
-import homeGrowTraining from '../assets/home-grow-training.png';
-import homeGrowFarmSetup from '../assets/home-grow-farm-setup.png';
+import onlineTrainingPic from '../assets/online training pic.png';
+import offlineTrainingPic from '../assets/offline training pic.png';
 
 export const HOME_HERO_IMAGE = heroMushroomBasket;
 
 export const HOME_GROW_PRODUCTS_IMAGE = heroMushroomBasket;
-export const HOME_GROW_TRAINING_IMAGE = homeGrowTraining;
-export const HOME_GROW_FARM_SETUP_IMAGE = homeGrowFarmSetup;
+export const HOME_GROW_TRAINING_IMAGE = onlineTrainingPic;
 
 export interface HomeGrowOffering {
   title: string;
@@ -35,19 +34,11 @@ export const HOME_GROW_OFFERINGS: HomeGrowOffering[] = [
   {
     title: 'Mushroom Training',
     description:
-      'Pay programme fee online — full guidance shared directly by the owner.',
-    image: HOME_GROW_TRAINING_IMAGE,
-    imageAlt: 'Mushroom cultivation training materials',
+      'Online (₹3,000) with video modules, or offline (₹10,000) — 2 days at our farm.',
+    image: offlineTrainingPic,
+    imageAlt: 'Hands-on mushroom training at Lakhe farm',
     icon: GraduationCap,
     to: '/training',
-  },
-  {
-    title: 'Complete Farm Setup',
-    description: 'Pay programme fee — setup plan and timeline from the owner.',
-    image: HOME_GROW_FARM_SETUP_IMAGE,
-    imageAlt: 'Complete mushroom farm growing facility',
-    icon: Building2,
-    to: '/training/complete-farm-setup',
   },
 ];
 

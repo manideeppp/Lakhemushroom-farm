@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   CheckCircle2,
   Copy,
   Loader2,
+  Phone,
   ShieldCheck,
 } from 'lucide-react';
 import { AppShell } from '../components/layout/AppShell';
@@ -29,6 +30,7 @@ import type { OrderItemType } from '../types/order';
 import { formatINR } from '../utils/format';
 import { cn } from '../utils/cn';
 import { config } from '../lib/config';
+import { brandAssets } from '../data/media';
 
 const SHIPPING_FLAT = 60;
 const FREE_SHIPPING_THRESHOLD = 999;
@@ -68,19 +70,6 @@ export function PaymentPage() {
       address: c.address || profile?.address || '',
     }));
   }, [profile]);
-
-  const upiUrl = useMemo(() => {
-    const params = new URLSearchParams({
-      pa: config.business.upiId,
-      pn: config.business.upiPayee,
-      am: total.toFixed(2),
-      cu: 'INR',
-      tn: 'Lakhe Order',
-    });
-    return `upi://pay?${params.toString()}`;
-  }, [total]);
-
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=10&data=${encodeURIComponent(upiUrl)}`;
 
   async function copyUpi() {
     try {
@@ -269,11 +258,11 @@ export function PaymentPage() {
                   <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
                     <div className="rounded-xl border-2 border-forest-100 bg-white p-3 shadow-sm shrink-0">
                       <img
-                        src={qrUrl}
+                        src={brandAssets.paymentScanner}
                         alt="Scan to pay with UPI"
-                        width={200}
-                        height={200}
-                        className="h-[200px] w-[200px] object-contain"
+                        width={220}
+                        height={220}
+                        className="h-[220px] w-[220px] object-contain rounded-lg"
                       />
                       <p className="mt-2 text-center text-caption text-ink-500">
                         Scan with any UPI app
@@ -302,6 +291,16 @@ export function PaymentPage() {
                             <Copy className="h-5 w-5" />
                           </button>
                         </div>
+                      </div>
+                      <div>
+                        <p className="text-caption text-ink-500">Phone</p>
+                        <a
+                          href={`tel:${config.business.phone.replace(/\s/g, '')}`}
+                          className="inline-flex items-center gap-1.5 text-body font-medium text-forest-800 hover:text-forest-900"
+                        >
+                          <Phone className="h-4 w-4" aria-hidden />
+                          {config.business.phone}
+                        </a>
                       </div>
                       <div className="rounded-lg bg-forest-50 border border-forest-100 px-4 py-3">
                         <p className="text-caption text-forest-700">Amount to pay</p>

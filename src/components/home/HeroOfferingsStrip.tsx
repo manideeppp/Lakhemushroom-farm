@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
-import { Building2, GraduationCap, Leaf } from 'lucide-react';
+import { GraduationCap, Leaf, Phone } from 'lucide-react';
 import { cn } from '../../utils/cn';
 
 interface StripItem {
@@ -18,16 +18,16 @@ const STRIP_ITEMS: StripItem[] = [
     icon: Leaf,
   },
   {
-    title: 'Expert-Led Training',
-    description: 'Practical guidance to grow with confidence.',
-    to: '/training',
+    title: 'Online Training',
+    description: 'Video modules — ₹3,000 · learn at your pace.',
+    to: '/training/online-training',
     icon: GraduationCap,
   },
   {
-    title: 'Complete Farm Setup',
-    description: 'End-to-end mushroom farm solutions.',
-    to: '/training/complete-farm-setup',
-    icon: Building2,
+    title: 'Offline Training',
+    description: '2-day hands-on programme — ₹10,000 at our farm.',
+    to: '/training/offline-training',
+    icon: Phone,
   },
 ];
 

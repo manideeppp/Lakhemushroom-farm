@@ -151,9 +151,10 @@ export function TrainingDetailsPage() {
                     directly.
                   </li>
                   <li>
-                    3. All programme details — dates, schedule, materials and next steps —
-                    are shared personally by the owner. There is no online course to
-                    complete on this website.
+                    3.{' '}
+                    {course.format === 'online'
+                      ? 'Recorded video modules for each topic are shared with you. All follow-up is coordinated personally by the owner.'
+                      : 'All programme details — dates, schedule, materials and next steps — are shared personally by the owner.'}
                   </li>
                 </ol>
                 <a

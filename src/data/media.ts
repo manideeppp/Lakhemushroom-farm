@@ -10,9 +10,10 @@ import lionsMane from '../assets/Lions Mane Mushrooom.png';
 import roastedMushroom from '../assets/Roasted Mushroom(Ready to eat).png';
 import cordyceps from '../assets/cordyceps.png';
 import buttonMushroom from '../assets/Button Mushroom.png';
-import onlineTraining from '../assets/online training.png';
-import offlineTraining from '../assets/offline training.png';
-import homeGrowFarmSetup from '../assets/home-grow-farm-setup.png';
+import onlineTraining from '../assets/online training pic.png';
+import offlineTraining from '../assets/offline training pic.png';
+import paymentScanner from '../assets/payment scanner.jpg';
+import lakheLogo from '../assets/lakhe logo.png';
 
 export const productImages = {
   freshOyster,
@@ -32,5 +33,9 @@ export const productImages = {
 export const trainingImages = {
   online: onlineTraining,
   offline: offlineTraining,
-  farmSetup: homeGrowFarmSetup,
+} as const;
+
+export const brandAssets = {
+  logo: lakheLogo,
+  paymentScanner,
 } as const;

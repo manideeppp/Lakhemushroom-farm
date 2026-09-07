@@ -115,7 +115,7 @@ export const ORGANIZATION_JSON_LD = {
   '@type': 'Organization',
   name: SITE_NAME,
   url: SITE_URL,
-  logo: `${SITE_URL}/lakhe-mark.svg`,
+  logo: `${SITE_URL}/lakhe-logo.png`,
   description: DEFAULT_DESCRIPTION,
   address: {
     '@type': 'PostalAddress',
@@ -131,7 +131,7 @@ export const LOCAL_BUSINESS_JSON_LD = {
   '@type': 'LocalBusiness',
   name: SITE_NAME,
   url: SITE_URL,
-  image: `${SITE_URL}/lakhe-mark.svg`,
+  image: `${SITE_URL}/lakhe-logo.png`,
   description: DEFAULT_DESCRIPTION,
   priceRange: '₹₹',
   address: {

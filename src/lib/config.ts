@@ -15,10 +15,10 @@ export const config = {
   },
   business: {
     get upiId() {
-      return readRuntimeEnv('VITE_UPI_ID') || 'lakhemushroomfarm@upi';
+      return readRuntimeEnv('VITE_UPI_ID') || 'lakhetatya@ybl';
     },
     get upiPayee() {
-      return readRuntimeEnv('VITE_UPI_PAYEE_NAME') || 'Lakhe Mushroom Farm';
+      return readRuntimeEnv('VITE_UPI_PAYEE_NAME') || 'Tatya Lakhe';
     },
     get whatsapp() {
       return readRuntimeEnv('VITE_WHATSAPP_NUMBER') || '919921480466';

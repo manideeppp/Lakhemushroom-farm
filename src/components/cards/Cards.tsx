@@ -351,12 +351,12 @@ export function TrainingCard({
       className={cn(CATALOG_CARD_SHELL, onClick && 'cursor-pointer', className)}
       onClick={onClick}
     >
-      <div className={cn('relative shrink-0 overflow-hidden', CATALOG_IMAGE_ASPECT)}>
+      <div className={cn('relative shrink-0 overflow-hidden bg-cream-50', CATALOG_IMAGE_ASPECT)}>
         {image ? (
           <img
             src={image}
             alt={imageAlt ?? title}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-contain p-2"
             loading="lazy"
             decoding="async"
           />

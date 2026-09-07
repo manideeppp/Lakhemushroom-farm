@@ -23,16 +23,11 @@ const PRODUCT_IMAGE_BY_SLUG: Record<string, string> = {
 const TRAINING_IMAGE_BY_SLUG: Record<string, string> = {
   'online-training': trainingImages.online,
   'offline-training': trainingImages.offline,
-  'a-z-mushroom-farming-online': trainingImages.online,
-  'weekend-farm-immersion': trainingImages.offline,
-  'advanced-cultivation-bootcamp': trainingImages.offline,
-  'complete-farm-setup': trainingImages.farmSetup,
 };
 
 export function withProductImages(product: Product): Product {
   const validImages = (product.images ?? []).filter(Boolean);
   const local = PRODUCT_IMAGE_BY_SLUG[product.slug];
-  // Keep admin/DB images; bundled assets are fallbacks only when none are set.
   const images =
     validImages.length > 0 ? validImages : local ? [local] : [];
   return enrichProduct({ ...product, images });
@@ -40,7 +35,9 @@ export function withProductImages(product: Product): Product {
 
 export function withTrainingImage(course: TrainingCourse): TrainingCourse {
   const local = TRAINING_IMAGE_BY_SLUG[course.slug];
-  if (!local || course.image?.trim()) return course;
+  const image = course.image?.trim();
+  if (image) return course;
+  if (!local) return course;
   return { ...course, image: local };
 }
 
