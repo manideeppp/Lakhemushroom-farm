@@ -1,4 +1,6 @@
--- Coupons + admin delete order. Run once in Supabase SQL Editor.
+-- Coupons + admin delete order.
+-- Run AFTER supabase/setup_all.sql (separate file on purpose).
+-- Paste into Supabase → SQL Editor → Run. Safe to re-run.
 
 create table if not exists public.coupons (
   id uuid primary key default gen_random_uuid(),

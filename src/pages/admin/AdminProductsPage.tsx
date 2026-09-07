@@ -9,7 +9,11 @@ import { Select } from '../../components/forms/Select';
 import { Modal } from '../../components/ui/Modal';
 import { LoadingState } from '../../components/feedback/States';
 import { useToast } from '../../components/feedback/ToastProvider';
-import { deleteProduct, listProducts, upsertProduct } from '../../lib/data';
+import {
+  deleteProduct,
+  listProductsAdmin,
+  upsertProduct,
+} from '../../lib/data';
 import { AdminImageField } from '../../components/admin/AdminImageField';
 import type { Product, ProductCategory } from '../../types/product';
 import { newId } from '../../utils/ids';
@@ -47,7 +51,7 @@ export function AdminProductsPage() {
   const [saving, setSaving] = useState(false);
 
   async function load() {
-    setProducts(await listProducts());
+    setProducts(await listProductsAdmin());
   }
 
   useEffect(() => {

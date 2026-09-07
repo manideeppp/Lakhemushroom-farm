@@ -9,7 +9,7 @@ import { Select } from '../../components/forms/Select';
 import { Modal } from '../../components/ui/Modal';
 import { LoadingState } from '../../components/feedback/States';
 import { useToast } from '../../components/feedback/ToastProvider';
-import { listTraining, upsertTraining } from '../../lib/data';
+import { listTrainingAdmin, upsertTraining } from '../../lib/data';
 import { AdminImageField } from '../../components/admin/AdminImageField';
 import type { TrainingCourse, TrainingFormat } from '../../types/training';
 import { newId } from '../../utils/ids';
@@ -39,7 +39,7 @@ export function AdminTrainingPage() {
   const [saving, setSaving] = useState(false);
 
   async function load() {
-    setCourses(await listTraining());
+    setCourses(await listTrainingAdmin());
   }
   useEffect(() => {
     void load();

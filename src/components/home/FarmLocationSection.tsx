@@ -54,14 +54,14 @@ export function FarmLocationSection({
         </a>
       </Card>
 
-      <Card padding="none" className="overflow-hidden min-h-[260px]">
+      <Card padding="none" className="overflow-hidden">
         <iframe
           title="Lakhe Mushroom Farm location"
           src={config.business.mapsEmbedUrl}
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
           allowFullScreen
-          className="h-full min-h-[260px] w-full border-0"
+          className="block h-[min(420px,55vh)] w-full min-h-[280px] border-0"
         />
       </Card>
     </div>

@@ -187,24 +187,31 @@ async function adminListRows<T>(
 // Products
 // ---------------------------------------------------------------------------
 
+/** Admin catalogue — all products in Supabase (requires admin portal session). */
+export async function listProductsAdmin(): Promise<Product[]> {
+  if (!isSupabaseConfigured())
+    return mergeSampleProducts(localGet<Product[]>(K.products, []));
+  if (!isAdminPortalActive()) {
+    throw new Error('Admin session required');
+  }
+  const rows = await adminListRows<Product>('admin_list_products');
+  return rows.map(withProductImages);
+}
+
+/** Public shop — database products only (no sample merge, no admin RPC). */
 export async function listProducts(): Promise<Product[]> {
   if (!isSupabaseConfigured())
     return mergeSampleProducts(localGet<Product[]>(K.products, []));
-  if (adminRpcActive()) {
-    const rows = await adminListRows<Product>('admin_list_products');
-    return rows.map(withProductImages);
-  }
   try {
     const { data, error } = await supabase
       .from('products')
       .select('*')
       .order('created_at', { ascending: false });
     if (error) throw error;
-    const rows = mergeSampleProducts((data ?? []) as Product[]);
-    return rows.length > 0 ? rows : mergeSampleProducts(SAMPLE_PRODUCTS);
+    return ((data ?? []) as Product[]).map(withProductImages);
   } catch (err) {
-    console.warn('listProducts failed — using sample catalog', err);
-    return mergeSampleProducts(SAMPLE_PRODUCTS);
+    console.warn('listProducts failed', err);
+    return [];
   }
 }
 
@@ -227,7 +234,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
     .maybeSingle();
   if (error) throw error;
   if (data) return withProductImages(data as Product);
-  return fromSample();
+  return null;
 }
 
 export async function upsertProduct(p: Product): Promise<Product> {
@@ -289,15 +296,39 @@ function publicTrainingCourses(rows: TrainingCourse[]): TrainingCourse[] {
   );
 }
 
+/** Fill missing online/offline programmes from bundled defaults (never legacy DB slugs). */
+function ensurePublicTraining(rows: TrainingCourse[]): TrainingCourse[] {
+  const fromDb = publicTrainingCourses(rows);
+  const have = new Set(fromDb.map((c) => c.slug));
+  const missing = SAMPLE_TRAINING.filter(
+    (s) => isPublicTrainingSlug(s.slug) && !have.has(s.slug)
+  ).map(withTrainingImage);
+  if (!isSupabaseConfigured()) {
+    const demo = fromDb.length
+      ? fromDb
+      : SAMPLE_TRAINING.map(withTrainingImage);
+    return sortPublicTraining(demo);
+  }
+  return sortPublicTraining([...fromDb, ...missing]);
+}
+
+/** Admin — all training courses in Supabase (requires admin portal session). */
+export async function listTrainingAdmin(): Promise<TrainingCourse[]> {
+  if (!isSupabaseConfigured())
+    return mergeSampleTraining(localGet<TrainingCourse[]>(K.training, []));
+  if (!isAdminPortalActive()) {
+    throw new Error('Admin session required');
+  }
+  const rows = await adminListRows<TrainingCourse>('admin_list_training');
+  return rows.map(withTrainingImage);
+}
+
+/** Public site — only online-training & offline-training (never legacy seed slugs). */
 export async function listTraining(): Promise<TrainingCourse[]> {
   if (!isSupabaseConfigured())
-    return publicTrainingCourses(
+    return ensurePublicTraining(
       mergeSampleTraining(localGet<TrainingCourse[]>(K.training, []))
     );
-  if (adminRpcActive()) {
-    const rows = await adminListRows<TrainingCourse>('admin_list_training');
-    return rows.map(withTrainingImage);
-  }
   try {
     const { data: courses, error } = await supabase
       .from('training_courses')
@@ -305,12 +336,12 @@ export async function listTraining(): Promise<TrainingCourse[]> {
       .eq('is_published', true)
       .order('created_at', { ascending: false });
     if (error) throw error;
-    return publicTrainingCourses(
+    return ensurePublicTraining(
       ((courses ?? []) as TrainingCourse[]).map(withTrainingImage)
     );
   } catch (err) {
-    console.warn('listTraining failed — no programmes loaded', err);
-    return [];
+    console.warn('listTraining failed — using default programmes', err);
+    return ensurePublicTraining([]);
   }
 }
 
@@ -334,7 +365,9 @@ export async function getTrainingBySlug(
     .eq('slug', slug)
     .maybeSingle();
   if (error) throw error;
-  if (!data) return null;
+  if (!data) {
+    return isPublicTrainingSlug(slug) ? fromSample() : null;
+  }
   const course = data as TrainingCourse;
   if (!isPublicTrainingSlug(course.slug) || course.is_published === false) {
     return null;

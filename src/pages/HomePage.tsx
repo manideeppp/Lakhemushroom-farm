@@ -39,9 +39,6 @@ import {
   listTestimonials,
   listTraining,
 } from '../lib/data';
-import { mergeSampleProducts } from '../lib/mediaResolve';
-import { SAMPLE_PRODUCTS } from '../data/products';
-import { sortPublicTraining } from '../data/training';
 import {
   HOME_FOUNDER_IMAGE,
   HOME_HERO_IMAGE,
@@ -87,9 +84,8 @@ export function HomePage() {
     })();
   }, []);
 
-  const displayProducts =
-    products.length > 0 ? mergeSampleProducts(products) : SAMPLE_PRODUCTS;
-  const homeTraining = sortPublicTraining(training);
+  const displayProducts = products;
+  const homeTraining = training;
   const showcaseGallery =
     gallery.length > 0
       ? gallery.sort((a, b) => a.order - b.order)
@@ -255,13 +251,27 @@ export function HomePage() {
                     duration={t.duration}
                     price={t.price}
                     image={t.image}
-                    subtitle={t.features[0]}
+                    subtitle={t.short_description ?? t.features[0]}
                     onClick={() => navigate(`/training/${t.slug}`)}
                     className="h-full"
                   />
                 </HorizontalScrollItem>
               ))}
             </HorizontalScrollRow>
+          </Section>
+        </PageContainer>
+      </section>
+
+      {/* LOCATION */}
+      <section className="bg-sage-50/40 border-t border-ink-100">
+        <PageContainer>
+          <Section size="md">
+            <SectionHeader
+              eyebrow="Find us"
+              title="Visit Lakhe Mushroom Farm"
+              description="Ahmednagar, Maharashtra — open the map for directions or plan your offline training visit."
+            />
+            <FarmLocationSection />
           </Section>
         </PageContainer>
       </section>
@@ -510,15 +520,6 @@ export function HomePage() {
                 <HomeQueryForm />
               </Card>
             </div>
-          </Section>
-        </PageContainer>
-      </section>
-
-      {/* LOCATION */}
-      <section className="bg-white border-t border-ink-100">
-        <PageContainer>
-          <Section size="md">
-            <FarmLocationSection />
           </Section>
         </PageContainer>
       </section>

@@ -17,9 +17,9 @@ import {
   listAllBookings,
   listAllOrders,
   listCustomers,
-  listProducts,
+  listProductsAdmin,
   listQueries,
-  listTraining,
+  listTrainingAdmin,
 } from '../../lib/data';
 import type { Order } from '../../types/order';
 import type { OfflineBooking, CustomerQuery } from '../../types/booking';
@@ -45,8 +45,8 @@ export function AdminDashboardPage() {
         listAllBookings(),
         listQueries(),
         listCustomers(),
-        listProducts(),
-        listTraining(),
+        listProductsAdmin(),
+        listTrainingAdmin(),
       ]);
       setOrders(o);
       setBookings(b);
