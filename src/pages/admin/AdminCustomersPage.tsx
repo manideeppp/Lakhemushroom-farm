@@ -31,10 +31,6 @@ export function AdminCustomersPage() {
   }, []);
 
   async function remove(profile: Profile, orderCount: number) {
-    if (profile.is_admin) {
-      toast({ tone: 'warning', message: 'Admin accounts cannot be deleted.' });
-      return;
-    }
     if (orderCount > 0) {
       toast({
         tone: 'warning',
@@ -42,11 +38,11 @@ export function AdminCustomersPage() {
       });
       return;
     }
-    if (
-      !window.confirm(
-        `Delete ${profile.full_name ?? profile.email}? This cannot be undone.`
-      )
-    ) {
+    const label = profile.full_name ?? profile.email;
+    const confirmMsg = profile.is_admin
+      ? `Delete admin account ${label}? This cannot be undone.`
+      : `Delete ${label}? This cannot be undone.`;
+    if (!window.confirm(confirmMsg)) {
       return;
     }
     try {
@@ -164,17 +160,15 @@ export function AdminCustomersPage() {
                     )}
                   </td>
                   <td className="px-3 py-2 text-right">
-                    {!profile.is_admin && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        loading={deletingId === profile.id}
-                        leftIcon={<Trash2 className="h-3.5 w-3.5" />}
-                        onClick={() => void remove(profile, orderCount)}
-                      >
-                        Delete
-                      </Button>
-                    )}
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      loading={deletingId === profile.id}
+                      leftIcon={<Trash2 className="h-3.5 w-3.5" />}
+                      onClick={() => void remove(profile, orderCount)}
+                    >
+                      Delete
+                    </Button>
                   </td>
                 </tr>
               ))}
