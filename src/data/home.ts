@@ -2,7 +2,7 @@ import type { ComponentType } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { GraduationCap } from 'lucide-react';
 import { MushroomIcon } from '../components/icons/MushroomIcon';
-import founderPortrait from '../assets/founder-portrait.png';
+import founderPortrait from '../assets/founder-portrait.jpg';
 import homeStoryFarm from '../assets/home-story-farm.png';
 import heroMushroomBasket from '../assets/hero-mushroom-basket.png';
 import onlineTrainingPic from '../assets/online training pic.png';
