@@ -60,7 +60,7 @@ export const config = {
     get mapsUrl() {
       return (
         readRuntimeEnv('VITE_GOOGLE_MAPS_URL') ||
-        'https://www.google.com/maps/place/Lakhe%27s+Hi-Tech+Mushroom+Project+-+Farm/@18.5489724,74.6522284,16z/data=!4m6!3m5!1s0x3bc36a7786dfc0af:0x4737b85d5e7bfe8d!8m2!3d18.5489724!4d74.6522284!16s%2Fg%2F11gzqtn4w'
+        'https://maps.app.goo.gl/4hVBa2fbJBGNpPTVA'
       );
     },
     get mapsEmbedUrl() {

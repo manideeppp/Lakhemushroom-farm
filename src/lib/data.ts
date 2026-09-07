@@ -35,7 +35,7 @@ import type { GalleryItem, Profile, Testimonial } from '../types/profile';
 import type { Coupon, CouponDiscountType } from '../types/coupon';
 
 import { SAMPLE_PRODUCTS } from '../data/products';
-import { SAMPLE_TRAINING } from '../data/training';
+import { SAMPLE_TRAINING, isPublicTrainingSlug, sortPublicTraining } from '../data/training';
 import {
   mergeSampleProducts,
   mergeSampleTraining,
@@ -281,9 +281,19 @@ export async function deleteProduct(id: string): Promise<void> {
 // Training
 // ---------------------------------------------------------------------------
 
+function publicTrainingCourses(rows: TrainingCourse[]): TrainingCourse[] {
+  return sortPublicTraining(
+    rows.filter(
+      (c) => isPublicTrainingSlug(c.slug) && c.is_published !== false
+    )
+  );
+}
+
 export async function listTraining(): Promise<TrainingCourse[]> {
   if (!isSupabaseConfigured())
-    return mergeSampleTraining(localGet<TrainingCourse[]>(K.training, []));
+    return publicTrainingCourses(
+      mergeSampleTraining(localGet<TrainingCourse[]>(K.training, []))
+    );
   if (adminRpcActive()) {
     const rows = await adminListRows<TrainingCourse>('admin_list_training');
     return rows.map(withTrainingImage);
@@ -292,13 +302,15 @@ export async function listTraining(): Promise<TrainingCourse[]> {
     const { data: courses, error } = await supabase
       .from('training_courses')
       .select('*')
+      .eq('is_published', true)
       .order('created_at', { ascending: false });
     if (error) throw error;
-    const rows = mergeSampleTraining((courses ?? []) as TrainingCourse[]);
-    return rows.length > 0 ? rows : mergeSampleTraining(SAMPLE_TRAINING);
+    return publicTrainingCourses(
+      ((courses ?? []) as TrainingCourse[]).map(withTrainingImage)
+    );
   } catch (err) {
-    console.warn('listTraining failed — using sample programs', err);
-    return mergeSampleTraining(SAMPLE_TRAINING);
+    console.warn('listTraining failed — no programmes loaded', err);
+    return [];
   }
 }
 
@@ -322,7 +334,11 @@ export async function getTrainingBySlug(
     .eq('slug', slug)
     .maybeSingle();
   if (error) throw error;
-  if (!data) return fromSample();
+  if (!data) return null;
+  const course = data as TrainingCourse;
+  if (!isPublicTrainingSlug(course.slug) || course.is_published === false) {
+    return null;
+  }
   const modules = (data.modules ?? []) as TrainingModule[];
   modules.sort((a, b) => a.order - b.order);
   return withTrainingImage({ ...(data as TrainingCourse), modules });

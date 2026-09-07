@@ -8,6 +8,7 @@ import {
 import { AppShell } from '../components/layout/AppShell';
 import { PageContainer } from '../components/layout/PageContainer';
 import { Section, SectionHeader } from '../components/layout/Section';
+import { FarmLocationSection } from '../components/home/FarmLocationSection';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/forms/Input';
@@ -188,14 +189,7 @@ export function ContactPage() {
                 </a>
               </Card>
 
-              <Card padding="none" className="overflow-hidden">
-                <iframe
-                  title="Lakhe Mushroom Farm map"
-                  src={config.business.mapsEmbedUrl}
-                  loading="lazy"
-                  className="w-full h-[260px] border-0"
-                />
-              </Card>
+              <FarmLocationSection compact />
 
               <Card padding="lg">
                 <h3 className="font-serif text-h3 text-ink-900">Hours</h3>

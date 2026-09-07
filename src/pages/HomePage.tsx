@@ -21,6 +21,7 @@ import {
   TrainingCard,
 } from '../components/cards/Cards';
 import { HeroOfferingsStrip } from '../components/home/HeroOfferingsStrip';
+import { FarmLocationSection } from '../components/home/FarmLocationSection';
 import {
   HorizontalScrollItem,
   HorizontalScrollRow,
@@ -38,9 +39,9 @@ import {
   listTestimonials,
   listTraining,
 } from '../lib/data';
-import { mergeSampleProducts, mergeSampleTraining } from '../lib/mediaResolve';
+import { mergeSampleProducts } from '../lib/mediaResolve';
 import { SAMPLE_PRODUCTS } from '../data/products';
-import { SAMPLE_TRAINING } from '../data/training';
+import { sortPublicTraining } from '../data/training';
 import {
   HOME_FOUNDER_IMAGE,
   HOME_HERO_IMAGE,
@@ -88,14 +89,7 @@ export function HomePage() {
 
   const displayProducts =
     products.length > 0 ? mergeSampleProducts(products) : SAMPLE_PRODUCTS;
-  const displayTraining =
-    training.length > 0 ? mergeSampleTraining(training) : SAMPLE_TRAINING;
-  const homeTraining = (() => {
-    const slugs = ['online-training', 'offline-training'];
-    return slugs
-      .map((slug) => displayTraining.find((t) => t.slug === slug))
-      .filter(Boolean) as TrainingCourse[];
-  })();
+  const homeTraining = sortPublicTraining(training);
   const showcaseGallery =
     gallery.length > 0
       ? gallery.sort((a, b) => a.order - b.order)
@@ -242,8 +236,8 @@ export function HomePage() {
           <Section size="md">
             <SectionHeader
               eyebrow="Our programmes"
-              title="Online, offline & farm setup"
-              description="Pay on the website — Tatya Lakhe shares all programme details with you directly."
+              title="Online & offline training"
+              description="Pay on the website — Tatya Lakhe shares programme details with you directly after confirmation."
               action={
                 <Link to="/training">
                   <Button variant="primary" rightIcon={<ArrowRight className="h-4 w-4" />}>
@@ -418,7 +412,10 @@ export function HomePage() {
                   Founder&apos;s story
                 </p>
                 <h2 className="mt-2 font-serif text-h1 text-ink-900 leading-tight">
-                  {FOUNDER.honorific}
+                  <span className="text-forest-800">Mr.</span>{' '}
+                  <span className="text-forest-900 font-semibold">
+                    Tatya Lakhe
+                  </span>
                 </h2>
                 <p className="mt-1 text-small font-medium text-forest-700">
                   {FOUNDER.title} · {FOUNDER.location}
@@ -517,6 +514,15 @@ export function HomePage() {
         </PageContainer>
       </section>
 
+      {/* LOCATION */}
+      <section className="bg-white border-t border-ink-100">
+        <PageContainer>
+          <Section size="md">
+            <FarmLocationSection />
+          </Section>
+        </PageContainer>
+      </section>
+
       {/* FINAL CTA */}
       <section className="bg-forest-900">
         <PageContainer>
@@ -528,8 +534,8 @@ export function HomePage() {
                 Ready to grow with Lakhe?
               </h2>
               <p className="mt-3 text-body text-cream-100/85 max-w-lg mx-auto">
-                Whether you want fresh products, expert training or a full farm
-                setup — we&apos;re here to help you start and scale.
+                Whether you want fresh products or expert training — we&apos;re
+                here to help you start and scale.
               </p>
               <div className="mt-6 flex flex-wrap justify-center gap-3">
                 <Link to="/products">

@@ -10,7 +10,21 @@ const CURRICULUM = [
   'Marketing & sales guidance',
 ];
 
-/** Online & offline programmes — pay on site; owner coordinates after order confirmation. */
+export const PUBLIC_TRAINING_SLUGS = ['online-training', 'offline-training'] as const;
+
+export function isPublicTrainingSlug(slug: string): boolean {
+  return (PUBLIC_TRAINING_SLUGS as readonly string[]).includes(slug);
+}
+
+export function sortPublicTraining(courses: TrainingCourse[]): TrainingCourse[] {
+  return [...courses].sort(
+    (a, b) =>
+      PUBLIC_TRAINING_SLUGS.indexOf(a.slug as (typeof PUBLIC_TRAINING_SLUGS)[number]) -
+      PUBLIC_TRAINING_SLUGS.indexOf(b.slug as (typeof PUBLIC_TRAINING_SLUGS)[number])
+  );
+}
+
+/** Demo-mode fallback when Supabase is not configured. */
 export const SAMPLE_TRAINING: TrainingCourse[] = [
   {
     id: 't-online',

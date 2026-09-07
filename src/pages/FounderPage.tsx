@@ -37,8 +37,11 @@ export function FounderPage() {
               <p className="text-label uppercase tracking-[0.2em] text-cream-200/90 font-medium">
                 Meet the founder
               </p>
-              <h1 className="font-serif text-[2.25rem] leading-[1.05] sm:text-hero tracking-tight">
-                {FOUNDER.honorific}
+              <h1 className="font-serif text-[2.25rem] leading-[1.05] sm:text-hero tracking-tight text-cream-50">
+                <span className="text-cream-200/95">Mr.</span>{' '}
+                <span className="text-cream-50 font-semibold underline decoration-sage-300/70 decoration-2 underline-offset-[6px]">
+                  Tatya Lakhe
+                </span>
               </h1>
               <p className="text-body-lg font-medium text-cream-200/95">
                 {FOUNDER.title}

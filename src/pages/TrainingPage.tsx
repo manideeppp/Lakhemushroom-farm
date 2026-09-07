@@ -16,8 +16,6 @@ const formatLabel: Record<TrainingFormat, 'Online' | 'Offline'> = {
   hybrid: 'Offline',
 };
 
-const PROGRAMME_ORDER = ['online-training', 'offline-training'];
-
 export function TrainingPage() {
   const [courses, setCourses] = useState<TrainingCourse[] | null>(null);
   const navigate = useNavigate();
@@ -27,14 +25,6 @@ export function TrainingPage() {
       .then(setCourses)
       .catch(() => setCourses([]));
   }, []);
-
-  const sorted =
-    courses
-      ? [...courses].sort(
-          (a, b) =>
-            PROGRAMME_ORDER.indexOf(a.slug) - PROGRAMME_ORDER.indexOf(b.slug)
-        )
-      : null;
 
   return (
     <AppShell>
@@ -48,13 +38,13 @@ export function TrainingPage() {
         </Section>
 
         <Section size="sm">
-          {!sorted ? (
+          {!courses ? (
             <TrainingGridSkeleton count={2} />
-          ) : sorted.length === 0 ? (
+          ) : courses.length === 0 ? (
             <EmptyState title="No programmes listed" />
           ) : (
             <ResponsiveGrid cols={{ base: 1, md: 2 }} gap="md" className="max-w-4xl mx-auto">
-              {sorted.map((c) => (
+              {courses.map((c) => (
                 <TrainingCard
                   key={c.id}
                   title={c.title}

@@ -24,6 +24,7 @@ export interface TrainingCourse {
   outcomes?: string[];
   modules?: TrainingModule[];
   created_at?: string;
+  is_published?: boolean;
 }
 
 export interface TrainingProgress {
