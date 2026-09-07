@@ -327,7 +327,9 @@ export function HomePage() {
                           src={g.media_url}
                           alt={g.caption ?? 'Farm photo'}
                           aspect="aspect-[3/4]"
+                          fit="contain"
                           rounded="none"
+                          containerClassName="bg-cream-50"
                         />
                       )}
                       {g.type === 'video' && (

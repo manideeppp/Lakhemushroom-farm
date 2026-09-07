@@ -6,6 +6,7 @@ export const FEATURED_PRODUCT_SLUGS = [
   'oyster-mushroom-spawn',
   'fresh-milkey-mushroom',
   'ready-to-eat-oyster',
+  'mushroom-seeds',
   'fresh-button-mushroom',
   'mushroom-powder',
   'dry-oxygen-mushroom',

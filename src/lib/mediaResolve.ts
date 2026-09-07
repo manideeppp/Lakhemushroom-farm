@@ -7,6 +7,7 @@ import { productImages, trainingImages } from '../data/media';
 
 const PRODUCT_IMAGE_BY_SLUG: Record<string, string> = {
   'oyster-mushroom-spawn': productImages.oysterSpawn,
+  'mushroom-seeds': productImages.oysterSpawn,
   'fresh-oyster-mushroom': productImages.freshOyster,
   'dry-oyster-mushroom': productImages.dryOyster,
   'mushroom-powder': productImages.mushroomPowder,

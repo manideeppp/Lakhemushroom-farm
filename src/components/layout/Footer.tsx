@@ -22,9 +22,9 @@ export function Footer() {
   return (
     <footer className="bg-forest-900 text-cream-100 print:hidden">
       <PageContainer as="div" className="py-10 sm:py-12">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
           {/* Brand */}
-          <div className="md:col-span-2 lg:col-span-1">
+          <div className="sm:col-span-2 lg:col-span-1">
             <LakheLogo size="md" tone="light" />
             <p className="mt-4 text-small text-cream-200/80 max-w-xs leading-relaxed">
               Premium mushroom products and expert training — grown with care,
@@ -32,8 +32,8 @@ export function Footer() {
             </p>
           </div>
 
-          {/* Explore + Company — side by side on all breakpoints below lg */}
-          <div className="grid grid-cols-2 gap-6 md:col-span-2 lg:col-span-2 lg:grid-cols-2 lg:gap-8">
+          {/* Explore + Company */}
+          <div className="grid grid-cols-2 gap-6 sm:col-span-2 lg:col-span-2 lg:grid-cols-2 lg:gap-8">
             <div>
               <h4 className="font-serif text-body-lg text-cream-50">Explore</h4>
               <ul className="mt-3 space-y-2.5">
@@ -67,17 +67,17 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Reach us */}
-          <div className="md:col-span-2 lg:col-span-1">
+          {/* Reach us — mobile: phone, mail, Instagram in three lines */}
+          <div className="sm:col-span-2 lg:col-span-1">
             <h4 className="font-serif text-body-lg text-cream-50">Reach us</h4>
             <ul className="mt-3 space-y-3 text-small text-cream-200/85">
-              <li className="flex items-start gap-2.5">
+              <li className="hidden sm:flex items-start gap-2.5">
                 <MapPin className="h-4 w-4 mt-0.5 shrink-0 text-cream-300/90" />
                 <span className="leading-relaxed">{config.business.address}</span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone className="h-4 w-4 shrink-0 text-cream-300/90" />
-                <span className="flex flex-col gap-0.5">
+                <span className="flex flex-col gap-0.5 sm:flex-col">
                   {config.business.phones.map((phone) => (
                     <a
                       key={phone}
@@ -93,9 +93,9 @@ export function Footer() {
                 <Mail className="h-4 w-4 shrink-0 text-cream-300/90" />
                 <a
                   href={`mailto:${config.business.email}`}
-                  className="hover:text-cream-50 transition-colors"
+                  className="hover:text-cream-50 transition-colors break-all"
                 >
-                  {config.business.email}
+                  lakhe.tatya@gmail.com
                 </a>
               </li>
               <li className="flex items-center gap-2.5">
@@ -110,6 +110,10 @@ export function Footer() {
                 </a>
               </li>
             </ul>
+            <p className="mt-3 flex items-start gap-2.5 text-small text-cream-200/85 sm:hidden">
+              <MapPin className="h-4 w-4 mt-0.5 shrink-0 text-cream-300/90" />
+              <span className="leading-relaxed">{config.business.address}</span>
+            </p>
           </div>
         </div>
 

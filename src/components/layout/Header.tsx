@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { Menu, Search, ShoppingCart, User, X } from 'lucide-react';
+import { Instagram, Menu, Search, ShoppingCart, User, X } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import { LakheLogo } from '../navigation/LakheLogo';
 import { MobileDrawer } from '../ui/MobileDrawer';
 import { Input } from '../forms/Input';
+import { config } from '../../lib/config';
 
 export interface HeaderProps {
   cartCount?: number;
@@ -199,6 +200,18 @@ export function Header({
                 </NavLink>
               </li>
             ))}
+            <li>
+              <a
+                href={config.business.instagramUrl}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => setDrawerOpen(false)}
+                className="flex items-center gap-2.5 min-h-12 py-3 border-b border-ink-100 text-body text-ink-800"
+              >
+                <Instagram className="h-4 w-4 shrink-0 text-forest-700" aria-hidden />
+                Instagram
+              </a>
+            </li>
           </ul>
         </nav>
       </MobileDrawer>

@@ -3,9 +3,8 @@ import { PlayCircle, X } from 'lucide-react';
 import { AppShell } from '../components/layout/AppShell';
 import { PageContainer } from '../components/layout/PageContainer';
 import { Section, SectionHeader } from '../components/layout/Section';
-import { ResponsiveImage } from '../components/media/ResponsiveImage';
-import { ResponsiveVideo } from '../components/media/ResponsiveVideo';
 import { EmptyState } from '../components/feedback/States';
+import { ResponsiveVideo } from '../components/media/ResponsiveVideo';
 import { GalleryGridSkeleton } from '../components/feedback/PageSkeletons';
 import { listGallery } from '../lib/data';
 import type { GalleryItem } from '../types/profile';
@@ -74,25 +73,20 @@ export function GalleryPage() {
             />
           ) : (
             <div className="columns-2 md:columns-3 lg:columns-4 gap-3 sm:gap-4 [column-fill:_balance]">
-              {filtered.map((it, i) => (
+              {filtered.map((it) => (
                 <button
                   key={it.id}
                   type="button"
                   onClick={() => setLightbox(it)}
-                  className="mb-3 sm:mb-4 block w-full break-inside-avoid overflow-hidden rounded-lg border border-ink-100 bg-ink-900 focus-visible:outline-none focus-visible:shadow-focus"
+                  className="mb-3 sm:mb-4 block w-full break-inside-avoid overflow-hidden rounded-lg border border-ink-100 bg-cream-50 focus-visible:outline-none focus-visible:shadow-focus"
                 >
                   <div className="relative">
-                    <ResponsiveImage
+                    <img
                       src={it.thumbnail_url || it.media_url}
                       alt={it.caption ?? 'Gallery image'}
-                      aspect={
-                        i % 3 === 0
-                          ? 'aspect-[4/5]'
-                          : i % 3 === 1
-                            ? 'aspect-square'
-                            : 'aspect-[3/4]'
-                      }
-                      rounded="none"
+                      loading="lazy"
+                      decoding="async"
+                      className="block w-full h-auto object-contain"
                     />
                     {it.type === 'video' && (
                       <span className="absolute inset-0 flex items-center justify-center bg-ink-900/40">
