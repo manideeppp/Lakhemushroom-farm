@@ -13,6 +13,7 @@ import {
   listGallery,
   upsertGalleryItem,
 } from '../../lib/data';
+import { AdminImageField } from '../../components/admin/AdminImageField';
 import type { GalleryItem } from '../../types/profile';
 import { newId } from '../../utils/ids';
 
@@ -201,21 +202,45 @@ export function AdminGalleryPage() {
                 ))}
               </Select>
             </div>
-            <Input
-              label="Media URL"
-              required
-              value={editing.media_url}
-              onChange={(e) =>
-                setEditing({ ...editing, media_url: e.target.value })
-              }
-            />
-            <Input
-              label="Thumbnail URL (optional)"
-              value={editing.thumbnail_url ?? ''}
-              onChange={(e) =>
-                setEditing({ ...editing, thumbnail_url: e.target.value })
-              }
-            />
+            {editing.type === 'image' ? (
+              <>
+                <AdminImageField
+                  label="Image"
+                  folder="gallery"
+                  required
+                  value={editing.media_url}
+                  onChange={(url) =>
+                    setEditing({ ...editing, media_url: url, thumbnail_url: url })
+                  }
+                />
+                <AdminImageField
+                  label="Thumbnail (optional)"
+                  folder="gallery"
+                  value={editing.thumbnail_url ?? ''}
+                  onChange={(url) =>
+                    setEditing({ ...editing, thumbnail_url: url })
+                  }
+                />
+              </>
+            ) : (
+              <>
+                <Input
+                  label="Media URL"
+                  required
+                  value={editing.media_url}
+                  onChange={(e) =>
+                    setEditing({ ...editing, media_url: e.target.value })
+                  }
+                />
+                <Input
+                  label="Thumbnail URL (optional)"
+                  value={editing.thumbnail_url ?? ''}
+                  onChange={(e) =>
+                    setEditing({ ...editing, thumbnail_url: e.target.value })
+                  }
+                />
+              </>
+            )}
             <Input
               label="Caption"
               value={editing.caption ?? ''}

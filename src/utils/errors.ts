@@ -112,6 +112,9 @@ function mapAuthMessage(message: string): string {
   }
 
   if (lower.includes('bucket') || lower.includes('storage')) {
+    if (lower.includes('site-media')) {
+      return 'Could not upload image. Run supabase/patches/site_media_bucket.sql in Supabase SQL Editor.';
+    }
     return 'Could not upload payment screenshot. Run supabase/setup_all.sql to create the payment-screenshots bucket.';
   }
 

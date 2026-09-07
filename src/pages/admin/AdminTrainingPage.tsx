@@ -10,6 +10,7 @@ import { Modal } from '../../components/ui/Modal';
 import { LoadingState } from '../../components/feedback/States';
 import { useToast } from '../../components/feedback/ToastProvider';
 import { listTraining, upsertTraining } from '../../lib/data';
+import { AdminImageField } from '../../components/admin/AdminImageField';
 import type { TrainingCourse, TrainingFormat } from '../../types/training';
 import { newId } from '../../utils/ids';
 import { formatINR } from '../../utils/format';
@@ -210,10 +211,11 @@ export function AdminTrainingPage() {
                 }
               />
             </div>
-            <Input
-              label="Image URL"
+            <AdminImageField
+              label="Cover image"
+              folder="training"
               value={editing.image}
-              onChange={(e) => setEditing({ ...editing, image: e.target.value })}
+              onChange={(url) => setEditing({ ...editing, image: url })}
             />
             <Textarea
               label="Short description"

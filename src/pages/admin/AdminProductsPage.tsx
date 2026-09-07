@@ -10,6 +10,7 @@ import { Modal } from '../../components/ui/Modal';
 import { LoadingState } from '../../components/feedback/States';
 import { useToast } from '../../components/feedback/ToastProvider';
 import { deleteProduct, listProducts, upsertProduct } from '../../lib/data';
+import { AdminImageField } from '../../components/admin/AdminImageField';
 import type { Product, ProductCategory } from '../../types/product';
 import { newId } from '../../utils/ids';
 import { formatINR } from '../../utils/format';
@@ -301,32 +302,39 @@ export function AdminProductsPage() {
               }
             />
             <div>
-              <p className="mb-1.5 text-label font-medium text-ink-800">
-                Images (URLs)
-              </p>
+              <p className="mb-1.5 text-label font-medium text-ink-800">Images</p>
               {editing.images.map((img, i) => (
-                <div key={i} className="mb-2 flex gap-2">
-                  <Input
-                    placeholder="https://…"
+                <div
+                  key={i}
+                  className="mb-3 rounded-lg border border-ink-100 bg-cream-50/50 p-3"
+                >
+                  <div className="mb-2 flex items-center justify-between gap-2">
+                    <span className="text-caption font-medium text-ink-600">
+                      Image {i + 1}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() =>
+                        setEditing({
+                          ...editing,
+                          images: editing.images.filter((_, x) => x !== i),
+                        })
+                      }
+                    >
+                      <Trash2 className="h-4 w-4 text-danger" />
+                    </Button>
+                  </div>
+                  <AdminImageField
+                    label="Image URL or upload"
+                    folder="products"
                     value={img}
-                    onChange={(e) => {
+                    onChange={(url) => {
                       const imgs = [...editing.images];
-                      imgs[i] = e.target.value;
+                      imgs[i] = url;
                       setEditing({ ...editing, images: imgs });
                     }}
-                    containerClassName="flex-1"
                   />
-                  <Button
-                    variant="ghost"
-                    onClick={() =>
-                      setEditing({
-                        ...editing,
-                        images: editing.images.filter((_, x) => x !== i),
-                      })
-                    }
-                  >
-                    <Trash2 className="h-4 w-4 text-danger" />
-                  </Button>
                 </div>
               ))}
               <Button
