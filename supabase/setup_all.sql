@@ -2,7 +2,7 @@
 -- Lakhe Mushroom Farm — COMPLETE Supabase setup (run this ONE file)
 -- =============================================================================
 -- Paste into Supabase → SQL Editor → Run.
--- Includes: schema, RLS, storage, admin portal RPCs, sample seed data.
+-- Includes: schema, RLS, storage (payment screenshots + site media), admin portal RPCs, sample seed data.
 -- Safe to re-run on an existing project (IF NOT EXISTS / CREATE OR REPLACE).
 --
 -- Admin login: https://your-site/admin — password lakhe-admin-2026
@@ -275,6 +275,8 @@ end $$;
 drop policy if exists "screenshots: self upload" on storage.objects;
 drop policy if exists "screenshots: self read" on storage.objects;
 drop policy if exists "screenshots: public read" on storage.objects;
+drop policy if exists "site media: public read" on storage.objects;
+drop policy if exists "site media: upload" on storage.objects;
 
 alter table public.orders add column if not exists delivery_address text;
 
@@ -471,6 +473,22 @@ create policy "screenshots: self read"
       or public.is_admin_user()
     )
   );
+
+-- ==============================================================
+-- Storage bucket for admin site media (products, gallery, training)
+-- ==============================================================
+insert into storage.buckets (id, name, public)
+values ('site-media', 'site-media', true)
+on conflict (id) do update set public = excluded.public;
+
+create policy "site media: public read"
+  on storage.objects for select
+  using (bucket_id = 'site-media');
+
+create policy "site media: upload"
+  on storage.objects for insert
+  to anon, authenticated
+  with check (bucket_id = 'site-media');
 
 -- ==============================================================
 -- Admin portal (password-only /admin)

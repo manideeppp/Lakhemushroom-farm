@@ -1,5 +1,6 @@
 -- Public bucket for admin-uploaded product, gallery, and training images.
--- Run in Supabase SQL Editor after setup_all.sql.
+-- Included in supabase/setup_all.sql — use this patch only on existing projects
+-- that were set up before site-media was added to the main setup file.
 
 insert into storage.buckets (id, name, public)
 values ('site-media', 'site-media', true)

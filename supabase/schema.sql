@@ -436,3 +436,19 @@ create policy "screenshots: self read"
       or exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin)
     )
   );
+
+-- ==============================================================
+-- Storage bucket for admin site media (products, gallery, training)
+-- ==============================================================
+insert into storage.buckets (id, name, public)
+values ('site-media', 'site-media', true)
+on conflict (id) do update set public = excluded.public;
+
+create policy "site media: public read"
+  on storage.objects for select
+  using (bucket_id = 'site-media');
+
+create policy "site media: upload"
+  on storage.objects for insert
+  to anon, authenticated
+  with check (bucket_id = 'site-media');
