@@ -31,7 +31,7 @@ export const config = {
     },
     get phones() {
       const raw = import.meta.env.VITE_CONTACT_PHONES as string | undefined;
-      const list = (raw || '9921480466, +91 63621 83728')
+      const list = (raw || '9921480466')
         .split(',')
         .map((s) => s.trim())
         .filter(Boolean);
@@ -58,11 +58,6 @@ export const config = {
           label: 'Maharashtra (Farm)',
           address:
             'At. Post Mundhekarwadi, Tal. Shrigonda, Dist. Ahmednagar, Maharashtra 413726',
-        },
-        {
-          label: 'Bangalore',
-          address:
-            '15, Mari Chinnappa Manson, Medarahalli, Opp. JJ Hospital, Chikkabanavara, Bangalore 560090',
         },
       ];
     },
