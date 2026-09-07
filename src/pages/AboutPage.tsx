@@ -11,10 +11,10 @@ import { AppShell } from '../components/layout/AppShell';
 import { PageContainer } from '../components/layout/PageContainer';
 import { Section, SectionHeader } from '../components/layout/Section';
 import { ResponsiveGrid } from '../components/layout/Layout';
-import { ResponsiveImage } from '../components/media/ResponsiveImage';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { FeatureCard, StatCard } from '../components/cards/Cards';
+import { HOME_HERO_IMAGE } from '../data/home';
 
 export function AboutPage() {
   return (
@@ -23,13 +23,10 @@ export function AboutPage() {
       <PageContainer as="section" className="pt-4 sm:pt-8">
         <div className="relative overflow-hidden rounded-2xl bg-forest-900 text-cream-50 shadow-card">
           <div className="absolute inset-0">
-            <ResponsiveImage
-              src="https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&w=2000&q=70"
+            <img
+              src={HOME_HERO_IMAGE}
               alt=""
-              aspect="aspect-auto h-full"
-              rounded="none"
-              containerClassName="!h-full"
-              className="opacity-45"
+              className="h-full w-full object-cover object-center opacity-45"
             />
           </div>
           <span

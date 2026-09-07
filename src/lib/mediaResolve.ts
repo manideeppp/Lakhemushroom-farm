@@ -35,10 +35,10 @@ export function withProductImages(product: Product): Product {
 
 export function withTrainingImage(course: TrainingCourse): TrainingCourse {
   const local = TRAINING_IMAGE_BY_SLUG[course.slug];
+  if (local) return { ...course, image: local };
   const image = course.image?.trim();
-  if (image) return course;
-  if (!local) return course;
-  return { ...course, image: local };
+  if (!image) return course;
+  return course;
 }
 
 export function mergeSampleProducts(remote: Product[]): Product[] {
