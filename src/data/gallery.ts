@@ -1,4 +1,5 @@
-import type { GalleryItem, Testimonial } from '../types/profile';
+import type { GalleryItem } from '../types/profile';
+import { TESTIMONIALS } from './testimonials';
 import photo1 from '../assets/photo1.jpg';
 import photo2 from '../assets/photo2.jpg';
 import photo3 from '../assets/photo3.jpg';
@@ -59,68 +60,4 @@ export function mergeSampleGallery(remote: GalleryItem[]): GalleryItem[] {
   return [...SAMPLE_GALLERY, ...extra].sort((a, b) => a.order - b.order);
 }
 
-export const SAMPLE_TESTIMONIALS: Testimonial[] = [
-  {
-    id: 't1',
-    name: 'Priya Sharma',
-    location: 'Pune',
-    role: 'Home cultivator',
-    rating: 5,
-    quote:
-      'The A–Z online training was incredibly thorough. I set up my first cultivation shelf in three weekends and had my first harvest a month later.',
-  },
-  {
-    id: 't2',
-    name: 'Ravi Menon',
-    location: 'Kochi',
-    role: 'Small farmer',
-    rating: 5,
-    quote:
-      'The team walked us through everything — from substrate to selling. My mushroom unit is now paying for itself every month.',
-  },
-  {
-    id: 't3',
-    name: 'Anaïs Petit',
-    location: 'Lyon, France',
-    role: 'International client',
-    rating: 5,
-    quote:
-      'A rare combination of premium products and genuine expertise. The powder is now part of my daily wellness routine.',
-  },
-  {
-    id: 't4',
-    name: 'Mahesh Yadav',
-    location: 'Nashik',
-    role: 'Weekend workshop attendee',
-    rating: 5,
-    quote:
-      'The offline workshop felt personal and honest. No shortcuts, no upsells — just real practice.',
-  },
-  {
-    id: 't5',
-    name: 'Sneha Reddy',
-    location: 'Hyderabad',
-    role: 'Online student',
-    rating: 5,
-    quote:
-      'Clear modules and honest advice. I started selling dried mushrooms to neighbours within two months.',
-  },
-  {
-    id: 't7',
-    name: 'Rajesh Kulkarni',
-    location: 'Ahmednagar',
-    role: 'Spawn buyer',
-    rating: 5,
-    quote:
-      'Lakhe spawn quality is consistent — our unit harvests improved within the first cycle. Genuine farm support.',
-  },
-  {
-    id: 't8',
-    name: 'Deepa Nair',
-    location: 'Bangalore',
-    role: 'Retail buyer',
-    rating: 5,
-    quote:
-      'Fresh mushrooms arrive clean and well packed. Lakhe is our trusted supplier for premium varieties.',
-  },
-];
+export const SAMPLE_TESTIMONIALS = TESTIMONIALS;

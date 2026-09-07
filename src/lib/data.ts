@@ -1195,13 +1195,27 @@ export async function deleteGalleryItem(id: string): Promise<void> {
 
 export async function listTestimonials(): Promise<Testimonial[]> {
   if (!isSupabaseConfigured())
-    return localGet<Testimonial[]>(K.testimonials, []);
+    return localGet<Testimonial[]>(K.testimonials, SAMPLE_TESTIMONIALS);
   const { data, error } = await supabase
     .from('testimonials')
     .select('*')
-    .order('created_at', { ascending: false });
+    .eq('is_published', true)
+    .order('created_at', { ascending: true });
   if (error) throw error;
-  return (data ?? []) as Testimonial[];
+  const remote = (data ?? []) as Testimonial[];
+  const deduped = dedupeTestimonials(remote);
+  if (deduped.length >= 10) return deduped.slice(0, 10);
+  return SAMPLE_TESTIMONIALS;
+}
+
+function dedupeTestimonials(items: Testimonial[]): Testimonial[] {
+  const seen = new Set<string>();
+  return items.filter((t) => {
+    const key = t.quote.trim().toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 // ---------------------------------------------------------------------------
